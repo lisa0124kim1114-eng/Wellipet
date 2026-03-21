@@ -459,7 +459,7 @@ footer{background:#2a1220;padding:48px;}
 <script>
 const SUPABASE_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function showMsg(msg, isError) {
   const box = document.getElementById('msgBox');
@@ -476,7 +476,7 @@ async function signUp() {
   const pw = document.getElementById('signupPw').value;
   if (!name || !email || !pw) { showMsg('모든 항목을 입력해주세요.', true); return; }
   if (pw.length < 8) { showMsg('비밀번호는 8자 이상이어야 해요.', true); return; }
-  const { error } = await supabase.auth.signUp({
+  const { error } = await _supabase.auth.signUp({
     email, password: pw,
     options: { data: { name } }
   });
@@ -491,7 +491,7 @@ async function signIn() {
   const email = document.getElementById('loginEmail').value;
   const pw = document.getElementById('loginPw').value;
   if (!email || !pw) { showMsg('이메일과 비밀번호를 입력해주세요.', true); return; }
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
+  const { data, error } = await _supabase.auth.signInWithPassword({ email, password: pw });
   if (error) { showMsg('이메일 또는 비밀번호가 틀렸어요.', true); return; }
   const name = data.user?.user_metadata?.name || '고객';
   document.getElementById('formLogin').style.display = 'none';
