@@ -6,6 +6,7 @@
 <title>주문하기 · Wellypet</title>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
 <script src="https://js.tosspayments.com/v2/standard"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;}
@@ -89,20 +90,20 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
       <div class="form-row">
         <div class="form-group">
           <label>우편번호</label>
-          <input type="text" placeholder="12345"/>
+          <input type="text" id="postcode" placeholder="12345" readonly/>
         </div>
         <div class="form-group">
           <label>&nbsp;</label>
-          <input type="button" value="주소 검색" style="background:var(--pkbg);border:1px solid var(--bd);border-radius:10px;padding:11px;cursor:pointer;font-family:Pretendard,sans-serif;font-size:13px;color:var(--pk);width:100%;"/>
+          <button type="button" onclick="searchAddress()" style="background:var(--pkbg);border:1px solid var(--bd);border-radius:10px;padding:11px;cursor:pointer;font-family:Pretendard,sans-serif;font-size:13px;color:var(--pk);width:100%;font-weight:600;">주소 검색</button>
         </div>
       </div>
       <div class="form-group">
         <label>주소</label>
-        <input type="text" placeholder="기본 주소"/>
+        <input type="text" id="address" placeholder="기본 주소" readonly/>
       </div>
       <div class="form-group">
         <label>상세 주소</label>
-        <input type="text" placeholder="상세 주소 입력"/>
+        <input type="text" id="addressDetail" placeholder="상세 주소 입력"/>
       </div>
     </div>
 
@@ -177,6 +178,16 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
 
 <script>
 const clientKey = 'test_ck_6BYq7GWPVvx4N9za6O6l8NE5vbo1';
+
+function searchAddress() {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      document.getElementById('postcode').value = data.zonecode;
+      document.getElementById('address').value = data.roadAddress || data.jibunAddress;
+      document.getElementById('addressDetail').focus();
+    }
+  }).open();
+}
 let selectedMethod = '카드';
 
 function selectMethod(el, method) {
