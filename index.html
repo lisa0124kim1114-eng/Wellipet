@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WELLIPET · 웰리펫</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-dark: #27500A;
+      --green-mid: #3B6D11;
+      --green-light: #639922;
+      --green-bg: #EAF3DE;
+      --green-pale: #C0DD97;
+      --teal-mid: #1D9E75;
+      --teal-dark: #0F6E56;
+      --teal-bg: #E1F5EE;
+      --teal-pale: #9FE1CB;
+      --cream: #F1EFE8;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: rgba(0,0,0,0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; color: var(--text); background: #fff; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: #fff; border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; justify-content: space-between; align-items: center; height: 64px; }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--green-dark); letter-spacing: 1px; cursor: pointer; }
+    .logo small { display: block; font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--green-light); font-weight: 400; letter-spacing: 3px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; cursor: pointer; transition: color .2s; }
+    .nav-links a:hover { color: var(--green-mid); }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a { font-size: 13px; color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .btn-login { background: var(--green-mid); color: #fff; padding: 8px 18px; border-radius: 20px; font-size: 13px; cursor: pointer; border: none; }
+
+    /* HERO */
+    .hero { background: var(--green-bg); padding: 80px 40px; display: flex; justify-content: space-between; align-items: center; gap: 40px; }
+    .hero-text { flex: 1; max-width: 520px; }
+    .hero-badge { display: inline-block; background: var(--green-dark); color: var(--green-pale); font-size: 11px; padding: 5px 14px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1.5px; }
+    .hero-text h1 { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--green-dark); line-height: 1.3; margin-bottom: 16px; }
+    .hero-text p { font-size: 15px; color: var(--green-mid); line-height: 1.8; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 12px; }
+    .btn-primary { background: var(--green-mid); color: #fff; padding: 14px 32px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; transition: background .2s; }
+    .btn-primary:hover { background: var(--green-dark); }
+    .btn-outline { background: transparent; color: var(--green-mid); border: 1.5px solid var(--green-mid); padding: 14px 32px; border-radius: 8px; font-size: 14px; cursor: pointer; transition: all .2s; }
+    .btn-outline:hover { background: var(--green-bg); }
+    .hero-visual { width: 260px; height: 260px; background: var(--green-pale); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 96px; flex-shrink: 0; }
+
+    /* DONATION BANNER */
+    .donation-banner { background: var(--teal-mid); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .donation-left { display: flex; align-items: center; gap: 16px; }
+    .donation-icon { width: 48px; height: 48px; background: var(--teal-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .donation-text h3 { font-size: 15px; font-weight: 500; color: var(--teal-bg); margin-bottom: 3px; }
+    .donation-text p { font-size: 12px; color: var(--teal-pale); }
+    .donation-stat .num { font-size: 24px; font-weight: 500; color: #fff; text-align: right; }
+    .donation-stat .label { font-size: 11px; color: var(--teal-pale); text-align: right; }
+
+    /* SECTION COMMON */
+    .section { padding: 56px 40px; }
+    .section-header { margin-bottom: 28px; }
+    .section-header h2 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+    .section-header p { font-size: 13px; color: var(--text-muted); }
+
+    /* PRODUCTS */
+    .products { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .product-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .product-img { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 52px; }
+    .bg-green { background: var(--green-bg); }
+    .bg-cream { background: var(--cream); }
+    .bg-teal { background: var(--teal-bg); }
+    .product-info { padding: 14px; }
+    .product-tag { font-size: 10px; color: var(--green-mid); background: var(--green-bg); padding: 3px 8px; border-radius: 10px; display: inline-block; margin-bottom: 7px; }
+    .product-name { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+    .product-price { font-size: 15px; font-weight: 500; color: var(--green-dark); }
+    .product-price s { font-size: 12px; color: var(--text-muted); margin-left: 5px; font-weight: 400; }
+    .product-donation { font-size: 11px; color: var(--teal-dark); margin-top: 4px; }
+
+    /* ADOPTION */
+    .adopt-section { background: var(--cream); padding: 56px 40px; }
+    .adopt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 8px; }
+    .adopt-card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .adopt-photo { height: 140px; display: flex; align-items: center; justify-content: center; font-size: 60px; }
+    .adopt-info { padding: 16px; }
+    .adopt-name { font-size: 16px; font-weight: 500; margin-bottom: 6px; }
+    .adopt-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-bottom: 12px; }
+    .adopt-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .tag { font-size: 11px; padding: 3px 9px; border-radius: 10px; }
+    .tag-g { background: var(--green-bg); color: var(--green-mid); }
+    .tag-t { background: var(--teal-bg); color: var(--teal-dark); }
+    .tag-c { background: var(--cream); color: #666; }
+    .btn-adopt { width: 100%; background: var(--green-mid); color: #fff; border: none; padding: 11px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: background .2s; }
+    .btn-adopt:hover { background: var(--green-dark); }
+    .adopt-more { text-align: center; margin-top: 24px; }
+    .btn-more { background: transparent; color: var(--green-mid); border: 1.5px solid var(--green-mid); padding: 11px 32px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+
+    /* VALUES */
+    .values-section { background: #f9f9f7; padding: 56px 40px; text-align: center; }
+    .values-section h2 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+    .values-section p { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+    .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .value-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; }
+    .value-icon { font-size: 28px; margin-bottom: 12px; }
+    .value-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+    .value-desc { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
+
+    /* CTA BANNER */
+    .cta-banner { background: var(--green-dark); padding: 56px 40px; text-align: center; }
+    .cta-banner h2 { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--green-pale); margin-bottom: 10px; }
+    .cta-banner p { font-size: 14px; color: var(--teal-pale); margin-bottom: 28px; }
+    .btn-cta { background: var(--green-pale); color: var(--green-dark); border: none; padding: 14px 36px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: opacity .2s; }
+    .btn-cta:hover { opacity: .85; }
+
+    /* FOOTER */
+    footer { padding: 32px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .footer-logo { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--green-mid); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; cursor: pointer; }
+    .footer-copy { font-size: 11px; color: var(--text-muted); }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; padding: 36px 32px; width: 100%; max-width: 400px; }
+    .modal h2 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .modal-tabs { display: flex; gap: 0; margin-bottom: 24px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .modal-tab { flex: 1; padding: 10px; font-size: 13px; text-align: center; cursor: pointer; background: #fff; border: none; font-family: 'Noto Sans KR', sans-serif; transition: background .15s; }
+    .modal-tab.active { background: var(--green-mid); color: #fff; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Noto Sans KR', sans-serif; outline: none; transition: border-color .2s; }
+    .form-group input:focus { border-color: var(--green-mid); }
+    .btn-submit { width: 100%; background: var(--green-mid); color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; margin-top: 8px; transition: background .2s; }
+    .btn-submit:hover { background: var(--green-dark); }
+    .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); margin-top: -8px; }
+    .donate-check { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+    .donate-check input { width: auto; }
+    .donate-check label { font-size: 12px; color: var(--teal-dark); margin: 0; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">WELLIPET<small>well · lovely · pet</small></div>
+  <div class="nav-links">
+    <a>전체 상품</a>
+    <a>배변패드</a>
+    <a>간식</a>
+    <a>용품</a>
+    <a>유기견 입양</a>
+    <a>브랜드 스토리</a>
+  </div>
+  <div class="nav-actions">
+    <a>🔍</a>
+    <a>🛒 장바구니</a>
+    <button class="btn-login" onclick="openModal('login')">로그인 / 가입</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-badge">ECO-FRIENDLY PET BRAND</div>
+    <h1>우리 아이를 위한<br>자연 친화적인 선택</h1>
+    <p>웰리펫은 강아지와 지구 모두를 생각합니다.<br>구매할 때마다 유기견 보호에 함께합니다.</p>
+    <div class="hero-btns">
+      <button class="btn-primary">쇼핑 시작하기</button>
+      <button class="btn-outline">유기견 입양하기</button>
+    </div>
+  </div>
+  <div class="hero-visual">🐾</div>
+</section>
+
+<!-- DONATION BANNER -->
+<div class="donation-banner">
+  <div class="donation-left">
+    <div class="donation-icon">🏠</div>
+    <div class="donation-text">
+      <h3>구매금액의 3%가 유기견 보호소에 자동 기부됩니다</h3>
+      <p>웰리펫에서 쇼핑하는 것만으로 유기견에게 따뜻한 하루를 선물해요</p>
+    </div>
+  </div>
+  <div class="donation-stat">
+    <div class="num">1,247,000원</div>
+    <div class="label">이번 달 누적 기부금</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section">
+  <div class="section-header">
+    <h2>인기 상품</h2>
+    <p>구매할 때마다 유기견 보호에 함께해요</p>
+  </div>
+  <div class="products">
+    <div class="product-card">
+      <div class="product-img bg-green">🧻</div>
+      <div class="product-info">
+        <div class="product-tag">친환경</div>
+        <div class="product-name">웰리펫 순면 배변패드 50매</div>
+        <div class="product-price">18,900원 <s>23,000원</s></div>
+        <div class="product-donation">🏠 이 상품 구매 시 567원 기부</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-cream">🦴</div>
+      <div class="product-info">
+        <div class="product-tag">베스트</div>
+        <div class="product-name">유기농 강아지 간식 모음</div>
+        <div class="product-price">14,500원 <s>18,000원</s></div>
+        <div class="product-donation">🏠 이 상품 구매 시 435원 기부</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-teal">🛁</div>
+      <div class="product-info">
+        <div class="product-tag">신제품</div>
+        <div class="product-name">천연 성분 강아지 샴푸</div>
+        <div class="product-price">16,000원</div>
+        <div class="product-donation">🏠 이 상품 구매 시 480원 기부</div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img bg-green">🎾</div>
+      <div class="product-info">
+        <div class="product-tag">인기</div>
+        <div class="product-name">재활용 소재 장난감 세트</div>
+        <div class="product-price">12,900원 <s>15,000원</s></div>
+        <div class="product-donation">🏠 이 상품 구매 시 387원 기부</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADOPTION -->
+<section class="adopt-section">
+  <div class="section-header">
+    <h2>입양을 기다리는 친구들</h2>
+    <p>웰리펫과 함께하는 유기견 입양 캠페인 — 새 가족을 찾고 있어요</p>
+  </div>
+  <div class="adopt-grid">
+    <div class="adopt-card">
+      <div class="adopt-photo bg-green">🐶</div>
+      <div class="adopt-info">
+        <div class="adopt-name">두부 · 3살 · 수컷</div>
+        <div class="adopt-desc">활발하고 사람을 좋아해요. 다른 강아지와도 잘 어울려요.</div>
+        <div class="adopt-tags">
+          <span class="tag tag-g">중형견</span>
+          <span class="tag tag-t">사교적</span>
+          <span class="tag tag-c">훈련완료</span>
+        </div>
+        <button class="btn-adopt" onclick="openModal('signup')">입양 신청하기</button>
+      </div>
+    </div>
+    <div class="adopt-card">
+      <div class="adopt-photo bg-teal">🐕</div>
+      <div class="adopt-info">
+        <div class="adopt-name">솜이 · 2살 · 암컷</div>
+        <div class="adopt-desc">조용하고 순한 성격이에요. 아이가 있는 가정에도 잘 맞아요.</div>
+        <div class="adopt-tags">
+          <span class="tag tag-g">소형견</span>
+          <span class="tag tag-t">온순함</span>
+          <span class="tag tag-c">아이친화</span>
+        </div>
+        <button class="btn-adopt" onclick="openModal('signup')">입양 신청하기</button>
+      </div>
+    </div>
+    <div class="adopt-card">
+      <div class="adopt-photo bg-cream">🐩</div>
+      <div class="adopt-info">
+        <div class="adopt-name">까미 · 5살 · 수컷</div>
+        <div class="adopt-desc">나이가 있지만 건강해요. 조용한 환경을 좋아하는 성격이에요.</div>
+        <div class="adopt-tags">
+          <span class="tag tag-g">중형견</span>
+          <span class="tag tag-t">차분함</span>
+          <span class="tag tag-c">독립적</span>
+        </div>
+        <button class="btn-adopt" onclick="openModal('signup')">입양 신청하기</button>
+      </div>
+    </div>
+  </div>
+  <div class="adopt-more">
+    <button class="btn-more">더 많은 친구들 보기</button>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <h2>웰리펫이 특별한 이유</h2>
+  <p>강아지와 환경을 동시에 생각하는 브랜드</p>
+  <div class="values">
+    <div class="value-card">
+      <div class="value-icon">🌿</div>
+      <div class="value-title">친환경 소재</div>
+      <div class="value-desc">자연 분해되는 친환경 소재만 사용해 지구를 지킵니다</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🏠</div>
+      <div class="value-title">유기견 보호</div>
+      <div class="value-desc">구매금액의 3%가 유기견 보호소에 자동으로 기부됩니다</div>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">📦</div>
+      <div class="value-title">친환경 포장</div>
+      <div class="value-desc">플라스틱 없는 포장재로 배송까지 환경을 생각합니다</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-banner">
+  <h2>지금 가입하면 첫 주문 10% 할인</h2>
+  <p>웰리펫 회원이 되어 유기견 보호 캠페인에 함께해요</p>
+  <button class="btn-cta" onclick="openModal('signup')">회원가입하고 할인받기</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">WELLIPET</div>
+  <div class="footer-links">
+    <a>회사소개</a>
+    <a>이용약관</a>
+    <a>개인정보처리방침</a>
+    <a>고객센터</a>
+  </div>
+  <div class="footer-copy">© 2025 Wellipet. 강아지와 지구를 위한 브랜드.</div>
+</footer>
+
+<!-- MODAL (로그인/회원가입) -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">웰리펫 시작하기</h2>
+    <p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabSignup" onclick="switchTab('signup')">회원가입</button>
+      <button class="modal-tab" id="tabLogin" onclick="switchTab('login')">로그인</button>
+    </div>
+    <div id="formSignup">
+      <div class="form-group">
+        <label>이름</label>
+        <input type="text" placeholder="홍길동" />
+      </div>
+      <div class="form-group">
+        <label>이메일</label>
+        <input type="email" placeholder="hello@wellipet.com" />
+      </div>
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input type="password" placeholder="8자 이상 입력해주세요" />
+      </div>
+      <div class="donate-check">
+        <input type="checkbox" id="donateAgree" checked />
+        <label for="donateAgree">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label>
+      </div>
+      <button class="btn-submit">가입하기</button>
+    </div>
+    <div id="formLogin" style="display:none;">
+      <div class="form-group">
+        <label>이메일</label>
+        <input type="email" placeholder="hello@wellipet.com" />
+      </div>
+      <div class="form-group">
+        <label>비밀번호</label>
+        <input type="password" placeholder="비밀번호를 입력해주세요" />
+      </div>
+      <button class="btn-submit">로그인</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openModal(tab) {
+    document.getElementById('authModal').classList.add('open');
+    switchTab(tab || 'signup');
+  }
+  function closeModal() {
+    document.getElementById('authModal').classList.remove('open');
+  }
+  function switchTab(tab) {
+    document.getElementById('formSignup').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('formLogin').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('tabSignup').className = 'modal-tab' + (tab === 'signup' ? ' active' : '');
+    document.getElementById('tabLogin').className = 'modal-tab' + (tab === 'login' ? ' active' : '');
+  }
+  document.getElementById('authModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+</body>
+</html>
