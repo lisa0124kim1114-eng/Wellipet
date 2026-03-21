@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>결제 완료 · Wellypet</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;}
+body{font-family:'Pretendard',sans-serif;background:#f8f8f8;color:var(--tx);min-height:100vh;display:flex;flex-direction:column;}
+header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:60px;display:flex;align-items:center;}
+.logo{font-size:22px;font-weight:800;color:var(--pk);text-decoration:none;}
+.logo em{font-style:normal;color:var(--pkm);}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.card{background:#fff;border-radius:24px;padding:48px 40px;max-width:480px;width:100%;border:1px solid var(--bd);text-align:center;}
+.success-icon{width:80px;height:80px;background:var(--pkp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;}
+.card h1{font-size:24px;font-weight:800;color:var(--tx);margin-bottom:8px;}
+.card p{font-size:14px;color:var(--muted);font-weight:300;line-height:1.7;margin-bottom:28px;}
+.order-box{background:var(--pkbg);border-radius:14px;padding:20px;margin-bottom:24px;text-align:left;}
+.order-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.order-row:last-child{margin-bottom:0;}
+.order-row .k{font-size:12px;color:var(--muted);}
+.order-row .v{font-size:13px;font-weight:600;color:var(--tx);}
+.order-row .v.pink{color:var(--pk);}
+.donation-box{background:#f0faf5;border:1px solid #b8e8d0;border-radius:12px;padding:14px 16px;margin-bottom:24px;display:flex;align-items:center;gap:12px;text-align:left;}
+.donation-box .icon{font-size:24px;flex-shrink:0;}
+.donation-box .text h4{font-size:13px;font-weight:700;color:#1a6a40;margin-bottom:2px;}
+.donation-box .text p{font-size:12px;color:#2a8a5a;font-weight:300;}
+.btns{display:flex;gap:10px;}
+.btn-main{flex:1;background:var(--pk);color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Pretendard',sans-serif;text-decoration:none;display:block;transition:background .2s;}
+.btn-main:hover{background:#b04a7a;}
+.btn-sub{flex:1;background:transparent;color:var(--pk);border:1.5px solid var(--pk);padding:14px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Pretendard',sans-serif;text-decoration:none;display:block;transition:all .2s;}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">Welly<em>pet</em></a>
+</header>
+<div class="wrap">
+  <div class="card">
+    <div class="success-icon">🎉</div>
+    <h1>결제가 완료됐어요!</h1>
+    <p>주문이 성공적으로 접수됐어요.<br>빠르게 준비해서 보내드릴게요 🐾</p>
+    <div class="order-box">
+      <div class="order-row"><span class="k">주문 번호</span><span class="v" id="orderId">-</span></div>
+      <div class="order-row"><span class="k">결제 금액</span><span class="v pink" id="amount">-</span></div>
+      <div class="order-row"><span class="k">결제 방법</span><span class="v" id="payMethod">-</span></div>
+      <div class="order-row"><span class="k">결제 일시</span><span class="v" id="payDate">-</span></div>
+    </div>
+    <div class="donation-box">
+      <span class="icon">🏠</span>
+      <div class="text">
+        <h4>유기견 보호소에 기부됐어요</h4>
+        <p>이번 주문으로 567원이 유기견 보호소에 전달돼요. 감사해요!</p>
+      </div>
+    </div>
+    <div class="btns">
+      <a class="btn-sub" href="index.html">홈으로 가기</a>
+      <a class="btn-main" href="index.html#adoption">입양 친구 보기</a>
+    </div>
+  </div>
+</div>
+<script>
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get('orderId');
+const amount = params.get('amount');
+const paymentKey = params.get('paymentKey');
+
+if(orderId) document.getElementById('orderId').textContent = orderId;
+if(amount) document.getElementById('amount').textContent = Number(amount).toLocaleString() + '원';
+document.getElementById('payMethod').textContent = '카드 결제';
+document.getElementById('payDate').textContent = new Date().toLocaleDateString('ko-KR', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+</script>
+</body>
+</html>
