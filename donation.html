@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>후원 프로젝트 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--cr:#fdf8f5;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
+.topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;}
+.topbar span{font-size:11px;color:#fff;font-weight:300;}
+.topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo-img{height:52px;object-fit:contain;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;}
+nav a:hover{color:var(--pk);}
+nav a.active{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.sbox{display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;}
+.sbox input{border:none;background:transparent;font-size:12px;outline:none;width:120px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);}
+.ibt{font-size:16px;cursor:pointer;color:#bbb;}
+.btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
+.user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
+.page-hero{background:var(--pk);padding:64px 48px;text-align:center;}
+.page-hero h1{font-family:'Nunito',sans-serif;font-size:34px;font-weight:800;color:#fff;margin-bottom:10px;}
+.page-hero p{font-size:14px;color:var(--pkl);font-weight:300;line-height:1.8;}
+.sec{padding:56px 48px;}
+.sl{font-size:10px;color:var(--pkm);letter-spacing:3px;margin-bottom:8px;}
+.st{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;margin-bottom:4px;}
+.ss{font-size:12px;color:#bbb;font-weight:300;margin-bottom:32px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:48px;}
+.stat-card{background:var(--pkbg);border-radius:18px;padding:28px;text-align:center;border:1px solid var(--bd);}
+.stat-card .n{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);margin-bottom:6px;}
+.stat-card .l{font-size:12px;color:var(--muted);font-weight:300;}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:48px;}
+.how-card{background:#fff;border-radius:20px;padding:32px 24px;border:1px solid var(--bd);text-align:center;}
+.how-icon{font-size:48px;margin-bottom:16px;}
+.how-num{font-size:10px;color:var(--pkl);font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.how-title{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;}
+.how-desc{font-size:12px;color:#aaa;font-weight:300;line-height:1.8;}
+.proof-box{background:var(--pkbg);border-radius:18px;padding:32px;display:flex;align-items:center;gap:24px;border:1px solid var(--bd);}
+.proof-icon{font-size:48px;flex-shrink:0;}
+.proof-text h3{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:#2a1220;margin-bottom:8px;}
+.proof-text p{font-size:13px;color:var(--muted);font-weight:300;line-height:1.8;}
+.don-block{background:var(--pk);border-radius:24px;padding:48px;text-align:center;}
+.don-block h2{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#fff;margin-bottom:10px;}
+.don-block p{font-size:14px;color:var(--pkl);font-weight:300;margin-bottom:24px;}
+.don-btn{background:#fff;color:var(--pk);border:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;}
+footer{background:#2a1220;padding:48px;}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
+.f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;}
+.f-sns{display:flex;gap:8px;}
+.f-sns a{width:32px;height:32px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;}
+.f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;}
+.f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;}
+.fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
+.f-copy{font-size:11px;color:#6a4a5a;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;}
+.modal h2{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:22px;font-weight:300;}
+.mtabs{display:flex;margin-bottom:22px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.mtab{flex:1;padding:10px;font-size:13px;text-align:center;cursor:pointer;background:#fff;border:none;font-family:'Noto Sans KR',sans-serif;}
+.mtab.on{background:var(--pk);color:#fff;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
+.fg input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.fg input:focus{border-color:var(--pk);}
+.btn-submit{width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;}
+.modal-close{float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;}
+.dc{display:flex;align-items:center;gap:8px;margin-top:12px;}
+.dc input{width:auto;}
+.dc label{font-size:12px;color:var(--pkm);margin:0;}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span><a>후원 현황 보기 →</a></div>
+<header>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
+    <div class="logo" id="lt" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html" class="active">후원 프로젝트</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <span class="ibt">🛒</span><span class="ibt">👤</span>
+    <span class="user-name" id="userNameDisplay"></span>
+    <button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
+    <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1>쇼핑이 후원이 돼요 🐾</h1>
+  <p>웰리펫에서 쇼핑하면 구매금액의 3%가 자동으로 유기견 보호소에 기부돼요.<br>복잡한 과정 없이, 그냥 쇼핑만 하면 돼요.</p>
+</div>
+
+<section class="sec">
+  <div class="sl">IMPACT</div>
+  <div class="st">우리가 함께 만든 변화</div>
+  <div class="ss">웰리펫 고객 모두가 후원자예요</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="n">1,247,000원</div><div class="l">이번 달 기부금</div></div>
+    <div class="stat-card"><div class="n">3,812명</div><div class="l">누적 후원자</div></div>
+    <div class="stat-card"><div class="n">12,840,000원</div><div class="l">총 누적 기부금</div></div>
+    <div class="stat-card"><div class="n">23곳</div><div class="l">후원 보호소 수</div></div>
+  </div>
+
+  <div class="sl">HOW IT WORKS</div>
+  <div class="st">쇼핑이 후원이 되는 방법</div>
+  <div class="ss">복잡한 과정 없어요. 그냥 쇼핑하면 돼요.</div>
+  <div class="how-grid">
+    <div class="how-card"><div class="how-icon">🛍️</div><div class="how-num">STEP 01</div><div class="how-title">웰리펫에서 쇼핑</div><div class="how-desc">마음에 드는 제품을 골라 장바구니에 담아요. 친환경 인증 제품만 있어요.</div></div>
+    <div class="how-card"><div class="how-icon">💳</div><div class="how-num">STEP 02</div><div class="how-title">결제하면 자동 기부</div><div class="how-desc">결제 금액의 3%가 자동으로 유기견 보호소에 전달돼요. 따로 할 일이 없어요.</div></div>
+    <div class="how-card"><div class="how-icon">🐾</div><div class="how-num">STEP 03</div><div class="how-title">후원 인증서 발급</div><div class="how-desc">구매 후 후원 인증서를 받아요. SNS에 공유하면 더 많은 사람들이 함께해요.</div></div>
+  </div>
+
+  <div class="proof-box">
+    <div class="proof-icon">✅</div>
+    <div class="proof-text">
+      <h3>사단법인 한국동물보호연합 공식 후원 브랜드</h3>
+      <p>매월 기부 내역을 투명하게 공개해요. 웰리펫의 모든 기부는 검증된 공식 루트를 통해 전달돼요. 후원 내역은 웰리펫 홈페이지와 SNS에서 매월 확인하실 수 있어요.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" style="background:var(--pkbg);">
+  <div class="don-block">
+    <h2>지금 쇼핑하고 후원에 동참해요 🐾</h2>
+    <p>웰리펫에서 쇼핑하는 것만으로 유기견 보호소에 기부할 수 있어요.</p>
+    <button class="don-btn" onclick="location.href='shop.html'">쇼핑하러 가기</button>
+  </div>
+</section>
+
+<footer><div class="ft"><div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div><div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div><div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div><div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a></div></div><div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div></footer>
+
+<div class="modal-overlay" id="authModal"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2 id="modalTitle">웰리펫 시작하기 🐾</h2><p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p><div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div><div class="mtabs"><button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button><button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button></div><div id="formSignup"><div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div><div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div><div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div><button class="btn-submit" onclick="signUp()">가입하기</button></div><div id="formLogin" style="display:none;"><div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div><button class="btn-submit" onclick="signIn()">로그인</button></div><div id="formDone" style="display:none;text-align:center;padding:20px 0;"><div style="font-size:48px;margin-bottom:14px;">🎉</div><div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div><div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div></div></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
+_supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
+_supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
+async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
+function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
+async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}document.getElementById('formSignup').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
+async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
+function openModal(tab){document.getElementById('authModal').classList.add('open');switchTab(tab||'signup');document.getElementById('msgBox').style.display='none';}
+function closeModal(){document.getElementById('authModal').classList.remove('open');}
+function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
+document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+</body>
+</html>
