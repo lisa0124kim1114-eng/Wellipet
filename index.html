@@ -12,11 +12,12 @@ body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
 .topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;}
 .topbar span{font-size:11px;color:#fff;font-weight:300;}
 .topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;}
-header{padding:0 32px;height:130px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
 .logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);cursor:pointer;}
 .logo em{font-style:normal;color:var(--pkm);}
-.logo-img{height:44px;object-fit:contain;}
-nav{display:flex;gap:28px;margin-left:0;}
+.logo-img{height:52px;object-fit:contain;}
+nav{display:flex;gap:28px;}
 nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;}
 nav a:hover{color:var(--pk);}
 .hicons{display:flex;gap:14px;align-items:center;}
@@ -135,25 +136,16 @@ nav a:hover{color:var(--pk);}
 .dcard{background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--bd);transition:transform .2s,box-shadow .2s;cursor:pointer;}
 .dcard:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(196,92,138,.1);}
 .dphoto{height:180px;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;}
-.dp1{background:var(--pkp);}
-.dp2{background:#fff0f7;}
-.dp3{background:var(--cr);}
-.dp4{background:#fef3f8;}
-.dp5{background:var(--pkbg);}
-.dp6{background:#fff8fb;}
+.dp1{background:var(--pkp);}.dp2{background:#fff0f7;}.dp3{background:var(--cr);}.dp4{background:#fef3f8;}.dp5{background:var(--pkbg);}.dp6{background:#fff8fb;}
 .dbadge{position:absolute;top:12px;right:12px;font-size:10px;padding:4px 10px;border-radius:20px;font-weight:500;}
-.b-wait{background:#fff;color:var(--pk);border:1px solid var(--pkl);}
-.b-new{background:var(--pk);color:#fff;}
-.b-urgent{background:#ff6b6b;color:#fff;}
+.b-wait{background:#fff;color:var(--pk);border:1px solid var(--pkl);}.b-new{background:var(--pk);color:#fff;}.b-urgent{background:#ff6b6b;color:#fff;}
 .dbody{padding:18px;}
 .dname{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:#2a1220;margin-bottom:4px;}
 .dmeta{font-size:11px;color:var(--muted);font-weight:300;margin-bottom:10px;}
 .ddesc{font-size:12px;color:#999;font-weight:300;line-height:1.7;margin-bottom:12px;}
 .dtags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .dtag{font-size:10px;padding:3px 10px;border-radius:20px;}
-.dtp{background:var(--pkp);color:var(--pk);}
-.dtc{background:var(--cr);color:#a07060;}
-.dtt{background:#f0faf5;color:#2a7a5a;}
+.dtp{background:var(--pkp);color:var(--pk);}.dtc{background:var(--cr);color:#a07060;}.dtt{background:#f0faf5;color:#2a7a5a;}
 .dbtn{width:100%;background:var(--pk);color:#fff;border:none;padding:11px;border-radius:10px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .more-btn{display:block;margin:0 auto;background:transparent;color:var(--pk);border:1.5px solid var(--pk);padding:12px 40px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .shelter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
@@ -164,8 +156,7 @@ nav a:hover{color:var(--pk);}
 .sh-loc{font-size:11px;color:var(--muted);font-weight:300;margin-top:2px;}
 .sh-info{border-top:1px solid var(--bd);padding-top:14px;}
 .sh-row{display:flex;justify-content:space-between;margin-bottom:8px;}
-.sh-row .k{font-size:11px;color:#bbb;font-weight:300;}
-.sh-row .v{font-size:11px;color:var(--tx);font-weight:500;}
+.sh-row .k{font-size:11px;color:#bbb;font-weight:300;}.sh-row .v{font-size:11px;color:var(--tx);font-weight:500;}
 .sh-map{width:100%;margin-top:12px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:8px;}
 .pstep{text-align:center;padding:24px 16px;position:relative;}
@@ -220,12 +211,15 @@ footer{background:#2a1220;padding:48px;}
   <a>후원 현황 보기 →</a>
 </div>
 <header>
-  <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'" style="height:60px;"/></a>
-  <nav>
-    <a>샵</a>
-    <a>입양 스토리</a>
-    <a href="#adoption">후원 프로젝트</a>
-  </nav>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
+    <div class="logo" id="lt" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a>샵</a>
+      <a>입양 스토리</a>
+      <a href="#adoption">후원 프로젝트</a>
+    </nav>
+  </div>
   <div class="hicons">
     <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
     <span class="ibt">🛒</span>
@@ -255,282 +249,34 @@ footer{background:#2a1220;padding:48px;}
   <div class="ds-l"><div class="ds-dot"></div><div class="ds-txt">구매금액의 3%가 유기견 보호소에 자동 기부됩니다 — 쇼핑만으로 선한 영향력을 만들어요</div></div>
   <div class="ds-stat">매달 함께해요 <small>🏠 기부 중</small></div>
 </div>
-<section class="sec">
-  <div class="sl">OUR STORY</div>
-  <div class="st">웰리펫 이야기</div>
-  <div class="ss">우리가 이 브랜드를 만든 이유</div>
-  <div class="story-grid">
-    <div class="scard"><div class="sc-img sp">🌿</div><div class="sc-body"><div class="sc-num">01</div><div class="sc-title">친환경을 선택했어요</div><div class="sc-desc">자연 분해되는 소재로 강아지도, 지구도 건강하게. 웰리펫의 모든 제품은 친환경 기준을 지킵니다.</div></div></div>
-    <div class="scard"><div class="sc-img sc">🏠</div><div class="sc-body"><div class="sc-num">02</div><div class="sc-title">유기견을 생각해요</div><div class="sc-desc">모든 구매의 3%는 유기견 보호소로 향해요. 쇼핑하는 것만으로 누군가의 하루가 따뜻해집니다.</div></div></div>
-    <div class="scard"><div class="sc-img sl2">💕</div><div class="sc-body"><div class="sc-num">03</div><div class="sc-title">함께 만드는 브랜드</div><div class="sc-desc">고객 한 분 한 분이 웰리펫의 공동 후원자예요. 우리 함께 더 나은 세상을 만들어가요.</div></div></div>
-  </div>
-</section>
-<section class="sec salt">
-  <div class="sl">HOW IT WORKS</div>
-  <div class="st">쇼핑이 후원이 되는 방법</div>
-  <div class="ss">복잡한 과정 없어요. 그냥 쇼핑하면 돼요.</div>
-  <div class="info-wrap">
-    <div class="info-step"><div class="info-circle">🛍️</div><div class="info-num">STEP 01</div><div class="info-title">웰리펫에서 쇼핑</div><div class="info-desc">마음에 드는 제품을 골라 장바구니에 담아요.</div></div>
-    <div class="info-step"><div class="info-circle">💳</div><div class="info-num">STEP 02</div><div class="info-title">결제하면 자동 기부</div><div class="info-desc">결제 금액의 3%가 자동으로 보호소에 전달돼요.</div></div>
-    <div class="info-step"><div class="info-circle">🐾</div><div class="info-num">STEP 03</div><div class="info-title">후원 인증서 발급</div><div class="info-desc">구매 후 후원 인증서를 받아 SNS에 공유해요.</div></div>
-  </div>
-</section>
-<section class="sec">
-  <div class="sl">TODAY'S PICK</div>
-  <div class="st">오늘의 추천 세트 ✨</div>
-  <div class="ss">웰리펫이 엄선한 베스트 조합</div>
-  <div class="set-grid">
-    <div class="set-card"><div class="set-img sp">🧻🌿</div><div class="set-info"><div class="set-tag">스타터 세트</div><div class="set-name">웰컴 반려견 입문 세트</div><div class="set-desc">처음 강아지를 맞이하는 분들을 위한 필수 용품 모음</div><div class="set-price">38,000원 <s>48,000원</s></div></div></div>
-    <div class="set-card"><div class="set-img sc">🛁🦴</div><div class="set-info"><div class="set-tag">위클리 케어</div><div class="set-name">매주 깨끗하게 케어 세트</div><div class="set-desc">샴푸 + 간식 + 배변패드 한 달치 구성</div><div class="set-price">52,000원 <s>65,000원</s></div></div></div>
-    <div class="set-card"><div class="set-img sl2">🎾💕</div><div class="set-info"><div class="set-tag">선물 추천</div><div class="set-name">강아지 생일 선물 세트</div><div class="set-desc">특별한 날을 위한 장난감 + 간식 + 기프트백</div><div class="set-price">29,900원 <s>36,000원</s></div></div></div>
-  </div>
-</section>
-<section class="sec scr">
-  <div class="sl">CATEGORY</div>
-  <div class="st">카테고리</div>
-  <div class="ss">필요한 것을 빠르게 찾아요</div>
-  <div class="cat-grid">
-    <div class="cat-card"><div class="cat-icon">🧻</div><div class="cat-name">배변패드</div><div class="cat-count">12개 상품</div></div>
-    <div class="cat-card"><div class="cat-icon">🦴</div><div class="cat-name">간식 · 푸드</div><div class="cat-count">24개 상품</div></div>
-    <div class="cat-card"><div class="cat-icon">🛁</div><div class="cat-name">그루밍</div><div class="cat-count">8개 상품</div></div>
-    <div class="cat-card"><div class="cat-icon">🎾</div><div class="cat-name">장난감 · 용품</div><div class="cat-count">16개 상품</div></div>
-  </div>
-</section>
-<section class="sec">
-  <div class="sl">PRODUCTS</div>
-  <div class="st">상품 둘러보기</div>
-  <div class="ss"></div>
-  <div class="tabs">
-    <button class="tab on">베스트</button>
-    <button class="tab">신제품</button>
-    <button class="tab">할인중</button>
-  </div>
-  <div class="prod-grid">
-    <div class="pcard"><div class="pimg pp">🧻</div><div class="pinfo"><div class="ptag">베스트</div><div class="pname">웰리펫 순면 배변패드 50매</div><div class="pprice">18,900원 <s>23,000원</s></div><div class="pdon">🏠 567원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pc">🦴</div><div class="pinfo"><div class="ptag">유기농</div><div class="pname">유기농 강아지 간식 모음</div><div class="pprice">14,500원 <s>18,000원</s></div><div class="pdon">🏠 435원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pl">🛁</div><div class="pinfo"><div class="ptag">신제품</div><div class="pname">천연 성분 강아지 샴푸</div><div class="pprice">16,000원</div><div class="pdon">🏠 480원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pp">🎾</div><div class="pinfo"><div class="ptag">친환경</div><div class="pname">재활용 소재 장난감 세트</div><div class="pprice">12,900원 <s>15,000원</s></div><div class="pdon">🏠 387원 기부</div></div></div>
-  </div>
-</section>
-<section class="sec salt">
-  <div class="sl">DONATION</div>
-  <div class="st">우리가 함께 만든 변화</div>
-  <div class="ss">웰리펫 고객 모두가 후원자예요</div>
-  <div class="don-block">
-    <div class="don-l">
-      <h2>쇼핑이 따뜻한<br>기부가 돼요 🐾</h2>
-      <p>웰리펫 고객분들 덕분에 매달 유기견 보호소에 기부가 이어지고 있어요.</p>
-      <button class="don-btn">후원 인증서 받기</button>
-    </div>
-    <div>
-      <div class="don-stats">
-        <div class="don-stat"><div class="n">1,247,000원</div><div class="l">이번 달 기부금</div></div>
-        <div class="don-stat"><div class="n">3,812명</div><div class="l">누적 후원자</div></div>
-        <div class="don-stat"><div class="n">12,840,000원</div><div class="l">총 누적 기부금</div></div>
-        <div class="don-stat"><div class="n">23곳</div><div class="l">후원 보호소 수</div></div>
-      </div>
-      <div class="don-proof"><span class="badge">✅</span><span class="txt">사단법인 한국동물보호연합 공식 후원 브랜드<br>매월 기부 내역 투명하게 공개됩니다</span></div>
-    </div>
-  </div>
-</section>
-<section class="sec" id="adoption">
-  <div class="sl">ADOPTION</div>
-  <div class="st">유기견 입양 🐾</div>
-  <div class="ss">새 가족을 기다리는 친구들을 소개해요</div>
-  <div class="adopt-intro-box">
-    <div class="ait-text">
-      <h3>입양은 이렇게 진행돼요</h3>
-      <p>웰리펫을 통해 보호소 강아지들의 입양을 도와드려요.</p>
-      <div class="ait-steps">
-        <div class="astep"><span class="an">01</span><span class="at">프로필 확인</span></div>
-        <div class="astep"><span class="an">02</span><span class="at">입양 신청</span></div>
-        <div class="astep"><span class="an">03</span><span class="at">보호소 상담</span></div>
-        <div class="astep"><span class="an">04</span><span class="at">입양 완료 🎉</span></div>
-      </div>
-    </div>
-    <div class="ait-stats">
-      <div class="aistat"><div class="n">47마리</div><div class="l">입양 대기 중</div></div>
-      <div class="aistat"><div class="n">312건</div><div class="l">누적 입양</div></div>
-      <div class="aistat"><div class="n">8곳</div><div class="l">연계 보호소</div></div>
-    </div>
-  </div>
-  <div class="filter-bar">
-    <button class="fbtn on">전체</button><button class="fbtn">소형견</button><button class="fbtn">중형견</button><button class="fbtn">대형견</button><button class="fbtn">수컷</button><button class="fbtn">암컷</button><button class="fbtn">1살 미만</button><button class="fbtn">노령견</button><button class="fbtn">서울</button><button class="fbtn">경기</button>
-  </div>
-  <div class="dog-grid">
-    <div class="dcard"><div class="dphoto dp1"><span class="dbadge b-new">신규</span>🐶</div><div class="dbody"><div class="dname">두부</div><div class="dmeta">믹스견 · 3살 · 수컷 · 중형 · 서울 마포구</div><div class="ddesc">활발하고 사람을 너무 좋아해요.</div><div class="dtags"><span class="dtag dtp">사교적</span><span class="dtag dtt">훈련완료</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp2"><span class="dbadge b-wait">대기중</span>🐕</div><div class="dbody"><div class="dname">솜이</div><div class="dmeta">포메라니안 믹스 · 2살 · 암컷 · 소형 · 경기 수원</div><div class="ddesc">조용하고 순한 성격이에요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">아이친화</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp3"><span class="dbadge b-urgent">긴급</span>🐩</div><div class="dbody"><div class="dname">까미</div><div class="dmeta">푸들 믹스 · 5살 · 수컷 · 소형 · 서울 강남구</div><div class="ddesc">나이가 있지만 건강하고 활기차요.</div><div class="dtags"><span class="dtag dtp">차분함</span><span class="dtag dtt">독립적</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp4"><span class="dbadge b-new">신규</span>🦮</div><div class="dbody"><div class="dname">하늘이</div><div class="dmeta">진도 믹스 · 1살 · 암컷 · 중형 · 경기 성남</div><div class="ddesc">어리고 에너지가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">활발함</span><span class="dtag dtt">학습빠름</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp5"><span class="dbadge b-wait">대기중</span>🐾</div><div class="dbody"><div class="dname">보리</div><div class="dmeta">말티즈 믹스 · 7살 · 수컷 · 소형 · 서울 노원구</div><div class="ddesc">성격이 안정되어 있어요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">노령견</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp6"><span class="dbadge b-new">신규</span>🐕‍🦺</div><div class="dbody"><div class="dname">달콤이</div><div class="dmeta">비숑 믹스 · 4살 · 암컷 · 소형 · 인천 부평구</div><div class="ddesc">밝고 애교가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">애교쟁이</span><span class="dtag dtt">사람좋아</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-  </div>
-  <button class="more-btn">더 많은 친구들 보기 →</button>
-</section>
-<section class="sec scr">
-  <div class="sl">SHELTER</div>
-  <div class="st">연계 보호소 안내</div>
-  <div class="ss">웰리펫과 함께하는 보호소예요</div>
-  <div class="shelter-grid">
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🏠</div><div><div class="sh-name">서울 동물보호센터</div><div class="sh-loc">📍 서울 마포구 상암동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 18:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">월요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 12마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🐾</div><div><div class="sh-name">경기 유기동물센터</div><div class="sh-loc">📍 경기 수원시 팔달구</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">10:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">일요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 18마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">💕</div><div><div class="sh-name">인천 동물보호소</div><div class="sh-loc">📍 인천 부평구 갈산동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">토·일요일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 9마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-  </div>
-</section>
-<section class="sec salt">
-  <div class="sl">PROCESS</div>
-  <div class="st">입양 절차 안내</div>
-  <div class="ss">어렵지 않아요. 차근차근 함께해요 🐾</div>
-  <div class="process-steps">
-    <div class="pstep"><div class="pcircle">🔍</div><div class="pnum">STEP 01</div><div class="ptitle">프로필 탐색</div><div class="pdesc">마음에 드는 강아지를 골라 성격과 나이를 살펴봐요</div></div>
-    <div class="pstep"><div class="pcircle">📝</div><div class="pnum">STEP 02</div><div class="ptitle">입양 신청</div><div class="pdesc">간단한 신청서를 작성해요. 거주 환경을 알려주세요</div></div>
-    <div class="pstep"><div class="pcircle">📞</div><div class="pnum">STEP 03</div><div class="ptitle">보호소 상담</div><div class="pdesc">보호소에서 연락이 와요. 직접 방문해서 만나봐요</div></div>
-    <div class="pstep"><div class="pcircle">🎉</div><div class="pnum">STEP 04</div><div class="ptitle">새 가족 완성</div><div class="pdesc">입양 완료 시 웰리펫 첫 달 용품 키트를 선물해요</div></div>
-  </div>
-</section>
-<section class="sec">
-  <div class="adopt-cta-box">
-    <h3>우리 아이를 기다리는 친구가 있어요 🐾</h3>
-    <p>입양은 새 생명을 구하는 일이에요. 오늘 첫 발걸음을 내딛어봐요.</p>
-    <div class="cta-btns">
-      <button class="cta-w" onclick="openModal('signup')">입양 신청하기</button>
-      <button class="cta-o">보호소에 문의하기</button>
-    </div>
-  </div>
-</section>
-<div class="main-cta">
-  <h2>지금 가입하면 첫 주문 10% 할인 🎁</h2>
-  <p>웰리펫 회원이 되어 유기견 보호 캠페인에 함께해요</p>
-  <button class="btn-cta" onclick="openModal('signup')">회원가입하고 할인받기</button>
-</div>
-<footer>
-  <div class="ft">
-    <div>
-      <div class="f-logo">Wellipet 🐾</div>
-      <div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.<br>쇼핑이 곧 후원이 되는 웰리펫과 함께해요.</div>
-      <div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div>
-    </div>
-    <div class="f-col"><h4>쇼핑</h4><a>전체 상품</a><a>배변패드</a><a>간식·푸드</a><a>그루밍</a><a>장난감·용품</a></div>
-    <div class="f-col"><h4>웰리펫</h4><a>브랜드 스토리</a><a>후원 프로젝트</a><a>유기견 입양</a></div>
-    <div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a><a>배송·반품 안내</a></div>
-  </div>
-  <div class="fb">
-    <div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000<br>통신판매업신고: 2025-서울-0000 | 주소: 서울특별시</div>
-    <div class="f-copy">© 2025 Wellipet. All rights reserved.</div>
-  </div>
-</footer>
-<div class="modal-overlay" id="authModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <h2 id="modalTitle">웰리펫 시작하기 🐾</h2>
-    <p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p>
-    <div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div>
-    <div class="mtabs">
-      <button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button>
-      <button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button>
-    </div>
-    <div id="formSignup">
-      <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
-      <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div>
-      <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
-      <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div>
-      <button class="btn-submit" onclick="signUp()">가입하기</button>
-    </div>
-    <div id="formLogin" style="display:none;">
-      <div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div>
-      <div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div>
-      <button class="btn-submit" onclick="signIn()">로그인</button>
-    </div>
-    <div id="formDone" style="display:none;text-align:center;padding:20px 0;">
-      <div style="font-size:48px;margin-bottom:14px;">🎉</div>
-      <div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div>
-      <div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div>
-    </div>
-  </div>
-</div>
+<section class="sec"><div class="sl">OUR STORY</div><div class="st">웰리펫 이야기</div><div class="ss">우리가 이 브랜드를 만든 이유</div><div class="story-grid"><div class="scard"><div class="sc-img sp">🌿</div><div class="sc-body"><div class="sc-num">01</div><div class="sc-title">친환경을 선택했어요</div><div class="sc-desc">자연 분해되는 소재로 강아지도, 지구도 건강하게.</div></div></div><div class="scard"><div class="sc-img sc">🏠</div><div class="sc-body"><div class="sc-num">02</div><div class="sc-title">유기견을 생각해요</div><div class="sc-desc">모든 구매의 3%는 유기견 보호소로 향해요.</div></div></div><div class="scard"><div class="sc-img sl2">💕</div><div class="sc-body"><div class="sc-num">03</div><div class="sc-title">함께 만드는 브랜드</div><div class="sc-desc">고객 한 분 한 분이 웰리펫의 공동 후원자예요.</div></div></div></div></section>
+<section class="sec salt"><div class="sl">HOW IT WORKS</div><div class="st">쇼핑이 후원이 되는 방법</div><div class="ss">복잡한 과정 없어요. 그냥 쇼핑하면 돼요.</div><div class="info-wrap"><div class="info-step"><div class="info-circle">🛍️</div><div class="info-num">STEP 01</div><div class="info-title">웰리펫에서 쇼핑</div><div class="info-desc">마음에 드는 제품을 골라 장바구니에 담아요.</div></div><div class="info-step"><div class="info-circle">💳</div><div class="info-num">STEP 02</div><div class="info-title">결제하면 자동 기부</div><div class="info-desc">결제 금액의 3%가 자동으로 보호소에 전달돼요.</div></div><div class="info-step"><div class="info-circle">🐾</div><div class="info-num">STEP 03</div><div class="info-title">후원 인증서 발급</div><div class="info-desc">구매 후 후원 인증서를 받아 SNS에 공유해요.</div></div></div></section>
+<section class="sec"><div class="sl">TODAY'S PICK</div><div class="st">오늘의 추천 세트 ✨</div><div class="ss">웰리펫이 엄선한 베스트 조합</div><div class="set-grid"><div class="set-card"><div class="set-img sp">🧻🌿</div><div class="set-info"><div class="set-tag">스타터 세트</div><div class="set-name">웰컴 반려견 입문 세트</div><div class="set-desc">처음 강아지를 맞이하는 분들을 위한 필수 용품 모음</div><div class="set-price">38,000원 <s>48,000원</s></div></div></div><div class="set-card"><div class="set-img sc">🛁🦴</div><div class="set-info"><div class="set-tag">위클리 케어</div><div class="set-name">매주 깨끗하게 케어 세트</div><div class="set-desc">샴푸 + 간식 + 배변패드 한 달치 구성</div><div class="set-price">52,000원 <s>65,000원</s></div></div></div><div class="set-card"><div class="set-img sl2">🎾💕</div><div class="set-info"><div class="set-tag">선물 추천</div><div class="set-name">강아지 생일 선물 세트</div><div class="set-desc">특별한 날을 위한 장난감 + 간식 + 기프트백</div><div class="set-price">29,900원 <s>36,000원</s></div></div></div></div></section>
+<section class="sec scr"><div class="sl">CATEGORY</div><div class="st">카테고리</div><div class="ss">필요한 것을 빠르게 찾아요</div><div class="cat-grid"><div class="cat-card"><div class="cat-icon">🧻</div><div class="cat-name">배변패드</div><div class="cat-count">12개 상품</div></div><div class="cat-card"><div class="cat-icon">🦴</div><div class="cat-name">간식 · 푸드</div><div class="cat-count">24개 상품</div></div><div class="cat-card"><div class="cat-icon">🛁</div><div class="cat-name">그루밍</div><div class="cat-count">8개 상품</div></div><div class="cat-card"><div class="cat-icon">🎾</div><div class="cat-name">장난감 · 용품</div><div class="cat-count">16개 상품</div></div></div></section>
+<section class="sec"><div class="sl">PRODUCTS</div><div class="st">상품 둘러보기</div><div class="ss"></div><div class="tabs"><button class="tab on">베스트</button><button class="tab">신제품</button><button class="tab">할인중</button></div><div class="prod-grid"><div class="pcard"><div class="pimg pp">🧻</div><div class="pinfo"><div class="ptag">베스트</div><div class="pname">웰리펫 순면 배변패드 50매</div><div class="pprice">18,900원 <s>23,000원</s></div><div class="pdon">🏠 567원 기부</div></div></div><div class="pcard"><div class="pimg pc">🦴</div><div class="pinfo"><div class="ptag">유기농</div><div class="pname">유기농 강아지 간식 모음</div><div class="pprice">14,500원 <s>18,000원</s></div><div class="pdon">🏠 435원 기부</div></div></div><div class="pcard"><div class="pimg pl">🛁</div><div class="pinfo"><div class="ptag">신제품</div><div class="pname">천연 성분 강아지 샴푸</div><div class="pprice">16,000원</div><div class="pdon">🏠 480원 기부</div></div></div><div class="pcard"><div class="pimg pp">🎾</div><div class="pinfo"><div class="ptag">친환경</div><div class="pname">재활용 소재 장난감 세트</div><div class="pprice">12,900원 <s>15,000원</s></div><div class="pdon">🏠 387원 기부</div></div></div></div></section>
+<section class="sec salt"><div class="sl">DONATION</div><div class="st">우리가 함께 만든 변화</div><div class="ss">웰리펫 고객 모두가 후원자예요</div><div class="don-block"><div class="don-l"><h2>쇼핑이 따뜻한<br>기부가 돼요 🐾</h2><p>웰리펫 고객분들 덕분에 매달 유기견 보호소에 기부가 이어지고 있어요.</p><button class="don-btn">후원 인증서 받기</button></div><div><div class="don-stats"><div class="don-stat"><div class="n">1,247,000원</div><div class="l">이번 달 기부금</div></div><div class="don-stat"><div class="n">3,812명</div><div class="l">누적 후원자</div></div><div class="don-stat"><div class="n">12,840,000원</div><div class="l">총 누적 기부금</div></div><div class="don-stat"><div class="n">23곳</div><div class="l">후원 보호소 수</div></div></div><div class="don-proof"><span class="badge">✅</span><span class="txt">사단법인 한국동물보호연합 공식 후원 브랜드<br>매월 기부 내역 투명하게 공개됩니다</span></div></div></div></section>
+<section class="sec" id="adoption"><div class="sl">ADOPTION</div><div class="st">유기견 입양 🐾</div><div class="ss">새 가족을 기다리는 친구들을 소개해요</div><div class="adopt-intro-box"><div class="ait-text"><h3>입양은 이렇게 진행돼요</h3><p>웰리펫을 통해 보호소 강아지들의 입양을 도와드려요.</p><div class="ait-steps"><div class="astep"><span class="an">01</span><span class="at">프로필 확인</span></div><div class="astep"><span class="an">02</span><span class="at">입양 신청</span></div><div class="astep"><span class="an">03</span><span class="at">보호소 상담</span></div><div class="astep"><span class="an">04</span><span class="at">입양 완료 🎉</span></div></div></div><div class="ait-stats"><div class="aistat"><div class="n">47마리</div><div class="l">입양 대기 중</div></div><div class="aistat"><div class="n">312건</div><div class="l">누적 입양</div></div><div class="aistat"><div class="n">8곳</div><div class="l">연계 보호소</div></div></div></div><div class="filter-bar"><button class="fbtn on">전체</button><button class="fbtn">소형견</button><button class="fbtn">중형견</button><button class="fbtn">대형견</button><button class="fbtn">수컷</button><button class="fbtn">암컷</button><button class="fbtn">1살 미만</button><button class="fbtn">노령견</button><button class="fbtn">서울</button><button class="fbtn">경기</button></div><div class="dog-grid"><div class="dcard"><div class="dphoto dp1"><span class="dbadge b-new">신규</span>🐶</div><div class="dbody"><div class="dname">두부</div><div class="dmeta">믹스견 · 3살 · 수컷 · 중형 · 서울 마포구</div><div class="ddesc">활발하고 사람을 너무 좋아해요.</div><div class="dtags"><span class="dtag dtp">사교적</span><span class="dtag dtt">훈련완료</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div><div class="dcard"><div class="dphoto dp2"><span class="dbadge b-wait">대기중</span>🐕</div><div class="dbody"><div class="dname">솜이</div><div class="dmeta">포메라니안 믹스 · 2살 · 암컷 · 소형 · 경기 수원</div><div class="ddesc">조용하고 순한 성격이에요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">아이친화</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div><div class="dcard"><div class="dphoto dp3"><span class="dbadge b-urgent">긴급</span>🐩</div><div class="dbody"><div class="dname">까미</div><div class="dmeta">푸들 믹스 · 5살 · 수컷 · 소형 · 서울 강남구</div><div class="ddesc">나이가 있지만 건강하고 활기차요.</div><div class="dtags"><span class="dtag dtp">차분함</span><span class="dtag dtt">독립적</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div><div class="dcard"><div class="dphoto dp4"><span class="dbadge b-new">신규</span>🦮</div><div class="dbody"><div class="dname">하늘이</div><div class="dmeta">진도 믹스 · 1살 · 암컷 · 중형 · 경기 성남</div><div class="ddesc">어리고 에너지가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">활발함</span><span class="dtag dtt">학습빠름</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div><div class="dcard"><div class="dphoto dp5"><span class="dbadge b-wait">대기중</span>🐾</div><div class="dbody"><div class="dname">보리</div><div class="dmeta">말티즈 믹스 · 7살 · 수컷 · 소형 · 서울 노원구</div><div class="ddesc">성격이 안정되어 있어요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">노령견</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div><div class="dcard"><div class="dphoto dp6"><span class="dbadge b-new">신규</span>🐕‍🦺</div><div class="dbody"><div class="dname">달콤이</div><div class="dmeta">비숑 믹스 · 4살 · 암컷 · 소형 · 인천 부평구</div><div class="ddesc">밝고 애교가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">애교쟁이</span><span class="dtag dtt">사람좋아</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div></div><button class="more-btn">더 많은 친구들 보기 →</button></section>
+<section class="sec scr"><div class="sl">SHELTER</div><div class="st">연계 보호소 안내</div><div class="ss">웰리펫과 함께하는 보호소예요</div><div class="shelter-grid"><div class="shcard"><div class="sh-top"><div class="sh-icon">🏠</div><div><div class="sh-name">서울 동물보호센터</div><div class="sh-loc">📍 서울 마포구 상암동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 18:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">월요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 12마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div><div class="shcard"><div class="sh-top"><div class="sh-icon">🐾</div><div><div class="sh-name">경기 유기동물센터</div><div class="sh-loc">📍 경기 수원시 팔달구</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">10:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">일요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 18마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div><div class="shcard"><div class="sh-top"><div class="sh-icon">💕</div><div><div class="sh-name">인천 동물보호소</div><div class="sh-loc">📍 인천 부평구 갈산동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">토·일요일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 9마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div></div></section>
+<section class="sec salt"><div class="sl">PROCESS</div><div class="st">입양 절차 안내</div><div class="ss">어렵지 않아요. 차근차근 함께해요 🐾</div><div class="process-steps"><div class="pstep"><div class="pcircle">🔍</div><div class="pnum">STEP 01</div><div class="ptitle">프로필 탐색</div><div class="pdesc">마음에 드는 강아지를 골라 성격과 나이를 살펴봐요</div></div><div class="pstep"><div class="pcircle">📝</div><div class="pnum">STEP 02</div><div class="ptitle">입양 신청</div><div class="pdesc">간단한 신청서를 작성해요</div></div><div class="pstep"><div class="pcircle">📞</div><div class="pnum">STEP 03</div><div class="ptitle">보호소 상담</div><div class="pdesc">보호소에서 연락이 와요</div></div><div class="pstep"><div class="pcircle">🎉</div><div class="pnum">STEP 04</div><div class="ptitle">새 가족 완성</div><div class="pdesc">입양 완료 시 웰리펫 첫 달 용품 키트를 선물해요</div></div></div></section>
+<section class="sec"><div class="adopt-cta-box"><h3>우리 아이를 기다리는 친구가 있어요 🐾</h3><p>입양은 새 생명을 구하는 일이에요.</p><div class="cta-btns"><button class="cta-w" onclick="openModal('signup')">입양 신청하기</button><button class="cta-o">보호소에 문의하기</button></div></div></section>
+<div class="main-cta"><h2>지금 가입하면 첫 주문 10% 할인 🎁</h2><p>웰리펫 회원이 되어 유기견 보호 캠페인에 함께해요</p><button class="btn-cta" onclick="openModal('signup')">회원가입하고 할인받기</button></div>
+<footer><div class="ft"><div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div><div class="f-col"><h4>쇼핑</h4><a>전체 상품</a><a>배변패드</a><a>간식·푸드</a><a>그루밍</a><a>장난감·용품</a></div><div class="f-col"><h4>웰리펫</h4><a>브랜드 스토리</a><a>후원 프로젝트</a><a>유기견 입양</a></div><div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a><a>배송·반품 안내</a></div></div><div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div></footer>
+<div class="modal-overlay" id="authModal"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2 id="modalTitle">웰리펫 시작하기 🐾</h2><p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p><div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div><div class="mtabs"><button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button><button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button></div><div id="formSignup"><div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div><div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div><div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div><button class="btn-submit" onclick="signUp()">가입하기</button></div><div id="formLogin" style="display:none;"><div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div><button class="btn-submit" onclick="signIn()">로그인</button></div><div id="formDone" style="display:none;text-align:center;padding:20px 0;"><div style="font-size:48px;margin-bottom:14px;">🎉</div><div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div><div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
-const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-function updateHeader(user) {
-  const btnJoin = document.getElementById('btnJoin');
-  const btnLogout = document.getElementById('btnLogout');
-  const userNameDisplay = document.getElementById('userNameDisplay');
-  if (user) {
-    const name = user.user_metadata?.name || user.email.split('@')[0];
-    btnJoin.style.display = 'none';
-    userNameDisplay.style.display = 'inline';
-    userNameDisplay.textContent = name + '님 🐾';
-    btnLogout.style.display = 'inline-block';
-  } else {
-    btnJoin.style.display = 'inline-block';
-    userNameDisplay.style.display = 'none';
-    btnLogout.style.display = 'none';
-  }
-}
-
-_supabase.auth.getSession().then(({ data: { session } }) => {
-  if (session) updateHeader(session.user);
-});
-
-_supabase.auth.onAuthStateChange((event, session) => {
-  updateHeader(session ? session.user : null);
-});
-
-async function signOut() {
-  await _supabase.auth.signOut();
-  updateHeader(null);
-}
-
-function showMsg(msg, isError) {
-  const box = document.getElementById('msgBox');
-  box.style.display = 'block';
-  box.style.background = isError ? '#fff0f0' : '#f0faf5';
-  box.style.color = isError ? '#e05050' : '#2a7a5a';
-  box.style.border = isError ? '1px solid #ffd0d0' : '1px solid #b8e8d0';
-  box.textContent = msg;
-}
-
-async function signUp() {
-  const name = document.getElementById('signupName').value;
-  const email = document.getElementById('signupEmail').value;
-  const pw = document.getElementById('signupPw').value;
-  if (!name || !email || !pw) { showMsg('모든 항목을 입력해주세요.', true); return; }
-  if (pw.length < 8) { showMsg('비밀번호는 8자 이상이어야 해요.', true); return; }
-  const { error } = await _supabase.auth.signUp({ email, password: pw, options: { data: { name } } });
-  if (error) { showMsg('오류: ' + error.message, true); return; }
-  document.getElementById('formSignup').style.display = 'none';
-  document.getElementById('formDone').style.display = 'block';
-  document.getElementById('doneTitle').textContent = name + '님, 가입 완료! 🎉';
-  document.getElementById('doneDesc').textContent = email + '로 인증 메일을 보냈어요. 확인해주세요!';
-}
-
-async function signIn() {
-  const email = document.getElementById('loginEmail').value;
-  const pw = document.getElementById('loginPw').value;
-  if (!email || !pw) { showMsg('이메일과 비밀번호를 입력해주세요.', true); return; }
-  const { data, error } = await _supabase.auth.signInWithPassword({ email, password: pw });
-  if (error) { showMsg('이메일 또는 비밀번호가 틀렸어요.', true); return; }
-  const name = data.user?.user_metadata?.name || '고객';
-  document.getElementById('formLogin').style.display = 'none';
-  document.getElementById('formDone').style.display = 'block';
-  document.getElementById('doneTitle').textContent = name + '님, 환영해요! 🐾';
-  document.getElementById('doneDesc').textContent = '로그인 성공! 웰리펫에서 즐거운 쇼핑하세요.';
-  setTimeout(closeModal, 2000);
-}
-
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
+_supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
+_supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
+async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
+function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
+async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}document.getElementById('formSignup').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
+async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
 function openModal(tab){document.getElementById('authModal').classList.add('open');switchTab(tab||'signup');document.getElementById('msgBox').style.display='none';}
 function closeModal(){document.getElementById('authModal').classList.remove('open');}
-function switchTab(tab){
-  document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';
-  document.getElementById('formLogin').style.display=tab==='login'?'block':'none';
-  document.getElementById('formDone').style.display='none';
-  document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');
-  document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');
-  document.getElementById('msgBox').style.display='none';
-}
+function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 document.querySelectorAll('.fbtn').forEach(btn=>{btn.addEventListener('click',function(){document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));this.classList.add('on');});});
 document.querySelectorAll('.tab').forEach(tab=>{tab.addEventListener('click',function(){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));this.classList.add('on');});});
