@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>샵 · Wellipet 웰리펫</title>
+<title>Products · Wellipet 웰리펫</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -29,39 +29,33 @@ nav a.active{color:var(--pk);}
 .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
 .user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
-
 .page-hero{background:var(--pkbg);padding:40px 48px;border-bottom:1px solid var(--bd);}
 .page-hero h1{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#2a1220;margin-bottom:6px;}
 .page-hero p{font-size:13px;color:var(--muted);font-weight:300;}
-
 .shop-wrap{max-width:1200px;margin:0 auto;padding:40px 48px;}
-
 .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:40px;}
 .cat-btn{background:#fff;border:1.5px solid var(--bd);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;}
 .cat-btn:hover{border-color:var(--pk);background:var(--pkbg);}
 .cat-btn.on{border-color:var(--pk);background:var(--pk);color:#fff;}
-.cat-btn.on .cat-icon{filter:brightness(10);}
 .cat-icon{font-size:28px;margin-bottom:8px;}
 .cat-name{font-size:12px;font-weight:600;color:var(--tx);}
 .cat-btn.on .cat-name{color:#fff;}
 .cat-count{font-size:10px;color:var(--muted);font-weight:300;margin-top:2px;}
 .cat-btn.on .cat-count{color:rgba(255,255,255,.7);}
-
 .shop-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
 .shop-count{font-size:13px;color:var(--muted);}
 .shop-sort{display:flex;gap:8px;}
 .sort-btn{padding:6px 14px;border-radius:20px;font-size:12px;border:1px solid var(--bd);background:#fff;color:#888;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .sort-btn.on{background:var(--pk);color:#fff;border-color:var(--pk);}
-
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 .pcard{border-radius:16px;overflow:hidden;border:1px solid var(--bd);background:#fff;cursor:pointer;transition:transform .2s,box-shadow .2s;}
 .pcard:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(196,92,138,.1);}
 .pimg{height:180px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;}
 .pp{background:var(--pkp);}.pc{background:var(--cr);}.pl{background:#fff0f7;}.pg{background:#f0faf5;}
 .pbadge{position:absolute;top:10px;left:10px;font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;}
-.badge-best{background:var(--pk);color:#fff;}
-.badge-new{background:#2a7a5a;color:#fff;}
-.badge-sale{background:#ff6b6b;color:#fff;}
+.badge-BEST{background:var(--pk);color:#fff;}
+.badge-NEW{background:#2a7a5a;color:#fff;}
+.badge-SALE{background:#ff6b6b;color:#fff;}
 .pinfo{padding:16px;}
 .ptag{font-size:10px;color:var(--pk);background:var(--pkp);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:8px;}
 .pname{font-size:13px;color:#333;margin-bottom:8px;line-height:1.4;font-weight:500;}
@@ -70,7 +64,8 @@ nav a.active{color:var(--pk);}
 .pdon{font-size:10px;color:var(--pkm);margin-top:4px;font-weight:300;}
 .pbtn{width:100%;margin-top:12px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:9px;border-radius:10px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;transition:all .2s;}
 .pbtn:hover{background:var(--pk);color:#fff;border-color:var(--pk);}
-
+.empty-state{text-align:center;padding:80px;color:var(--muted);}
+.empty-state .icon{font-size:48px;margin-bottom:16px;}
 footer{background:#2a1220;padding:48px;margin-top:80px;}
 .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
 .f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
@@ -82,7 +77,6 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
 .f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
 .f-copy{font-size:11px;color:#6a4a5a;}
-
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;}
@@ -126,87 +120,40 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
   </div>
 </header>
-
 <div class="page-hero">
   <h1>웰리펫 샵 🛍️</h1>
   <p>강아지와 지구를 위한 친환경 반려용품을 만나보세요</p>
 </div>
-
 <div class="shop-wrap">
-  <!-- 카테고리 -->
   <div class="cat-grid">
-    <div class="cat-btn on" onclick="filterCat(this,'전체')">
-      <div class="cat-icon">🐾</div>
-      <div class="cat-name">전체</div>
-      <div class="cat-count">60개</div>
-    </div>
-    <div class="cat-btn" onclick="filterCat(this,'배변패드')">
-      <div class="cat-icon">🧻</div>
-      <div class="cat-name">배변패드</div>
-      <div class="cat-count">12개</div>
-    </div>
-    <div class="cat-btn" onclick="filterCat(this,'간식·푸드')">
-      <div class="cat-icon">🦴</div>
-      <div class="cat-name">간식·푸드</div>
-      <div class="cat-count">24개</div>
-    </div>
-    <div class="cat-btn" onclick="filterCat(this,'그루밍')">
-      <div class="cat-icon">🛁</div>
-      <div class="cat-name">그루밍</div>
-      <div class="cat-count">8개</div>
-    </div>
-    <div class="cat-btn" onclick="filterCat(this,'장난감·용품')">
-      <div class="cat-icon">🎾</div>
-      <div class="cat-name">장난감·용품</div>
-      <div class="cat-count">16개</div>
-    </div>
+    <div class="cat-btn on" onclick="filterCat(this,'전체')"><div class="cat-icon">🐾</div><div class="cat-name">전체</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'배변패드')"><div class="cat-icon">🧻</div><div class="cat-name">배변패드</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'간식·푸드')"><div class="cat-icon">🦴</div><div class="cat-name">간식·푸드</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'그루밍')"><div class="cat-icon">🛁</div><div class="cat-name">그루밍</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'장난감·용품')"><div class="cat-icon">🎾</div><div class="cat-name">장난감·용품</div></div>
   </div>
-
-  <!-- 정렬 -->
   <div class="shop-top">
-    <div class="shop-count">총 <strong>60개</strong> 상품</div>
+    <div class="shop-count">총 <strong id="productCount">0</strong>개 상품</div>
     <div class="shop-sort">
-      <button class="sort-btn on">추천순</button>
-      <button class="sort-btn">신상품순</button>
-      <button class="sort-btn">낮은가격순</button>
-      <button class="sort-btn">높은가격순</button>
+      <button class="sort-btn on" onclick="sortProducts('default',this)">추천순</button>
+      <button class="sort-btn" onclick="sortProducts('new',this)">신상품순</button>
+      <button class="sort-btn" onclick="sortProducts('low',this)">낮은가격순</button>
+      <button class="sort-btn" onclick="sortProducts('high',this)">높은가격순</button>
     </div>
   </div>
-
-  <!-- 상품 목록 -->
-  <div class="prod-grid">
-    <div class="pcard"><div class="pimg pp"><span class="pbadge badge-best">BEST</span>🧻</div><div class="pinfo"><div class="ptag">배변패드</div><div class="pname">웰리펫 순면 배변패드 50매</div><div class="pprice">18,900원 <s>23,000원</s></div><div class="pdon">🏠 567원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pp"><span class="pbadge badge-new">NEW</span>🧻</div><div class="pinfo"><div class="ptag">배변패드</div><div class="pname">웰리펫 대형 배변패드 30매</div><div class="pprice">22,500원</div><div class="pdon">🏠 675원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pc"><span class="pbadge badge-best">BEST</span>🦴</div><div class="pinfo"><div class="ptag">간식·푸드</div><div class="pname">유기농 강아지 간식 모음</div><div class="pprice">14,500원 <s>18,000원</s></div><div class="pdon">🏠 435원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pc">🍗</div><div class="pinfo"><div class="ptag">간식·푸드</div><div class="pname">닭가슴살 져키 트릿 100g</div><div class="pprice">9,900원 <s>12,000원</s></div><div class="pdon">🏠 297원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pl"><span class="pbadge badge-new">NEW</span>🛁</div><div class="pinfo"><div class="ptag">그루밍</div><div class="pname">천연 성분 강아지 샴푸</div><div class="pprice">16,000원</div><div class="pdon">🏠 480원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pl">✂️</div><div class="pinfo"><div class="ptag">그루밍</div><div class="pname">강아지 발톱깎이 세트</div><div class="pprice">12,000원</div><div class="pdon">🏠 360원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pg"><span class="pbadge badge-sale">SALE</span>🎾</div><div class="pinfo"><div class="ptag">장난감·용품</div><div class="pname">재활용 소재 장난감 세트</div><div class="pprice">12,900원 <s>15,000원</s></div><div class="pdon">🏠 387원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pg">🦮</div><div class="pinfo"><div class="ptag">장난감·용품</div><div class="pname">친환경 로프 장난감</div><div class="pprice">8,500원</div><div class="pdon">🏠 255원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pp">🧻</div><div class="pinfo"><div class="ptag">배변패드</div><div class="pname">웰리펫 소형 배변패드 100매</div><div class="pprice">24,900원</div><div class="pdon">🏠 747원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pc">🥩</div><div class="pinfo"><div class="ptag">간식·푸드</div><div class="pname">소고기 큐브 간식 80g</div><div class="pprice">11,500원</div><div class="pdon">🏠 345원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pl">🪮</div><div class="pinfo"><div class="ptag">그루밍</div><div class="pname">슬리커 브러쉬 (소형/대형)</div><div class="pprice">13,900원</div><div class="pdon">🏠 417원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
-    <div class="pcard"><div class="pimg pg">🏠</div><div class="pinfo"><div class="ptag">장난감·용품</div><div class="pname">강아지 하우스 쿠션 침대</div><div class="pprice">38,000원 <s>45,000원</s></div><div class="pdon">🏠 1,140원 기부</div><button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button></div></div>
+  <div class="prod-grid" id="prodGrid">
+    <div class="empty-state" style="grid-column:1/-1;"><div class="icon">🐾</div><p>상품을 불러오는 중...</p></div>
   </div>
 </div>
-
 <footer>
   <div class="ft">
-    <div>
-      <div class="f-logo">Wellipet 🐾</div>
-      <div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div>
-      <div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div>
-    </div>
+    <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
     <div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a><a href="shop.html">그루밍</a></div>
     <div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div>
     <div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a><a>배송·반품 안내</a></div>
   </div>
-  <div class="fb">
-    <div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div>
-    <div class="f-copy">© 2025 Wellipet. All rights reserved.</div>
-  </div>
+  <div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div>
 </footer>
-
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -236,12 +183,72 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
     </div>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let allProducts = [];
+let currentCat = '전체';
+
+// 카테고리별 배경색
+function getBgClass(cat) {
+  if(cat==='배변패드') return 'pp';
+  if(cat==='간식·푸드') return 'pc';
+  if(cat==='그루밍') return 'pl';
+  return 'pg';
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById('prodGrid');
+  document.getElementById('productCount').textContent = products.length;
+  if(products.length===0){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🐾</div><p>상품이 없어요</p></div>';
+    return;
+  }
+  grid.innerHTML = products.map(p=>`
+    <div class="pcard">
+      <div class="pimg ${getBgClass(p.category)}">
+        ${p.badge?`<span class="pbadge badge-${p.badge}">${p.badge}</span>`:''}
+        ${p.emoji||'📦'}
+      </div>
+      <div class="pinfo">
+        <div class="ptag">${p.category}</div>
+        <div class="pname">${p.name}</div>
+        <div class="pprice">${Number(p.price).toLocaleString()}원 ${p.original_price?`<s>${Number(p.original_price).toLocaleString()}원</s>`:''}</div>
+        <div class="pdon">🏠 ${Number(p.donation_amount||0).toLocaleString()}원 기부</div>
+        <button class="pbtn" onclick="location.href='checkout.html'">장바구니 담기</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadProducts() {
+  const {data} = await _supabase.from('products').select('*').order('created_at',{ascending:false});
+  allProducts = data||[];
+  filterCat(document.querySelector('.cat-btn.on'), currentCat);
+}
+
+function filterCat(el, cat) {
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  currentCat = cat;
+  const filtered = cat==='전체' ? allProducts : allProducts.filter(p=>p.category===cat);
+  renderProducts(filtered);
+}
+
+function sortProducts(type, el) {
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  const filtered = currentCat==='전체' ? [...allProducts] : allProducts.filter(p=>p.category===currentCat);
+  if(type==='low') filtered.sort((a,b)=>a.price-b.price);
+  else if(type==='high') filtered.sort((a,b)=>b.price-a.price);
+  else if(type==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  renderProducts(filtered);
+}
+
+// 헤더 업데이트
 function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
@@ -254,24 +261,7 @@ function closeModal(){document.getElementById('authModal').classList.remove('ope
 function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
-function filterCat(el, cat) {
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  document.querySelectorAll('.pcard').forEach(card => {
-    const tag = card.querySelector('.ptag').textContent;
-    if (cat === '전체' || tag === cat) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
-  });
-}
-document.querySelectorAll('.sort-btn').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
-    this.classList.add('on');
-  });
-});
+loadProducts();
 </script>
 </body>
 </html>
