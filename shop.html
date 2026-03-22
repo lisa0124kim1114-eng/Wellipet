@@ -257,6 +257,14 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
 function filterCat(el, cat) {
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
+  document.querySelectorAll('.pcard').forEach(card => {
+    const tag = card.querySelector('.ptag').textContent;
+    if (cat === '전체' || tag === cat) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
 }
 document.querySelectorAll('.sort-btn').forEach(btn=>{
   btn.addEventListener('click',function(){
