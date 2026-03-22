@@ -25,6 +25,8 @@ nav a:hover{color:var(--pk);}
 .sbox input::placeholder{color:#ccc;}
 .ibt{font-size:16px;cursor:pointer;color:#bbb;}
 .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
+.user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
 .hero{display:grid;grid-template-columns:1fr 1fr;min-height:500px;}
 .hero-l{background:var(--pkbg);padding:80px 56px;display:flex;flex-direction:column;justify-content:center;}
 .hpill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--pkl);padding:5px 14px;border-radius:20px;margin-bottom:24px;width:fit-content;}
@@ -230,7 +232,9 @@ footer{background:#2a1220;padding:48px;}
     <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
     <span class="ibt">🛒</span>
     <span class="ibt">👤</span>
-    <button class="btn-join" onclick="openModal('signup')">가입하기</button>
+    <span class="user-name" id="userNameDisplay"></span>
+    <button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
+    <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
   </div>
 </header>
 <section class="hero">
@@ -353,24 +357,15 @@ footer{background:#2a1220;padding:48px;}
     </div>
   </div>
   <div class="filter-bar">
-    <button class="fbtn on">전체</button>
-    <button class="fbtn">소형견</button>
-    <button class="fbtn">중형견</button>
-    <button class="fbtn">대형견</button>
-    <button class="fbtn">수컷</button>
-    <button class="fbtn">암컷</button>
-    <button class="fbtn">1살 미만</button>
-    <button class="fbtn">노령견</button>
-    <button class="fbtn">서울</button>
-    <button class="fbtn">경기</button>
+    <button class="fbtn on">전체</button><button class="fbtn">소형견</button><button class="fbtn">중형견</button><button class="fbtn">대형견</button><button class="fbtn">수컷</button><button class="fbtn">암컷</button><button class="fbtn">1살 미만</button><button class="fbtn">노령견</button><button class="fbtn">서울</button><button class="fbtn">경기</button>
   </div>
   <div class="dog-grid">
-    <div class="dcard"><div class="dphoto dp1"><span class="dbadge b-new">신규</span>🐶</div><div class="dbody"><div class="dname">두부</div><div class="dmeta">믹스견 · 3살 · 수컷 · 중형 · 서울 마포구</div><div class="ddesc">활발하고 사람을 너무 좋아해요. 기본 훈련이 되어있어요.</div><div class="dtags"><span class="dtag dtp">사교적</span><span class="dtag dtt">훈련완료</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp2"><span class="dbadge b-wait">대기중</span>🐕</div><div class="dbody"><div class="dname">솜이</div><div class="dmeta">포메라니안 믹스 · 2살 · 암컷 · 소형 · 경기 수원</div><div class="ddesc">조용하고 순한 성격이에요. 아이가 있는 가정에도 잘 맞아요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">아이친화</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp3"><span class="dbadge b-urgent">긴급</span>🐩</div><div class="dbody"><div class="dname">까미</div><div class="dmeta">푸들 믹스 · 5살 · 수컷 · 소형 · 서울 강남구</div><div class="ddesc">나이가 있지만 건강하고 활기차요. 조용한 환경을 좋아해요.</div><div class="dtags"><span class="dtag dtp">차분함</span><span class="dtag dtt">독립적</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp4"><span class="dbadge b-new">신규</span>🦮</div><div class="dbody"><div class="dname">하늘이</div><div class="dmeta">진도 믹스 · 1살 · 암컷 · 중형 · 경기 성남</div><div class="ddesc">어리고 에너지가 넘쳐요. 새로운 것을 빨리 배워요.</div><div class="dtags"><span class="dtag dtp">활발함</span><span class="dtag dtt">학습빠름</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp5"><span class="dbadge b-wait">대기중</span>🐾</div><div class="dbody"><div class="dname">보리</div><div class="dmeta">말티즈 믹스 · 7살 · 수컷 · 소형 · 서울 노원구</div><div class="ddesc">성격이 안정되어 있어요. 조용한 가정에 잘 맞아요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">노령견</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp6"><span class="dbadge b-new">신규</span>🐕‍🦺</div><div class="dbody"><div class="dname">달콤이</div><div class="dmeta">비숑 믹스 · 4살 · 암컷 · 소형 · 인천 부평구</div><div class="ddesc">밝고 애교가 넘쳐요. 사람을 엄청 좋아해요.</div><div class="dtags"><span class="dtag dtp">애교쟁이</span><span class="dtag dtt">사람좋아</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp1"><span class="dbadge b-new">신규</span>🐶</div><div class="dbody"><div class="dname">두부</div><div class="dmeta">믹스견 · 3살 · 수컷 · 중형 · 서울 마포구</div><div class="ddesc">활발하고 사람을 너무 좋아해요.</div><div class="dtags"><span class="dtag dtp">사교적</span><span class="dtag dtt">훈련완료</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp2"><span class="dbadge b-wait">대기중</span>🐕</div><div class="dbody"><div class="dname">솜이</div><div class="dmeta">포메라니안 믹스 · 2살 · 암컷 · 소형 · 경기 수원</div><div class="ddesc">조용하고 순한 성격이에요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">아이친화</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp3"><span class="dbadge b-urgent">긴급</span>🐩</div><div class="dbody"><div class="dname">까미</div><div class="dmeta">푸들 믹스 · 5살 · 수컷 · 소형 · 서울 강남구</div><div class="ddesc">나이가 있지만 건강하고 활기차요.</div><div class="dtags"><span class="dtag dtp">차분함</span><span class="dtag dtt">독립적</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp4"><span class="dbadge b-new">신규</span>🦮</div><div class="dbody"><div class="dname">하늘이</div><div class="dmeta">진도 믹스 · 1살 · 암컷 · 중형 · 경기 성남</div><div class="ddesc">어리고 에너지가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">활발함</span><span class="dtag dtt">학습빠름</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp5"><span class="dbadge b-wait">대기중</span>🐾</div><div class="dbody"><div class="dname">보리</div><div class="dmeta">말티즈 믹스 · 7살 · 수컷 · 소형 · 서울 노원구</div><div class="ddesc">성격이 안정되어 있어요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">노령견</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+    <div class="dcard"><div class="dphoto dp6"><span class="dbadge b-new">신규</span>🐕‍🦺</div><div class="dbody"><div class="dname">달콤이</div><div class="dmeta">비숑 믹스 · 4살 · 암컷 · 소형 · 인천 부평구</div><div class="ddesc">밝고 애교가 넘쳐요.</div><div class="dtags"><span class="dtag dtp">애교쟁이</span><span class="dtag dtt">사람좋아</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
   </div>
   <button class="more-btn">더 많은 친구들 보기 →</button>
 </section>
@@ -379,9 +374,9 @@ footer{background:#2a1220;padding:48px;}
   <div class="st">연계 보호소 안내</div>
   <div class="ss">웰리펫과 함께하는 보호소예요</div>
   <div class="shelter-grid">
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🏠</div><div><div class="sh-name">서울 동물보호센터</div><div class="sh-loc">📍 서울 마포구 상암동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 18:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">월요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 12마리</span></div><div class="sh-row"><span class="k">연락처</span><span class="v">02-000-0000</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🐾</div><div><div class="sh-name">경기 유기동물센터</div><div class="sh-loc">📍 경기 수원시 팔달구</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">10:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">일요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 18마리</span></div><div class="sh-row"><span class="k">연락처</span><span class="v">031-000-0000</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">💕</div><div><div class="sh-name">인천 동물보호소</div><div class="sh-loc">📍 인천 부평구 갈산동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">토·일요일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 9마리</span></div><div class="sh-row"><span class="k">연락처</span><span class="v">032-000-0000</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
+    <div class="shcard"><div class="sh-top"><div class="sh-icon">🏠</div><div><div class="sh-name">서울 동물보호센터</div><div class="sh-loc">📍 서울 마포구 상암동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 18:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">월요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 12마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
+    <div class="shcard"><div class="sh-top"><div class="sh-icon">🐾</div><div><div class="sh-name">경기 유기동물센터</div><div class="sh-loc">📍 경기 수원시 팔달구</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">10:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">일요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 18마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
+    <div class="shcard"><div class="sh-top"><div class="sh-icon">💕</div><div><div class="sh-name">인천 동물보호소</div><div class="sh-loc">📍 인천 부평구 갈산동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">토·일요일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 9마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
   </div>
 </section>
 <section class="sec salt">
@@ -461,6 +456,36 @@ const SUPABASE_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+function updateHeader(user) {
+  const btnJoin = document.getElementById('btnJoin');
+  const btnLogout = document.getElementById('btnLogout');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  if (user) {
+    const name = user.user_metadata?.name || user.email.split('@')[0];
+    btnJoin.style.display = 'none';
+    userNameDisplay.style.display = 'inline';
+    userNameDisplay.textContent = name + '님 🐾';
+    btnLogout.style.display = 'inline-block';
+  } else {
+    btnJoin.style.display = 'inline-block';
+    userNameDisplay.style.display = 'none';
+    btnLogout.style.display = 'none';
+  }
+}
+
+_supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) updateHeader(session.user);
+});
+
+_supabase.auth.onAuthStateChange((event, session) => {
+  updateHeader(session ? session.user : null);
+});
+
+async function signOut() {
+  await _supabase.auth.signOut();
+  updateHeader(null);
+}
+
 function showMsg(msg, isError) {
   const box = document.getElementById('msgBox');
   box.style.display = 'block';
@@ -476,10 +501,7 @@ async function signUp() {
   const pw = document.getElementById('signupPw').value;
   if (!name || !email || !pw) { showMsg('모든 항목을 입력해주세요.', true); return; }
   if (pw.length < 8) { showMsg('비밀번호는 8자 이상이어야 해요.', true); return; }
-  const { error } = await _supabase.auth.signUp({
-    email, password: pw,
-    options: { data: { name } }
-  });
+  const { error } = await _supabase.auth.signUp({ email, password: pw, options: { data: { name } } });
   if (error) { showMsg('오류: ' + error.message, true); return; }
   document.getElementById('formSignup').style.display = 'none';
   document.getElementById('formDone').style.display = 'block';
@@ -498,7 +520,6 @@ async function signIn() {
   document.getElementById('formDone').style.display = 'block';
   document.getElementById('doneTitle').textContent = name + '님, 환영해요! 🐾';
   document.getElementById('doneDesc').textContent = '로그인 성공! 웰리펫에서 즐거운 쇼핑하세요.';
-  document.querySelector('.btn-join').textContent = name + '님';
   setTimeout(closeModal, 2000);
 }
 
