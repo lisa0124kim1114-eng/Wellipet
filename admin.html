@@ -287,6 +287,10 @@ function openProductModal(id) {
   document.getElementById('pEmoji').value='';
   document.getElementById('pBadge').value='';
   document.getElementById('pDonation').value='';
+document.getElementById('pPrice').addEventListener('input',function(){
+  const price = parseInt(this.value)||0;
+  document.getElementById('pDonation').value = Math.round(price*0.03);
+});
   document.getElementById('pDescription').value='';
   document.getElementById('productModal').classList.add('open');
 }
