@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>관리자 · Wellipet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;}
+header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.admin-logo{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pkl);}
+.admin-logo span{color:#fff;font-weight:300;font-size:13px;margin-left:12px;}
+.header-right{display:flex;align-items:center;gap:16px;}
+.header-right a{font-size:12px;color:#a08090;text-decoration:none;}
+.header-right a:hover{color:var(--pkl);}
+
+.layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 64px);}
+.sidebar{background:#fff;border-right:1px solid var(--bd);padding:24px 0;}
+.nav-item{padding:12px 24px;font-size:13px;color:#888;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;font-weight:500;}
+.nav-item:hover{background:var(--pkbg);color:var(--pk);}
+.nav-item.active{background:var(--pkbg);color:var(--pk);border-right:3px solid var(--pk);}
+.nav-icon{font-size:16px;}
+.nav-divider{height:1px;background:var(--bd);margin:12px 24px;}
+
+.main{padding:32px;}
+.page{display:none;}
+.page.active{display:block;}
+
+.page-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:24px;}
+
+/* 대시보드 */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.dash-card{background:#fff;border-radius:14px;padding:22px;border:1px solid var(--bd);}
+.dash-card .icon{font-size:28px;margin-bottom:10px;}
+.dash-card .num{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:var(--pk);margin-bottom:4px;}
+.dash-card .label{font-size:12px;color:var(--muted);font-weight:300;}
+
+/* 상품 관리 */
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.btn-primary{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;}
+.btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+.table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);}
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid #fafafa;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-ready{background:#fff3e0;color:#e65100;}
+.badge-shipping{background:#e3f2fd;color:#1565c0;}
+.badge-done{background:#e8f5e9;color:#2e7d32;}
+.badge-cancel{background:#fce4ec;color:#c62828;}
+
+/* 모달 */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;}
+.modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.form-group input:focus,.form-group select:focus{border-color:var(--pk);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+/* 검색 */
+.search-bar{display:flex;gap:10px;margin-bottom:20px;}
+.search-input{flex:1;padding:10px 16px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.search-input:focus{border-color:var(--pk);}
+
+/* 상태 선택 */
+.status-select{padding:6px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;cursor:pointer;}
+
+.empty-state{text-align:center;padding:60px;color:var(--muted);}
+.empty-state .icon{font-size:48px;margin-bottom:16px;}
+.empty-state p{font-size:14px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="admin-logo">Wellipet <span>관리자</span></div>
+  <div class="header-right">
+    <a href="/">← 사이트로 돌아가기</a>
+    <a href="#" onclick="adminSignOut()">로그아웃</a>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span> 대시보드</div>
+    <div class="nav-item" onclick="showPage('products')"><span class="nav-icon">📦</span> 상품 관리</div>
+    <div class="nav-divider"></div>
+    <div class="nav-item" onclick="showPage('orders')"><span class="nav-icon">🛍️</span> 주문 관리</div>
+    <div class="nav-item" onclick="showPage('members')"><span class="nav-icon">👤</span> 회원 관리</div>
+  </div>
+
+  <div class="main">
+    <!-- 대시보드 -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">📊 대시보드</div>
+      <div class="dash-grid">
+        <div class="dash-card"><div class="icon">📦</div><div class="num" id="totalProducts">0</div><div class="label">등록 상품 수</div></div>
+        <div class="dash-card"><div class="icon">🛍️</div><div class="num" id="totalOrders">0</div><div class="label">총 주문 수</div></div>
+        <div class="dash-card"><div class="icon">👤</div><div class="num" id="totalMembers">0</div><div class="label">총 회원 수</div></div>
+        <div class="dash-card"><div class="icon">🏠</div><div class="num">1,247,000원</div><div class="label">이번 달 기부금</div></div>
+      </div>
+    </div>
+
+    <!-- 상품 관리 -->
+    <div class="page" id="page-products">
+      <div class="page-title">📦 상품 관리</div>
+      <div class="toolbar">
+        <div style="font-size:13px;color:var(--muted);">등록된 상품을 관리해요</div>
+        <button class="btn-primary" onclick="openProductModal()">+ 상품 추가</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>이모지</th>
+              <th>상품명</th>
+              <th>카테고리</th>
+              <th>가격</th>
+              <th>기부금</th>
+              <th>관리</th>
+            </tr>
+          </thead>
+          <tbody id="productTable">
+            <tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 주문 관리 -->
+    <div class="page" id="page-orders">
+      <div class="page-title">🛍️ 주문 관리</div>
+      <div class="search-bar">
+        <input class="search-input" placeholder="주문자명 또는 이메일로 검색" id="orderSearch"/>
+        <button class="btn-secondary" onclick="loadOrders()">검색</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>주문일</th>
+              <th>주문자</th>
+              <th>연락처</th>
+              <th>배송지</th>
+              <th>상품</th>
+              <th>금액</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="orderTable">
+            <tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 회원 관리 -->
+    <div class="page" id="page-members">
+      <div class="page-title">👤 회원 관리</div>
+      <div class="search-bar">
+        <input class="search-input" placeholder="이름 또는 이메일로 검색" id="memberSearch"/>
+        <button class="btn-secondary" onclick="loadMembers()">검색</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>가입일</th>
+              <th>이름</th>
+              <th>이메일</th>
+              <th>마지막 로그인</th>
+            </tr>
+          </thead>
+          <tbody id="memberTable">
+            <tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 정보를 불러오는 중...</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 상품 추가/수정 모달 -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <div class="modal-title" id="productModalTitle">상품 추가</div>
+    <div class="form-group"><label>상품명</label><input type="text" id="pName" placeholder="웰리펫 순면 배변패드 50매"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>판매가 (원)</label><input type="number" id="pPrice" placeholder="18900"/></div>
+      <div class="form-group"><label>정가 (원, 없으면 비워요)</label><input type="number" id="pOriginalPrice" placeholder="23000"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>카테고리</label>
+        <select id="pCategory">
+          <option value="배변패드">배변패드</option>
+          <option value="간식·푸드">간식·푸드</option>
+          <option value="그루밍">그루밍</option>
+          <option value="장난감·용품">장난감·용품</option>
+        </select>
+      </div>
+      <div class="form-group"><label>이모지</label><input type="text" id="pEmoji" placeholder="🧻"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>뱃지 (선택)</label>
+        <select id="pBadge">
+          <option value="">없음</option>
+          <option value="BEST">BEST</option>
+          <option value="NEW">NEW</option>
+          <option value="SALE">SALE</option>
+        </select>
+      </div>
+      <div class="form-group"><label>기부금 (원)</label><input type="number" id="pDonation" placeholder="567"/></div>
+    </div>
+    <div class="form-group"><label>상품 설명</label><input type="text" id="pDescription" placeholder="처음 강아지를 맞이하는 분들을 위한..."/></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeProductModal()">취소</button>
+      <button class="btn-primary" onclick="saveProduct()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let editingProductId = null;
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(name==='products') loadProducts();
+  if(name==='orders') loadOrders();
+  if(name==='members') loadMembers();
+  if(name==='dashboard') loadDashboard();
+}
+
+async function loadDashboard() {
+  const {count:pc} = await _supabase.from('products').select('*',{count:'exact',head:true});
+  const {count:oc} = await _supabase.from('orders').select('*',{count:'exact',head:true});
+  document.getElementById('totalProducts').textContent = pc||0;
+  document.getElementById('totalOrders').textContent = oc||0;
+}
+
+// 상품 관리
+async function loadProducts() {
+  const {data} = await _supabase.from('products').select('*').order('created_at',{ascending:false});
+  const tbody = document.getElementById('productTable');
+  if(!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(p=>`
+    <tr>
+      <td style="font-size:24px;">${p.emoji||'📦'}</td>
+      <td><strong>${p.name}</strong>${p.badge?`<span class="badge badge-ready" style="margin-left:8px;">${p.badge}</span>`:''}</td>
+      <td>${p.category}</td>
+      <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
+      <td>${Number(p.donation_amount).toLocaleString()}원</td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn-edit" onclick="editProduct(${p.id})">수정</button>
+        <button class="btn-danger" onclick="deleteProduct(${p.id})">삭제</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openProductModal(id) {
+  editingProductId = null;
+  document.getElementById('productModalTitle').textContent = '상품 추가';
+  document.getElementById('pName').value='';
+  document.getElementById('pPrice').value='';
+  document.getElementById('pOriginalPrice').value='';
+  document.getElementById('pEmoji').value='';
+  document.getElementById('pBadge').value='';
+  document.getElementById('pDonation').value='';
+  document.getElementById('pDescription').value='';
+  document.getElementById('productModal').classList.add('open');
+}
+
+async function editProduct(id) {
+  const {data} = await _supabase.from('products').select('*').eq('id',id).single();
+  if(!data) return;
+  editingProductId = id;
+  document.getElementById('productModalTitle').textContent = '상품 수정';
+  document.getElementById('pName').value=data.name||'';
+  document.getElementById('pPrice').value=data.price||'';
+  document.getElementById('pOriginalPrice').value=data.original_price||'';
+  document.getElementById('pEmoji').value=data.emoji||'';
+  document.getElementById('pCategory').value=data.category||'배변패드';
+  document.getElementById('pBadge').value=data.badge||'';
+  document.getElementById('pDonation').value=data.donation_amount||'';
+  document.getElementById('pDescription').value=data.description||'';
+  document.getElementById('productModal').classList.add('open');
+}
+
+async function saveProduct() {
+  const product = {
+    name: document.getElementById('pName').value,
+    price: parseInt(document.getElementById('pPrice').value)||0,
+    original_price: parseInt(document.getElementById('pOriginalPrice').value)||null,
+    category: document.getElementById('pCategory').value,
+    emoji: document.getElementById('pEmoji').value,
+    badge: document.getElementById('pBadge').value||null,
+    donation_amount: parseInt(document.getElementById('pDonation').value)||0,
+    description: document.getElementById('pDescription').value,
+  };
+  if(!product.name||!product.price){alert('상품명과 가격은 필수예요!');return;}
+  if(editingProductId){
+    await _supabase.from('products').update(product).eq('id',editingProductId);
+  } else {
+    await _supabase.from('products').insert(product);
+  }
+  closeProductModal();
+  loadProducts();
+}
+
+async function deleteProduct(id) {
+  if(!confirm('정말 삭제할까요?')) return;
+  await _supabase.from('products').delete().eq('id',id);
+  loadProducts();
+}
+
+function closeProductModal(){document.getElementById('productModal').classList.remove('open');}
+document.getElementById('productModal').addEventListener('click',function(e){if(e.target===this)closeProductModal();});
+
+// 주문 관리
+async function loadOrders() {
+  const search = document.getElementById('orderSearch')?.value||'';
+  let query = _supabase.from('orders').select('*').order('created_at',{ascending:false});
+  if(search) query = query.or(`customer_name.ilike.%${search}%,customer_email.ilike.%${search}%`);
+  const {data} = await query;
+  const tbody = document.getElementById('orderTable');
+  if(!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(o=>`
+    <tr>
+      <td>${new Date(o.created_at).toLocaleDateString('ko-KR')}</td>
+      <td><strong>${o.customer_name}</strong></td>
+      <td>${o.customer_phone||'-'}</td>
+      <td style="font-size:12px;">${o.address||''} ${o.address_detail||''}<br><span style="color:var(--muted);">(${o.zipcode||''})</span></td>
+      <td>${o.product_name||'-'}</td>
+      <td>${Number(o.amount||0).toLocaleString()}원</td>
+      <td>
+        <select class="status-select" onchange="updateOrderStatus(${o.id},this.value)">
+          <option value="결제완료" ${o.status==='결제완료'?'selected':''}>결제완료</option>
+          <option value="배송준비" ${o.status==='배송준비'?'selected':''}>배송준비</option>
+          <option value="배송중" ${o.status==='배송중'?'selected':''}>배송중</option>
+          <option value="배송완료" ${o.status==='배송완료'?'selected':''}>배송완료</option>
+          <option value="취소" ${o.status==='취소'?'selected':''}>취소</option>
+        </select>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function updateOrderStatus(id, status) {
+  await _supabase.from('orders').update({status}).eq('id',id);
+}
+
+// 회원 관리
+async function loadMembers() {
+  const {data, error} = await _supabase.auth.admin?.listUsers() || {};
+  const tbody = document.getElementById('memberTable');
+  
+  // auth.admin은 service key 필요 - 대신 메시지 표시
+  tbody.innerHTML=`<tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase 대시보드 → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr>`;
+  
+  document.getElementById('totalMembers').textContent = '확인필요';
+}
+
+async function adminSignOut(){
+  await _supabase.auth.signOut();
+  location.href='/';
+}
+
+loadDashboard();
+</script>
+</body>
+</html>
