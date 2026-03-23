@@ -27,14 +27,11 @@ nav a:hover{color:var(--pk);}
 .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
 .user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
-
 .breadcrumb{padding:16px 48px;font-size:12px;color:var(--muted);}
 .breadcrumb a{color:var(--muted);text-decoration:none;}
 .breadcrumb a:hover{color:var(--pk);}
-
 .product-wrap{max-width:1000px;margin:0 auto;padding:32px 48px;}
-.product-main{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:64px;}
-
+.product-main{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:48px;}
 .product-img-wrap{position:relative;}
 .product-img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;border:1px solid var(--bd);}
 .product-img-placeholder{width:100%;aspect-ratio:1;background:var(--pkbg);border-radius:20px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:80px;}
@@ -42,8 +39,6 @@ nav a:hover{color:var(--pk);}
 .badge-BEST{background:var(--pk);color:#fff;}
 .badge-NEW{background:#2a7a5a;color:#fff;}
 .badge-SALE{background:#ff6b6b;color:#fff;}
-
-.product-info{}
 .product-cat{font-size:11px;color:var(--pk);background:var(--pkp);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:12px;}
 .product-name{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;margin-bottom:8px;line-height:1.3;}
 .product-price-wrap{margin-bottom:16px;}
@@ -51,23 +46,26 @@ nav a:hover{color:var(--pk);}
 .product-original{font-size:14px;color:#ccc;text-decoration:line-through;margin-left:8px;}
 .product-donation{background:var(--pkbg);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--pk);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
 .product-desc{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:28px;font-weight:300;}
-
 .qty-wrap{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .qty-label{font-size:13px;color:var(--muted);}
-.qty-control{display:flex;align-items:center;gap:0;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
-.qty-btn{width:36px;height:36px;background:#fff;border:none;font-size:18px;cursor:pointer;color:var(--pk);display:flex;align-items:center;justify-content:center;}
+.qty-control{display:flex;align-items:center;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.qty-btn{width:36px;height:36px;background:#fff;border:none;font-size:18px;cursor:pointer;color:var(--pk);}
 .qty-btn:hover{background:var(--pkbg);}
 .qty-num{width:48px;height:36px;text-align:center;border:none;border-left:1px solid var(--bd);border-right:1px solid var(--bd);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
-
 .btn-buy{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;}
 .btn-cart{width:100%;background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:15px;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+/* 상세 이미지 섹션 */
+.detail-images-section{border-top:1px solid var(--bd);padding-top:48px;margin-bottom:48px;}
+.detail-images-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:24px;}
+.detail-images-wrap{display:flex;flex-direction:column;gap:12px;}
+.detail-images-wrap img{width:100%;border-radius:12px;border:1px solid var(--bd);}
 
 /* 후기 섹션 */
 .reviews-section{border-top:1px solid var(--bd);padding-top:48px;}
 .reviews-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
 .reviews-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;}
 .btn-review{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
 .review-write{background:var(--pkbg);border-radius:16px;padding:24px;margin-bottom:28px;display:none;}
 .review-write.open{display:block;}
 .review-write h3{font-size:15px;font-weight:600;margin-bottom:16px;color:#2a1220;}
@@ -77,7 +75,6 @@ nav a:hover{color:var(--pk);}
 .review-input{width:100%;padding:12px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:vertical;min-height:80px;margin-bottom:12px;}
 .review-input:focus{border-color:var(--pk);}
 .review-submit{background:var(--pk);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
 .review-list{display:flex;flex-direction:column;gap:16px;}
 .review-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:20px;}
 .review-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
@@ -86,6 +83,10 @@ nav a:hover{color:var(--pk);}
 .review-stars{color:#ffc107;font-size:14px;margin-bottom:8px;}
 .review-content{font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;}
 .no-reviews{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
+
+/* 토스트 */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#2a1220;color:#fff;padding:12px 24px;border-radius:12px;font-size:13px;display:none;z-index:300;}
+.toast.show{display:block;}
 
 footer{background:#2a1220;padding:48px;margin-top:80px;}
 .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
@@ -98,7 +99,6 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
 .f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
 .f-copy{font-size:11px;color:#6a4a5a;}
-
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;}
@@ -142,6 +142,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 <div class="breadcrumb"><a href="/">홈</a> &gt; <a href="shop.html">Products</a> &gt; <span id="breadProduct">상품</span></div>
 
 <div class="product-wrap">
+  <!-- 상품 메인 -->
   <div class="product-main">
     <div class="product-img-wrap" id="productImgWrap">
       <div class="product-img-placeholder">🐾</div>
@@ -153,9 +154,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
         <span class="product-price" id="productPrice">-</span>
         <span class="product-original" id="productOriginal" style="display:none;"></span>
       </div>
-      <div class="product-donation" id="productDonation">
-        🏠 이 상품을 구매하면 <strong id="donationAmt">-</strong>원이 유기견 보호소에 기부돼요
-      </div>
+      <div class="product-donation">🏠 이 상품을 구매하면 <strong id="donationAmt">-</strong>원이 유기견 보호소에 기부돼요</div>
       <div class="product-desc" id="productDesc">상품 설명이 없어요</div>
       <div class="qty-wrap">
         <span class="qty-label">수량</span>
@@ -166,8 +165,14 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
         </div>
       </div>
       <button class="btn-buy" onclick="location.href='checkout.html'">바로 구매하기</button>
-      <button class="btn-cart">🛒 장바구니 담기</button>
+      <button class="btn-cart" onclick="addToCart()">🛒 장바구니 담기</button>
     </div>
+  </div>
+
+  <!-- 상세 이미지 섹션 -->
+  <div class="detail-images-section" id="detailImagesSection" style="display:none;">
+    <div class="detail-images-title">상품 상세 이미지</div>
+    <div class="detail-images-wrap" id="detailImagesWrap"></div>
   </div>
 
   <!-- 후기 섹션 -->
@@ -176,11 +181,9 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       <div class="reviews-title">고객 후기 ⭐</div>
       <button class="btn-review" onclick="toggleReviewForm()">후기 작성하기</button>
     </div>
-
-    <!-- 후기 작성 폼 -->
     <div class="review-write" id="reviewForm">
       <h3>후기를 남겨줘요 🐾</h3>
-      <div class="star-select" id="starSelect">
+      <div class="star-select">
         <span class="star" onclick="setStar(1)">★</span>
         <span class="star" onclick="setStar(2)">★</span>
         <span class="star" onclick="setStar(3)">★</span>
@@ -190,13 +193,13 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       <textarea class="review-input" id="reviewContent" placeholder="이 상품을 사용해보니 어떠셨나요?"></textarea>
       <button class="review-submit" onclick="submitReview()">후기 등록</button>
     </div>
-
-    <!-- 후기 목록 -->
     <div class="review-list" id="reviewList">
       <div class="no-reviews">아직 후기가 없어요. 첫 후기를 남겨줘요! 🐾</div>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast">🛒 장바구니에 담았어요!</div>
 
 <footer>
   <div class="ft">
@@ -244,13 +247,12 @@ const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-// URL에서 상품 ID 가져오기
 const params = new URLSearchParams(window.location.search);
 const productId = params.get('id');
 let selectedRating = 0;
 let currentUser = null;
+let currentProduct = null;
 
-// 헤더
 function updateHeader(user){
   currentUser = user;
   const btnJoin=document.getElementById('btnJoin');
@@ -263,11 +265,11 @@ _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(se
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
 async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
 
-// 상품 불러오기
 async function loadProduct() {
-  if(!productId) { document.getElementById('productName').textContent='상품을 찾을 수 없어요'; return; }
+  if(!productId){document.getElementById('productName').textContent='상품을 찾을 수 없어요';return;}
   const {data:p} = await _supabase.from('products').select('*').eq('id',productId).single();
-  if(!p) { document.getElementById('productName').textContent='상품을 찾을 수 없어요'; return; }
+  if(!p){document.getElementById('productName').textContent='상품을 찾을 수 없어요';return;}
+  currentProduct = p;
 
   document.title = p.name + ' · Wellipet';
   document.getElementById('breadProduct').textContent = p.name;
@@ -277,82 +279,80 @@ async function loadProduct() {
   document.getElementById('donationAmt').textContent = Number(p.donation_amount||0).toLocaleString();
   document.getElementById('productDesc').textContent = p.description||'상품 설명이 없어요';
 
-  if(p.original_price) {
-    const orig = document.getElementById('productOriginal');
-    orig.textContent = Number(p.original_price).toLocaleString()+'원';
-    orig.style.display = 'inline';
+  if(p.original_price){
+    const orig=document.getElementById('productOriginal');
+    orig.textContent=Number(p.original_price).toLocaleString()+'원';
+    orig.style.display='inline';
   }
 
-  const imgWrap = document.getElementById('productImgWrap');
-  if(p.image_url) {
-    imgWrap.innerHTML = `
-      ${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge}</span>`:''}
-      <img src="${p.image_url}" class="product-img" alt="${p.name}"/>
-    `;
+  // 메인 이미지
+  const imgWrap=document.getElementById('productImgWrap');
+  if(p.image_url){
+    imgWrap.innerHTML=`${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge}</span>`:''}<img src="${p.image_url}" class="product-img" alt="${p.name}"/>`;
   } else {
-    imgWrap.innerHTML = `<div class="product-img-placeholder">🐾</div>`;
+    imgWrap.innerHTML=`<div class="product-img-placeholder">🐾</div>`;
+  }
+
+  // 상세 이미지
+  if(p.detail_images){
+    try {
+      const imgs = JSON.parse(p.detail_images);
+      if(imgs && imgs.length > 0){
+        document.getElementById('detailImagesSection').style.display='block';
+        document.getElementById('detailImagesWrap').innerHTML = imgs.map(url=>`<img src="${url}" alt="상세이미지"/>`).join('');
+      }
+    } catch(e) {}
   }
 }
 
-// 수량
-function changeQty(delta) {
-  const input = document.getElementById('qty');
-  const val = Math.max(1, (parseInt(input.value)||1) + delta);
-  input.value = val;
+// 장바구니
+function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
+function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart));}
+function addToCart(){
+  if(!currentProduct) return;
+  const qty = parseInt(document.getElementById('qty').value)||1;
+  const cart = getCart();
+  const existing = cart.find(i=>i.id===currentProduct.id);
+  if(existing){existing.qty=(existing.qty||1)+qty;}
+  else{cart.push({...currentProduct,qty});}
+  saveCart(cart);
+  showToast('🛒 장바구니에 담았어요!');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-// 후기 토글
-function toggleReviewForm() {
-  const form = document.getElementById('reviewForm');
-  form.classList.toggle('open');
+function changeQty(delta){
+  const input=document.getElementById('qty');
+  input.value=Math.max(1,(parseInt(input.value)||1)+delta);
 }
 
-// 별점
-function setStar(n) {
-  selectedRating = n;
-  document.querySelectorAll('.star').forEach((s,i) => {
-    s.classList.toggle('on', i < n);
-  });
-}
+function toggleReviewForm(){document.getElementById('reviewForm').classList.toggle('open');}
+function setStar(n){selectedRating=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 
-// 후기 불러오기
-async function loadReviews() {
+async function loadReviews(){
   if(!productId) return;
-  const {data} = await _supabase.from('reviews').select('*').eq('product_id',productId).order('created_at',{ascending:false});
-  const list = document.getElementById('reviewList');
-  if(!data||data.length===0){
-    list.innerHTML='<div class="no-reviews">아직 후기가 없어요. 첫 후기를 남겨줘요! 🐾</div>';
-    return;
-  }
-  list.innerHTML = data.map(r=>`
+  const {data}=await _supabase.from('reviews').select('*').eq('product_id',productId).order('created_at',{ascending:false});
+  const list=document.getElementById('reviewList');
+  if(!data||data.length===0){list.innerHTML='<div class="no-reviews">아직 후기가 없어요. 첫 후기를 남겨줘요! 🐾</div>';return;}
+  list.innerHTML=data.map(r=>`
     <div class="review-card">
-      <div class="review-top">
-        <span class="review-author">${r.user_name||'익명'}</span>
-        <span class="review-date">${new Date(r.created_at).toLocaleDateString('ko-KR')}</span>
-      </div>
+      <div class="review-top"><span class="review-author">${r.user_name||'익명'}</span><span class="review-date">${new Date(r.created_at).toLocaleDateString('ko-KR')}</span></div>
       <div class="review-stars">${'★'.repeat(r.rating||5)}${'☆'.repeat(5-(r.rating||5))}</div>
       <div class="review-content">${r.content}</div>
     </div>
   `).join('');
 }
 
-// 후기 등록
-async function submitReview() {
-  const content = document.getElementById('reviewContent').value;
-  if(!content) { alert('후기 내용을 입력해줘요!'); return; }
-  if(selectedRating===0) { alert('별점을 선택해줘요!'); return; }
-
-  const userName = currentUser?.user_metadata?.name || currentUser?.email?.split('@')[0] || '익명';
-
-  const {error} = await _supabase.from('reviews').insert({
-    product_id: parseInt(productId),
-    user_name: userName,
-    rating: selectedRating,
-    content: content,
-  });
-
-  if(error) { alert('후기 등록 실패: '+error.message); return; }
-
+async function submitReview(){
+  const content=document.getElementById('reviewContent').value;
+  if(!content){alert('후기 내용을 입력해줘요!');return;}
+  if(selectedRating===0){alert('별점을 선택해줘요!');return;}
+  const userName=currentUser?.user_metadata?.name||currentUser?.email?.split('@')[0]||'익명';
+  const {error}=await _supabase.from('reviews').insert({product_id:parseInt(productId),user_name:userName,rating:selectedRating,content});
+  if(error){alert('후기 등록 실패: '+error.message);return;}
   document.getElementById('reviewContent').value='';
   selectedRating=0;
   document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
