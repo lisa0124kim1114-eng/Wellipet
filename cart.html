@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>장바구니 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--cr:#fdf8f5;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;}
+.topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;}
+.topbar span{font-size:11px;color:#fff;font-weight:300;}
+.topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo-img{height:52px;object-fit:contain;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;}
+nav a:hover{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.sbox{display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;}
+.sbox input{border:none;background:transparent;font-size:12px;outline:none;width:120px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);}
+.ibt{font-size:16px;cursor:pointer;color:#bbb;}
+.btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
+.user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
+
+.page-hero{background:#fff;padding:32px 48px;border-bottom:1px solid var(--bd);}
+.page-hero h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;}
+
+.cart-wrap{max-width:1000px;margin:0 auto;padding:32px 48px;display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+
+/* 장바구니 아이템 */
+.cart-list{background:#fff;border-radius:16px;border:1px solid var(--bd);overflow:hidden;}
+.cart-header{padding:16px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;}
+.cart-header-check{accent-color:var(--pk);width:16px;height:16px;cursor:pointer;}
+.cart-header-label{font-size:13px;color:var(--muted);}
+.cart-item{padding:20px 24px;border-bottom:1px solid #fafafa;display:grid;grid-template-columns:auto 80px 1fr auto auto;gap:16px;align-items:center;}
+.cart-item:last-child{border-bottom:none;}
+.cart-check{accent-color:var(--pk);width:16px;height:16px;cursor:pointer;}
+.cart-img{width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--bd);}
+.cart-img-placeholder{width:80px;height:80px;background:var(--pkbg);border-radius:10px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:28px;}
+.cart-info{}
+.cart-name{font-size:14px;font-weight:500;color:#2a1220;margin-bottom:4px;cursor:pointer;}
+.cart-name:hover{color:var(--pk);}
+.cart-cat{font-size:11px;color:var(--muted);font-weight:300;}
+.cart-don{font-size:11px;color:var(--pkm);margin-top:4px;}
+.cart-qty{display:flex;align-items:center;border:1px solid var(--bd);border-radius:8px;overflow:hidden;}
+.cart-qty-btn{width:30px;height:30px;background:#fff;border:none;font-size:16px;cursor:pointer;color:var(--pk);}
+.cart-qty-btn:hover{background:var(--pkbg);}
+.cart-qty-num{width:36px;height:30px;text-align:center;border:none;border-left:1px solid var(--bd);border-right:1px solid var(--bd);font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.cart-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);white-space:nowrap;}
+.cart-remove{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;}
+.cart-remove:hover{color:#ff6b6b;}
+
+.empty-cart{text-align:center;padding:80px 24px;}
+.empty-cart .icon{font-size:64px;margin-bottom:16px;}
+.empty-cart p{font-size:15px;color:var(--muted);margin-bottom:24px;}
+.btn-shop{background:var(--pk);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+/* 주문 요약 */
+.cart-summary{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:24px;position:sticky;top:88px;}
+.summary-title{font-family:'Nunito',sans-serif;font-size:16px;font-weight:800;color:#2a1220;margin-bottom:20px;}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;}
+.summary-row .k{font-size:13px;color:var(--muted);}
+.summary-row .v{font-size:13px;color:var(--tx);font-weight:500;}
+.summary-divider{border:none;border-top:1px solid var(--bd);margin:16px 0;}
+.summary-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.summary-total .k{font-size:15px;font-weight:600;color:#2a1220;}
+.summary-total .v{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);}
+.summary-don{background:var(--pkbg);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--pk);margin-bottom:20px;text-align:center;}
+.btn-checkout{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;}
+.btn-checkout:hover{background:var(--pkm);}
+.btn-continue{width:100%;background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:13px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+footer{background:#2a1220;padding:48px;margin-top:80px;}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
+.f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;}
+.f-sns{display:flex;gap:8px;}
+.f-sns a{width:32px;height:32px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;}
+.f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;}
+.f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;}
+.fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
+.f-copy{font-size:11px;color:#6a4a5a;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;}
+.modal h2{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:22px;font-weight:300;}
+.mtabs{display:flex;margin-bottom:22px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
+.mtab{flex:1;padding:10px;font-size:13px;text-align:center;cursor:pointer;background:#fff;border:none;font-family:'Noto Sans KR',sans-serif;}
+.mtab.on{background:var(--pk);color:#fff;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
+.fg input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.fg input:focus{border-color:var(--pk);}
+.btn-submit{width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;}
+.modal-close{float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;}
+.dc{display:flex;align-items:center;gap:8px;margin-top:12px;}
+.dc input{width:auto;}
+.dc label{font-size:12px;color:var(--pkm);margin:0;}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span><a>후원 현황 보기 →</a></div>
+<header>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
+    <div class="logo" id="lt" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <span class="ibt" onclick="location.href='cart.html'">🛒</span>
+    <span class="ibt">👤</span>
+    <span class="user-name" id="userNameDisplay"></span>
+    <button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
+    <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
+  </div>
+</header>
+
+<div class="page-hero"><h1>🛒 장바구니</h1></div>
+
+<div class="cart-wrap" id="cartWrap">
+  <div class="cart-list" id="cartList">
+    <div class="empty-cart">
+      <div class="icon">🛒</div>
+      <p>장바구니가 비어있어요</p>
+      <button class="btn-shop" onclick="location.href='shop.html'">쇼핑하러 가기</button>
+    </div>
+  </div>
+  <div class="cart-summary" id="cartSummary" style="display:none;">
+    <div class="summary-title">주문 요약</div>
+    <div class="summary-row"><span class="k">상품 금액</span><span class="v" id="sumProducts">0원</span></div>
+    <div class="summary-row"><span class="k">배송비</span><span class="v">무료</span></div>
+    <hr class="summary-divider"/>
+    <div class="summary-total"><span class="k">총 결제금액</span><span class="v" id="sumTotal">0원</span></div>
+    <div class="summary-don" id="sumDon">🏠 0원이 유기견 보호소에 기부돼요</div>
+    <button class="btn-checkout" onclick="location.href='checkout.html'">결제하기</button>
+    <button class="btn-continue" onclick="location.href='shop.html'">계속 쇼핑하기</button>
+  </div>
+</div>
+
+<footer>
+  <div class="ft">
+    <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
+    <div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div>
+    <div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div>
+    <div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a></div>
+  </div>
+  <div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div>
+</footer>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">웰리펫 시작하기 🐾</h2>
+    <p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p>
+    <div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div>
+    <div class="mtabs">
+      <button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button>
+      <button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button>
+    </div>
+    <div id="formSignup">
+      <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
+      <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
+      <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div>
+      <button class="btn-submit" onclick="signUp()">가입하기</button>
+    </div>
+    <div id="formLogin" style="display:none;">
+      <div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div>
+      <button class="btn-submit" onclick="signIn()">로그인</button>
+    </div>
+    <div id="formDone" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:14px;">🎉</div>
+      <div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div>
+      <div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
+function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart));}
+
+function renderCart(){
+  const cart = getCart();
+  const listEl = document.getElementById('cartList');
+  const summaryEl = document.getElementById('cartSummary');
+
+  if(cart.length===0){
+    listEl.innerHTML=`<div class="empty-cart"><div class="icon">🛒</div><p>장바구니가 비어있어요</p><button class="btn-shop" onclick="location.href='shop.html'">쇼핑하러 가기</button></div>`;
+    summaryEl.style.display='none';
+    return;
+  }
+
+  summaryEl.style.display='block';
+  listEl.innerHTML=`
+    <div class="cart-header">
+      <input type="checkbox" class="cart-header-check" id="checkAll" checked onchange="toggleAll(this)"/>
+      <span class="cart-header-label">전체 선택 (${cart.length}개)</span>
+    </div>
+    ${cart.map((item,i)=>`
+      <div class="cart-item" id="cartItem${i}">
+        <input type="checkbox" class="cart-check item-check" checked onchange="updateSummary()"/>
+        ${item.image_url
+          ? `<img src="${item.image_url}" class="cart-img" onclick="location.href='product.html?id=${item.id}'" style="cursor:pointer;"/>`
+          : `<div class="cart-img-placeholder" onclick="location.href='product.html?id=${item.id}'" style="cursor:pointer;">🐾</div>`
+        }
+        <div class="cart-info">
+          <div class="cart-name" onclick="location.href='product.html?id=${item.id}'">${item.name}</div>
+          <div class="cart-cat">${item.category}</div>
+          <div class="cart-don">🏠 ${Number((item.donation_amount||0)*item.qty).toLocaleString()}원 기부</div>
+        </div>
+        <div class="cart-qty">
+          <button class="cart-qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <input class="cart-qty-num" type="number" value="${item.qty}" min="1" onchange="setQty(${i},this.value)"/>
+          <button class="cart-qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+        <div class="cart-price">${Number(item.price*item.qty).toLocaleString()}원</div>
+        <button class="cart-remove" onclick="removeItem(${i})">×</button>
+      </div>
+    `).join('')}
+  `;
+  updateSummary();
+}
+
+function toggleAll(el){
+  document.querySelectorAll('.item-check').forEach(c=>c.checked=el.checked);
+  updateSummary();
+}
+
+function updateSummary(){
+  const cart = getCart();
+  const checks = document.querySelectorAll('.item-check');
+  let total=0, don=0;
+  checks.forEach((c,i)=>{
+    if(c.checked){
+      total += cart[i].price * cart[i].qty;
+      don += (cart[i].donation_amount||0) * cart[i].qty;
+    }
+  });
+  document.getElementById('sumProducts').textContent = Number(total).toLocaleString()+'원';
+  document.getElementById('sumTotal').textContent = Number(total).toLocaleString()+'원';
+  document.getElementById('sumDon').textContent = `🏠 ${Number(don).toLocaleString()}원이 유기견 보호소에 기부돼요`;
+}
+
+function changeQty(i, delta){
+  const cart = getCart();
+  cart[i].qty = Math.max(1, (cart[i].qty||1)+delta);
+  saveCart(cart);
+  renderCart();
+}
+
+function setQty(i, val){
+  const cart = getCart();
+  cart[i].qty = Math.max(1, parseInt(val)||1);
+  saveCart(cart);
+  renderCart();
+}
+
+function removeItem(i){
+  const cart = getCart();
+  cart.splice(i,1);
+  saveCart(cart);
+  renderCart();
+}
+
+// 헤더
+function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
+_supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
+_supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
+async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
+function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
+async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}document.getElementById('formSignup').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
+async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
+function openModal(tab){document.getElementById('authModal').classList.add('open');switchTab(tab||'signup');document.getElementById('msgBox').style.display='none';}
+function closeModal(){document.getElementById('authModal').classList.remove('open');}
+function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
+document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+renderCart();
+</script>
+</body>
+</html>
