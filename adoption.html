@@ -43,21 +43,26 @@ nav a.active{color:var(--pk);}
 .fbtn{padding:7px 16px;border-radius:20px;font-size:12px;border:1px solid var(--bd);background:#fff;color:#888;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;}
 .fbtn.on{background:var(--pk);color:#fff;border-color:var(--pk);}
 .dog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px;}
-.dcard{background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--bd);transition:transform .2s,box-shadow .2s;cursor:pointer;}
+.dcard{background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--bd);transition:transform .2s,box-shadow .2s;}
 .dcard:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(196,92,138,.1);}
-.dphoto{height:180px;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;}
-.dp1{background:var(--pkp);}.dp2{background:#fff0f7;}.dp3{background:var(--cr);}.dp4{background:#fef3f8;}.dp5{background:var(--pkbg);}.dp6{background:#fff8fb;}
+.dphoto{height:200px;position:relative;overflow:hidden;}
+.dphoto img{width:100%;height:100%;object-fit:cover;}
+.dphoto-placeholder{width:100%;height:100%;background:var(--pkp);display:flex;align-items:center;justify-content:center;font-size:72px;}
 .dbadge{position:absolute;top:12px;right:12px;font-size:10px;padding:4px 10px;border-radius:20px;font-weight:500;}
-.b-wait{background:#fff;color:var(--pk);border:1px solid var(--pkl);}.b-new{background:var(--pk);color:#fff;}.b-urgent{background:#ff6b6b;color:#fff;}
+.b-wait{background:#fff;color:var(--pk);border:1px solid var(--pkl);}
+.b-new{background:var(--pk);color:#fff;}
+.b-urgent{background:#ff6b6b;color:#fff;}
+.b-done{background:#2a7a5a;color:#fff;}
 .dbody{padding:18px;}
 .dname{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:#2a1220;margin-bottom:4px;}
 .dmeta{font-size:11px;color:var(--muted);font-weight:300;margin-bottom:10px;}
 .ddesc{font-size:12px;color:#999;font-weight:300;line-height:1.7;margin-bottom:12px;}
 .dtags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.dtag{font-size:10px;padding:3px 10px;border-radius:20px;}
-.dtp{background:var(--pkp);color:var(--pk);}.dtc{background:var(--cr);color:#a07060;}.dtt{background:#f0faf5;color:#2a7a5a;}
+.dtag{font-size:10px;padding:3px 10px;border-radius:20px;background:var(--pkp);color:var(--pk);}
 .dbtn{width:100%;background:var(--pk);color:#fff;border:none;padding:11px;border-radius:10px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.more-btn{display:block;margin:0 auto;background:transparent;color:var(--pk);border:1.5px solid var(--pk);padding:12px 40px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.dbtn:disabled{background:#ccc;cursor:not-allowed;}
+.empty-dogs{text-align:center;padding:80px;color:var(--muted);}
+.empty-dogs .icon{font-size:64px;margin-bottom:16px;}
 .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:8px;}
 .pstep{text-align:center;padding:24px 16px;position:relative;}
 .pstep:not(:last-child)::after{content:'→';position:absolute;right:-8px;top:36px;font-size:18px;color:var(--pkl);}
@@ -65,16 +70,6 @@ nav a.active{color:var(--pk);}
 .pnum{font-size:10px;color:var(--pkl);font-family:'Nunito',sans-serif;font-weight:700;letter-spacing:1px;margin-bottom:6px;}
 .ptitle{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#2a1220;margin-bottom:6px;}
 .pdesc{font-size:11px;color:#bbb;font-weight:300;line-height:1.6;}
-.shelter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.shcard{background:#fff;border-radius:18px;padding:24px;border:1px solid var(--bd);}
-.sh-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.sh-icon{width:44px;height:44px;background:var(--pkp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.sh-name{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:#2a1220;}
-.sh-loc{font-size:11px;color:var(--muted);font-weight:300;margin-top:2px;}
-.sh-info{border-top:1px solid var(--bd);padding-top:14px;}
-.sh-row{display:flex;justify-content:space-between;margin-bottom:8px;}
-.sh-row .k{font-size:11px;color:#bbb;font-weight:300;}.sh-row .v{font-size:11px;color:var(--tx);font-weight:500;}
-.sh-map{width:100%;margin-top:12px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:9px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .cta-box{background:var(--pk);border-radius:24px;padding:48px;text-align:center;}
 .cta-box h3{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:8px;}
 .cta-box p{font-size:13px;color:var(--pkl);font-weight:300;margin-bottom:24px;}
@@ -125,7 +120,8 @@ footer{background:#2a1220;padding:48px;}
   </div>
   <div class="hicons">
     <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
-    <span class="ibt">🛒</span><span class="ibt">👤</span>
+    <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
+    <span class="ibt">👤</span>
     <span class="user-name" id="userNameDisplay"></span>
     <button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
@@ -137,7 +133,7 @@ footer{background:#2a1220;padding:48px;}
 </div>
 <section class="sec">
   <div class="stats-row">
-    <div class="stat-box"><div class="n">47마리</div><div class="l">입양 대기 중</div></div>
+    <div class="stat-box"><div class="n" id="statWaiting">0마리</div><div class="l">입양 대기 중</div></div>
     <div class="stat-box"><div class="n">312건</div><div class="l">누적 입양</div></div>
     <div class="stat-box"><div class="n">8곳</div><div class="l">연계 보호소</div></div>
   </div>
@@ -145,43 +141,34 @@ footer{background:#2a1220;padding:48px;}
   <div class="st">입양을 기다리는 친구들</div>
   <div class="ss">아래 강아지들은 모두 새 가족을 기다리고 있어요</div>
   <div class="filter-bar">
-    <button class="fbtn on">전체</button><button class="fbtn">소형견</button><button class="fbtn">중형견</button><button class="fbtn">대형견</button><button class="fbtn">수컷</button><button class="fbtn">암컷</button><button class="fbtn">1살 미만</button><button class="fbtn">노령견</button><button class="fbtn">서울</button><button class="fbtn">경기</button>
+    <button class="fbtn on" onclick="filterDogs(this,'전체')">전체</button>
+    <button class="fbtn" onclick="filterDogs(this,'소형')">소형견</button>
+    <button class="fbtn" onclick="filterDogs(this,'중형')">중형견</button>
+    <button class="fbtn" onclick="filterDogs(this,'대형')">대형견</button>
+    <button class="fbtn" onclick="filterDogs(this,'수컷')">수컷</button>
+    <button class="fbtn" onclick="filterDogs(this,'암컷')">암컷</button>
+    <button class="fbtn" onclick="filterDogs(this,'신규')">신규</button>
+    <button class="fbtn" onclick="filterDogs(this,'긴급')">긴급</button>
   </div>
-  <div class="dog-grid">
-    <div class="dcard"><div class="dphoto dp1"><span class="dbadge b-new">신규</span>🐶</div><div class="dbody"><div class="dname">두부</div><div class="dmeta">믹스견 · 3살 · 수컷 · 중형 · 서울 마포구</div><div class="ddesc">활발하고 사람을 너무 좋아해요. 기본 훈련이 되어있어요.</div><div class="dtags"><span class="dtag dtp">사교적</span><span class="dtag dtt">훈련완료</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp2"><span class="dbadge b-wait">대기중</span>🐕</div><div class="dbody"><div class="dname">솜이</div><div class="dmeta">포메라니안 믹스 · 2살 · 암컷 · 소형 · 경기 수원</div><div class="ddesc">조용하고 순한 성격이에요. 아이가 있는 가정에도 잘 맞아요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">아이친화</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp3"><span class="dbadge b-urgent">긴급</span>🐩</div><div class="dbody"><div class="dname">까미</div><div class="dmeta">푸들 믹스 · 5살 · 수컷 · 소형 · 서울 강남구</div><div class="ddesc">나이가 있지만 건강하고 활기차요. 조용한 환경을 좋아해요.</div><div class="dtags"><span class="dtag dtp">차분함</span><span class="dtag dtt">독립적</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp4"><span class="dbadge b-new">신규</span>🦮</div><div class="dbody"><div class="dname">하늘이</div><div class="dmeta">진도 믹스 · 1살 · 암컷 · 중형 · 경기 성남</div><div class="ddesc">어리고 에너지가 넘쳐요. 새로운 것을 빨리 배워요.</div><div class="dtags"><span class="dtag dtp">활발함</span><span class="dtag dtt">학습빠름</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp5"><span class="dbadge b-wait">대기중</span>🐾</div><div class="dbody"><div class="dname">보리</div><div class="dmeta">말티즈 믹스 · 7살 · 수컷 · 소형 · 서울 노원구</div><div class="ddesc">성격이 안정되어 있어요. 조용한 가정에 잘 맞아요.</div><div class="dtags"><span class="dtag dtp">온순함</span><span class="dtag dtt">노령견</span><span class="dtag dtc">중성화</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
-    <div class="dcard"><div class="dphoto dp6"><span class="dbadge b-new">신규</span>🐕‍🦺</div><div class="dbody"><div class="dname">달콤이</div><div class="dmeta">비숑 믹스 · 4살 · 암컷 · 소형 · 인천 부평구</div><div class="ddesc">밝고 애교가 넘쳐요. 사람을 엄청 좋아해요.</div><div class="dtags"><span class="dtag dtp">애교쟁이</span><span class="dtag dtt">사람좋아</span><span class="dtag dtc">접종완료</span></div><button class="dbtn" onclick="openModal('signup')">입양 신청하기</button></div></div>
+  <div class="dog-grid" id="dogGrid">
+    <div class="empty-dogs" style="grid-column:1/-1;"><div class="icon">🐾</div><p>불러오는 중...</p></div>
   </div>
-  <button class="more-btn">더 많은 친구들 보기 →</button>
 </section>
 <section class="sec" style="background:var(--pkbg);">
   <div class="sl">PROCESS</div>
   <div class="st">입양 절차 안내</div>
   <div class="ss">어렵지 않아요. 차근차근 함께해요 🐾</div>
   <div class="process-steps">
-    <div class="pstep"><div class="pcircle">🔍</div><div class="pnum">STEP 01</div><div class="ptitle">프로필 탐색</div><div class="pdesc">마음에 드는 강아지를 골라 성격과 나이를 살펴봐요</div></div>
-    <div class="pstep"><div class="pcircle">📝</div><div class="pnum">STEP 02</div><div class="ptitle">입양 신청</div><div class="pdesc">간단한 신청서를 작성해요. 거주 환경을 알려주세요</div></div>
-    <div class="pstep"><div class="pcircle">📞</div><div class="pnum">STEP 03</div><div class="ptitle">보호소 상담</div><div class="pdesc">보호소에서 연락이 와요. 직접 방문해서 만나봐요</div></div>
-    <div class="pstep"><div class="pcircle">🎉</div><div class="pnum">STEP 04</div><div class="ptitle">새 가족 완성</div><div class="pdesc">입양 완료 시 웰리펫 첫 달 용품 키트를 선물해요</div></div>
-  </div>
-</section>
-<section class="sec">
-  <div class="sl">SHELTER</div>
-  <div class="st">연계 보호소 안내</div>
-  <div class="ss">웰리펫과 함께하는 보호소예요</div>
-  <div class="shelter-grid">
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🏠</div><div><div class="sh-name">서울 동물보호센터</div><div class="sh-loc">📍 서울 마포구 상암동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 18:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">월요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 12마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">🐾</div><div><div class="sh-name">경기 유기동물센터</div><div class="sh-loc">📍 경기 수원시 팔달구</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">10:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">일요일, 공휴일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 18마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
-    <div class="shcard"><div class="sh-top"><div class="sh-icon">💕</div><div><div class="sh-name">인천 동물보호소</div><div class="sh-loc">📍 인천 부평구 갈산동</div></div></div><div class="sh-info"><div class="sh-row"><span class="k">운영시간</span><span class="v">09:00 ~ 17:00</span></div><div class="sh-row"><span class="k">휴무일</span><span class="v">토·일요일</span></div><div class="sh-row"><span class="k">입양 가능 수</span><span class="v">🐶 9마리</span></div><button class="sh-map">📍 지도에서 보기</button></div></div>
+    <div class="pstep"><div class="pcircle">🔍</div><div class="pnum">STEP 01</div><div class="ptitle">프로필 탐색</div><div class="pdesc">마음에 드는 강아지를 골라요</div></div>
+    <div class="pstep"><div class="pcircle">📝</div><div class="pnum">STEP 02</div><div class="ptitle">입양 신청</div><div class="pdesc">간단한 신청서를 작성해요</div></div>
+    <div class="pstep"><div class="pcircle">📞</div><div class="pnum">STEP 03</div><div class="ptitle">보호소 상담</div><div class="pdesc">보호소에서 연락이 와요</div></div>
+    <div class="pstep"><div class="pcircle">🎉</div><div class="pnum">STEP 04</div><div class="ptitle">새 가족 완성</div><div class="pdesc">웰리펫 첫 달 용품 키트를 선물해요</div></div>
   </div>
 </section>
 <section class="sec">
   <div class="cta-box">
     <h3>우리 아이를 기다리는 친구가 있어요 🐾</h3>
-    <p>입양은 새 생명을 구하는 일이에요. 오늘 첫 발걸음을 내딛어봐요.</p>
+    <p>입양은 새 생명을 구하는 일이에요.</p>
     <div class="cta-btns">
       <button class="cta-w" onclick="openModal('signup')">입양 신청하기</button>
       <button class="cta-o">보호소에 문의하기</button>
@@ -189,12 +176,93 @@ footer{background:#2a1220;padding:48px;}
   </div>
 </section>
 <footer><div class="ft"><div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div><div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div><div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div><div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a></div></div><div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div></footer>
-<div class="modal-overlay" id="authModal"><div class="modal"><button class="modal-close" onclick="closeModal()">×</button><h2 id="modalTitle">웰리펫 시작하기 🐾</h2><p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p><div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div><div class="mtabs"><button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button><button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button></div><div id="formSignup"><div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div><div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div><div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div><button class="btn-submit" onclick="signUp()">가입하기</button></div><div id="formLogin" style="display:none;"><div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div><div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div><button class="btn-submit" onclick="signIn()">로그인</button></div><div id="formDone" style="display:none;text-align:center;padding:20px 0;"><div style="font-size:48px;margin-bottom:14px;">🎉</div><div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div><div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div></div></div></div>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">웰리펫 시작하기 🐾</h2>
+    <p id="modalDesc">가입하고 첫 주문 10% 할인 쿠폰을 받아요</p>
+    <div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div>
+    <div class="mtabs">
+      <button class="mtab on" id="tabSignup" onclick="switchTab('signup')">회원가입</button>
+      <button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button>
+    </div>
+    <div id="formSignup">
+      <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
+      <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="hello@wellypet.co.kr"/></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
+      <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div>
+      <button class="btn-submit" onclick="signUp()">가입하기</button>
+    </div>
+    <div id="formLogin" style="display:none;">
+      <div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr"/></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div>
+      <button class="btn-submit" onclick="signIn()">로그인</button>
+    </div>
+    <div id="formDone" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:14px;">🎉</div>
+      <div style="font-size:16px;font-weight:700;color:#2a1220;margin-bottom:8px;" id="doneTitle">가입 완료!</div>
+      <div style="font-size:13px;color:#a08090;font-weight:300;" id="doneDesc">이메일을 확인해서 인증을 완료해주세요.</div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let allDogs=[];
+let currentFilter='전체';
+
+function getBadgeClass(status){
+  if(status==='신규') return 'b-new';
+  if(status==='긴급') return 'b-urgent';
+  if(status==='입양완료') return 'b-done';
+  return 'b-wait';
+}
+
+function renderDogs(dogs){
+  const grid=document.getElementById('dogGrid');
+  if(!dogs||dogs.length===0){
+    grid.innerHTML='<div class="empty-dogs" style="grid-column:1/-1;"><div class="icon">🐾</div><p>아직 등록된 강아지가 없어요</p></div>';
+    return;
+  }
+  grid.innerHTML=dogs.map(d=>`
+    <div class="dcard">
+      <div class="dphoto">
+        ${d.image_url?`<img src="${d.image_url}" alt="${d.name}"/>`:`<div class="dphoto-placeholder">🐶</div>`}
+        <span class="dbadge ${getBadgeClass(d.status)}">${d.status||'대기중'}</span>
+      </div>
+      <div class="dbody">
+        <div class="dname">${d.name}</div>
+        <div class="dmeta">${d.breed||''} · ${d.age||''} · ${d.gender||''} · ${d.size||''} · ${d.location||''}</div>
+        <div class="ddesc">${d.description||''}</div>
+        <div class="dtags">${(d.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="dtag">${t.trim()}</span>`).join('')}</div>
+        <button class="dbtn" ${d.status==='입양완료'?'disabled':''} onclick="openModal('signup')">${d.status==='입양완료'?'입양 완료':'입양 신청하기'}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadDogs(){
+  const {data}=await _supabase.from('dogs').select('*').neq('status','입양완료').order('created_at',{ascending:false});
+  allDogs=data||[];
+  const waiting=allDogs.filter(d=>d.status!=='입양완료').length;
+  document.getElementById('statWaiting').textContent=waiting+'마리';
+  renderDogs(allDogs);
+}
+
+function filterDogs(el,filter){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  currentFilter=filter;
+  if(filter==='전체'){renderDogs(allDogs);return;}
+  const filtered=allDogs.filter(d=>d.size===filter||d.gender===filter||d.status===filter);
+  renderDogs(filtered);
+}
+
 function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
@@ -206,7 +274,8 @@ function openModal(tab){document.getElementById('authModal').classList.add('open
 function closeModal(){document.getElementById('authModal').classList.remove('open');}
 function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
-document.querySelectorAll('.fbtn').forEach(btn=>{btn.addEventListener('click',function(){document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));this.classList.add('on');});});
+
+loadDogs();
 </script>
 </body>
 </html>
