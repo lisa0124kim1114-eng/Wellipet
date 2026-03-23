@@ -44,7 +44,7 @@ tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;}
+.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;}
 .modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}
 .form-group{margin-bottom:16px;}
 .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
@@ -52,16 +52,27 @@ tr:hover td{background:#fafafa;}
 .form-group input:focus,.form-group select:focus{border-color:var(--pk);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.section-divider{border:none;border-top:1px solid var(--bd);margin:20px 0;}
+.section-label{font-size:13px;font-weight:600;color:#2a1220;margin-bottom:12px;}
 
-/* 이미지 업로드 */
-.img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+/* 메인 이미지 업로드 */
+.img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
 .img-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
 .img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.img-preview{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:none;}
-.img-upload-icon{font-size:36px;margin-bottom:8px;}
-.img-upload-text{font-size:13px;color:var(--muted);}
-.img-upload-hint{font-size:11px;color:#bbb;margin-top:4px;}
-.upload-progress{font-size:12px;color:var(--pk);margin-top:8px;display:none;}
+.img-preview{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:none;}
+.img-upload-icon{font-size:28px;margin-bottom:6px;}
+.img-upload-text{font-size:12px;color:var(--muted);}
+.img-upload-hint{font-size:11px;color:#bbb;margin-top:3px;}
+.upload-progress{font-size:12px;color:var(--pk);margin-top:6px;display:none;}
+
+/* 상세 이미지 업로드 */
+.detail-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.detail-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
+.detail-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.detail-img-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.detail-img-item{position:relative;width:80px;height:80px;}
+.detail-img-item img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--bd);}
+.detail-img-remove{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
 
 .search-bar{display:flex;gap:10px;margin-bottom:20px;}
 .search-input{flex:1;padding:10px 16px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
@@ -91,7 +102,6 @@ tr:hover td{background:#fafafa;}
     <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
   </div>
   <div class="main">
-    <!-- 대시보드 -->
     <div class="page active" id="page-dashboard">
       <div class="page-title">📊 대시보드</div>
       <div class="dash-grid">
@@ -101,7 +111,6 @@ tr:hover td{background:#fafafa;}
         <div class="dash-card"><div class="icon">🏠</div><div class="num">1,247,000원</div><div class="label">이번 달 기부금</div></div>
       </div>
     </div>
-    <!-- 상품 관리 -->
     <div class="page" id="page-products">
       <div class="page-title">📦 상품 관리</div>
       <div class="toolbar">
@@ -110,16 +119,11 @@ tr:hover td{background:#fafafa;}
       </div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr><th>이미지</th><th>상품명</th><th>카테고리</th><th>가격</th><th>기부금</th><th>관리</th></tr>
-          </thead>
-          <tbody id="productTable">
-            <tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr>
-          </tbody>
+          <thead><tr><th>이미지</th><th>상품명</th><th>카테고리</th><th>가격</th><th>기부금</th><th>관리</th></tr></thead>
+          <tbody id="productTable"><tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
-    <!-- 주문 관리 -->
     <div class="page" id="page-orders">
       <div class="page-title">🛍️ 주문 관리</div>
       <div class="search-bar">
@@ -128,26 +132,17 @@ tr:hover td{background:#fafafa;}
       </div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr><th>주문일</th><th>주문자</th><th>연락처</th><th>배송지</th><th>상품</th><th>금액</th><th>상태</th></tr>
-          </thead>
-          <tbody id="orderTable">
-            <tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>
-          </tbody>
+          <thead><tr><th>주문일</th><th>주문자</th><th>연락처</th><th>배송지</th><th>상품</th><th>금액</th><th>상태</th></tr></thead>
+          <tbody id="orderTable"><tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
-    <!-- 회원 관리 -->
     <div class="page" id="page-members">
       <div class="page-title">👤 회원 관리</div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr><th>가입일</th><th>이름</th><th>이메일</th><th>마지막 로그인</th></tr>
-          </thead>
-          <tbody id="memberTable">
-            <tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase 대시보드 → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr>
-          </tbody>
+          <thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>마지막 로그인</th></tr></thead>
+          <tbody id="memberTable"><tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -159,20 +154,37 @@ tr:hover td{background:#fafafa;}
   <div class="modal">
     <div class="modal-title" id="productModalTitle">상품 추가</div>
 
-    <!-- 이미지 업로드 -->
+    <!-- 메인 이미지 -->
     <div class="form-group">
-      <label>상품 이미지</label>
-      <div class="img-upload-area" id="imgUploadArea">
-        <input type="file" id="pImageFile" accept="image/*" onchange="previewImage(this)"/>
+      <label>📷 메인 이미지 (썸네일)</label>
+      <div class="img-upload-area">
+        <input type="file" id="pImageFile" accept="image/*" onchange="previewMainImage(this)"/>
         <img id="imgPreview" class="img-preview"/>
         <div id="imgPlaceholder">
           <div class="img-upload-icon">📷</div>
-          <div class="img-upload-text">클릭하거나 이미지를 드래그해서 올려줘요</div>
-          <div class="img-upload-hint">JPG, PNG, WEBP 지원 · 최대 5MB</div>
+          <div class="img-upload-text">클릭하거나 드래그해서 올려줘요</div>
+          <div class="img-upload-hint">JPG, PNG, WEBP · 최대 5MB</div>
         </div>
       </div>
       <div class="upload-progress" id="uploadProgress">⏳ 업로드 중...</div>
     </div>
+
+    <hr class="section-divider"/>
+
+    <!-- 상세 이미지 -->
+    <div class="form-group">
+      <label>🖼️ 상세 이미지 (여러 장 가능)</label>
+      <div class="detail-upload-area">
+        <input type="file" id="pDetailFiles" accept="image/*" multiple onchange="previewDetailImages(this)"/>
+        <div class="img-upload-icon">🖼️</div>
+        <div class="img-upload-text">클릭하거나 드래그해서 올려줘요 (여러 장 선택 가능)</div>
+        <div class="img-upload-hint">JPG, PNG, WEBP · 최대 5MB · 여러 장 선택 가능</div>
+      </div>
+      <div class="detail-img-list" id="detailImgList"></div>
+      <div class="upload-progress" id="uploadProgressDetail">⏳ 상세 이미지 업로드 중...</div>
+    </div>
+
+    <hr class="section-divider"/>
 
     <div class="form-group"><label>상품명</label><input type="text" id="pName" placeholder="웰리펫 순면 배변패드 50매"/></div>
     <div class="form-row">
@@ -199,7 +211,7 @@ tr:hover td{background:#fafafa;}
     </div>
     <div class="form-row">
       <div class="form-group"><label>기부금 (원, 자동계산)</label><input type="number" id="pDonation" placeholder="567"/></div>
-      <div class="form-group"><label>상품 설명</label><input type="text" id="pDescription" placeholder="상품 설명을 입력해줘요"/></div>
+      <div class="form-group"><label>상품 설명 (한 줄)</label><input type="text" id="pDescription" placeholder="상품 설명을 입력해줘요"/></div>
     </div>
     <div class="modal-btns">
       <button class="btn-secondary" onclick="closeProductModal()">취소</button>
@@ -216,6 +228,8 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let editingProductId = null;
 let currentImageUrl = null;
+let currentDetailImages = []; // 기존 상세 이미지 URL 배열
+let newDetailFiles = []; // 새로 선택한 상세 이미지 파일들
 
 function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -234,8 +248,8 @@ async function loadDashboard() {
   document.getElementById('totalOrders').textContent = oc||0;
 }
 
-// 이미지 미리보기
-function previewImage(input) {
+// 메인 이미지 미리보기
+function previewMainImage(input) {
   const file = input.files[0];
   if(!file) return;
   const reader = new FileReader();
@@ -248,20 +262,56 @@ function previewImage(input) {
   reader.readAsDataURL(file);
 }
 
-// 가격 입력 시 기부금 자동계산
+// 상세 이미지 미리보기
+function previewDetailImages(input) {
+  const files = Array.from(input.files);
+  newDetailFiles = [...newDetailFiles, ...files];
+  renderDetailPreviews();
+}
+
+function renderDetailPreviews() {
+  const list = document.getElementById('detailImgList');
+  // 기존 URL 이미지
+  const existingHtml = currentDetailImages.map((url, i) => `
+    <div class="detail-img-item">
+      <img src="${url}"/>
+      <button class="detail-img-remove" onclick="removeExistingDetail(${i})">×</button>
+    </div>
+  `).join('');
+  // 새로 선택한 파일 미리보기
+  const newHtml = newDetailFiles.map((file, i) => {
+    const url = URL.createObjectURL(file);
+    return `
+      <div class="detail-img-item">
+        <img src="${url}"/>
+        <button class="detail-img-remove" onclick="removeNewDetail(${i})">×</button>
+      </div>
+    `;
+  }).join('');
+  list.innerHTML = existingHtml + newHtml;
+}
+
+function removeExistingDetail(i) {
+  currentDetailImages.splice(i, 1);
+  renderDetailPreviews();
+}
+
+function removeNewDetail(i) {
+  newDetailFiles.splice(i, 1);
+  renderDetailPreviews();
+}
+
+// 기부금 자동계산
 function calcDonation(input) {
-  const price = parseInt(input.value)||0;
-  document.getElementById('pDonation').value = Math.round(price * 0.03);
+  document.getElementById('pDonation').value = Math.round((parseInt(input.value)||0) * 0.03);
 }
 
 // 이미지 업로드
-async function uploadImage(file) {
+async function uploadImage(file, prefix='product') {
   const ext = file.name.split('.').pop();
-  const fileName = `product_${Date.now()}.${ext}`;
-  document.getElementById('uploadProgress').style.display = 'block';
-  const {data, error} = await _supabase.storage.from('products').upload(fileName, file, {upsert:true});
-  document.getElementById('uploadProgress').style.display = 'none';
-  if(error) { alert('이미지 업로드 실패: '+error.message); return null; }
+  const fileName = `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2,5)}.${ext}`;
+  const {error} = await _supabase.storage.from('products').upload(fileName, file, {upsert:true});
+  if(error) { alert('업로드 실패: '+error.message); return null; }
   const {data:{publicUrl}} = _supabase.storage.from('products').getPublicUrl(fileName);
   return publicUrl;
 }
@@ -292,6 +342,8 @@ async function loadProducts() {
 function openProductModal() {
   editingProductId = null;
   currentImageUrl = null;
+  currentDetailImages = [];
+  newDetailFiles = [];
   document.getElementById('productModalTitle').textContent = '상품 추가';
   document.getElementById('pName').value='';
   document.getElementById('pPrice').value='';
@@ -300,8 +352,10 @@ function openProductModal() {
   document.getElementById('pDonation').value='';
   document.getElementById('pDescription').value='';
   document.getElementById('pImageFile').value='';
+  document.getElementById('pDetailFiles').value='';
   document.getElementById('imgPreview').style.display='none';
   document.getElementById('imgPlaceholder').style.display='block';
+  document.getElementById('detailImgList').innerHTML='';
   document.getElementById('productModal').classList.add('open');
 }
 
@@ -310,6 +364,10 @@ async function editProduct(id) {
   if(!data) return;
   editingProductId = id;
   currentImageUrl = data.image_url||null;
+  // 기존 상세 이미지 파싱
+  try { currentDetailImages = data.detail_images ? JSON.parse(data.detail_images) : []; }
+  catch { currentDetailImages = []; }
+  newDetailFiles = [];
   document.getElementById('productModalTitle').textContent = '상품 수정';
   document.getElementById('pName').value=data.name||'';
   document.getElementById('pPrice').value=data.price||'';
@@ -318,6 +376,8 @@ async function editProduct(id) {
   document.getElementById('pBadge').value=data.badge||'';
   document.getElementById('pDonation').value=data.donation_amount||'';
   document.getElementById('pDescription').value=data.description||'';
+  document.getElementById('pImageFile').value='';
+  document.getElementById('pDetailFiles').value='';
   if(data.image_url){
     document.getElementById('imgPreview').src=data.image_url;
     document.getElementById('imgPreview').style.display='block';
@@ -326,17 +386,30 @@ async function editProduct(id) {
     document.getElementById('imgPreview').style.display='none';
     document.getElementById('imgPlaceholder').style.display='block';
   }
+  renderDetailPreviews();
   document.getElementById('productModal').classList.add('open');
 }
 
 async function saveProduct() {
-  const fileInput = document.getElementById('pImageFile');
+  // 메인 이미지
   let imageUrl = currentImageUrl;
-
-  // 새 이미지가 선택된 경우 업로드
-  if(fileInput.files[0]) {
-    imageUrl = await uploadImage(fileInput.files[0]);
+  const mainFile = document.getElementById('pImageFile').files[0];
+  if(mainFile) {
+    document.getElementById('uploadProgress').style.display='block';
+    imageUrl = await uploadImage(mainFile, 'main');
+    document.getElementById('uploadProgress').style.display='none';
     if(!imageUrl) return;
+  }
+
+  // 상세 이미지 업로드
+  let detailUrls = [...currentDetailImages];
+  if(newDetailFiles.length > 0) {
+    document.getElementById('uploadProgressDetail').style.display='block';
+    for(const file of newDetailFiles) {
+      const url = await uploadImage(file, 'detail');
+      if(url) detailUrls.push(url);
+    }
+    document.getElementById('uploadProgressDetail').style.display='none';
   }
 
   const product = {
@@ -348,6 +421,7 @@ async function saveProduct() {
     donation_amount: parseInt(document.getElementById('pDonation').value)||0,
     description: document.getElementById('pDescription').value,
     image_url: imageUrl,
+    detail_images: detailUrls.length > 0 ? JSON.stringify(detailUrls) : null,
   };
 
   if(!product.name||!product.price){alert('상품명과 가격은 필수예요!');return;}
