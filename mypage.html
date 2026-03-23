@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>마이페이지 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--cr:#fdf8f5;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;}
+.topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;}
+.topbar span{font-size:11px;color:#fff;font-weight:300;}
+.topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo-img{height:52px;object-fit:contain;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;}
+nav a:hover{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.sbox{display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;}
+.sbox input{border:none;background:transparent;font-size:12px;outline:none;width:120px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);}
+.ibt{font-size:16px;cursor:pointer;color:#bbb;}
+.btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
+.user-name{font-size:13px;color:var(--pk);font-weight:500;cursor:pointer;display:none;}
+.user-name:hover{text-decoration:underline;}
+
+.page-wrap{max-width:900px;margin:40px auto;padding:0 48px;display:grid;grid-template-columns:220px 1fr;gap:28px;}
+
+/* 사이드바 */
+.sidebar{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:24px;height:fit-content;}
+.user-card{text-align:center;padding-bottom:20px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
+.user-avatar{width:64px;height:64px;background:var(--pkp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;}
+.user-card-name{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#2a1220;margin-bottom:4px;}
+.user-card-email{font-size:11px;color:var(--muted);font-weight:300;}
+.side-menu{}
+.side-item{padding:10px 12px;font-size:13px;color:#888;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px;transition:all .15s;font-weight:500;}
+.side-item:hover{background:var(--pkbg);color:var(--pk);}
+.side-item.active{background:var(--pkbg);color:var(--pk);}
+.side-icon{font-size:15px;}
+
+/* 메인 */
+.main-content{}
+.tab{display:none;}
+.tab.active{display:block;}
+.card{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:28px;margin-bottom:20px;}
+.card-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}
+
+/* 주문 내역 */
+.order-card{border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:16px;}
+.order-header{background:var(--pkbg);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
+.order-date{font-size:12px;color:var(--muted);font-weight:300;}
+.order-status{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.s-done{background:#e8f5e9;color:#2e7d32;}
+.s-ship{background:#e3f2fd;color:#1565c0;}
+.s-ready{background:#fff3e0;color:#e65100;}
+.s-complete{background:var(--pkp);color:var(--pk);}
+.order-body{padding:16px 18px;display:flex;align-items:center;gap:14px;}
+.order-img{width:56px;height:56px;background:var(--pkp);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;}
+.order-img img{width:100%;height:100%;object-fit:cover;}
+.order-info{flex:1;}
+.order-name{font-size:14px;font-weight:500;color:#2a1220;margin-bottom:4px;}
+.order-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);}
+.order-don{font-size:11px;color:var(--pkm);margin-top:2px;font-weight:300;}
+.empty-orders{text-align:center;padding:60px;color:var(--muted);}
+.empty-orders .icon{font-size:48px;margin-bottom:16px;}
+
+/* 배송지 */
+.addr-card{border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px;position:relative;}
+.addr-default{position:absolute;top:14px;right:14px;font-size:10px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:20px;}
+.addr-name{font-size:14px;font-weight:600;color:#2a1220;margin-bottom:6px;}
+.addr-info{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.form-group input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.form-group input:focus{border-color:var(--pk);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-primary{background:var(--pk);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;}
+.btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.save-msg{font-size:12px;color:#2a7a5a;margin-top:8px;display:none;}
+
+/* 로그인 필요 */
+.login-required{text-align:center;padding:80px;color:var(--muted);}
+.login-required .icon{font-size:64px;margin-bottom:16px;}
+.login-required p{font-size:15px;margin-bottom:24px;}
+.btn-login{background:var(--pk);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+footer{background:#2a1220;padding:48px;margin-top:80px;}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
+.f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;}
+.f-sns{display:flex;gap:8px;}
+.f-sns a{width:32px;height:32px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;}
+.f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;}
+.f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;}
+.fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
+.f-copy{font-size:11px;color:#6a4a5a;}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span><a>후원 현황 보기 →</a></div>
+<header>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
+    <div class="logo" id="lt" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
+    <span class="user-name" id="userNameDisplay" onclick="location.href='mypage.html'"></span>
+    <button class="btn-join" id="btnJoin" onclick="location.href='mypage.html'">가입하기</button>
+    <button class="btn-logout" id="btnLogout" onclick="doSignOut()">로그아웃</button>
+  </div>
+</header>
+
+<div class="page-wrap" id="pageWrap" style="display:none;">
+  <div class="sidebar">
+    <div class="user-card">
+      <div class="user-avatar">🐾</div>
+      <div class="user-card-name" id="sidebarName">-</div>
+      <div class="user-card-email" id="sidebarEmail">-</div>
+    </div>
+    <div class="side-menu">
+      <div class="side-item active" onclick="showTab('orders',this)"><span class="side-icon">🛍️</span> 주문 내역</div>
+      <div class="side-item" onclick="showTab('address',this)"><span class="side-icon">📍</span> 배송지 관리</div>
+      <div class="side-item" onclick="showTab('profile',this)"><span class="side-icon">👤</span> 회원 정보</div>
+    </div>
+  </div>
+  <div class="main-content">
+    <!-- 주문 내역 -->
+    <div class="tab active" id="tab-orders">
+      <div class="card">
+        <div class="card-title">🛍️ 주문 내역</div>
+        <div id="orderList"><div class="empty-orders"><div class="icon">🛍️</div><p>주문 내역을 불러오는 중...</p></div></div>
+      </div>
+    </div>
+    <!-- 배송지 관리 -->
+    <div class="tab" id="tab-address">
+      <div class="card">
+        <div class="card-title">📍 기본 배송지</div>
+        <div class="form-group"><label>받는 분</label><input type="text" id="addrName" placeholder="홍길동"/></div>
+        <div class="form-group"><label>연락처</label><input type="tel" id="addrPhone" placeholder="010-0000-0000"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>우편번호</label><input type="text" id="addrZipcode" placeholder="12345"/></div>
+          <div class="form-group"><label>&nbsp;</label><button onclick="searchAddr()" style="width:100%;padding:10px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">주소 검색</button></div>
+        </div>
+        <div class="form-group"><label>주소</label><input type="text" id="addrAddress" placeholder="기본 주소"/></div>
+        <div class="form-group"><label>상세 주소</label><input type="text" id="addrDetail" placeholder="상세 주소 (동/호수)"/></div>
+        <button class="btn-primary" onclick="saveAddress()">배송지 저장</button>
+        <div class="save-msg" id="addrSaveMsg">✅ 저장됐어요!</div>
+      </div>
+    </div>
+    <!-- 회원 정보 -->
+    <div class="tab" id="tab-profile">
+      <div class="card">
+        <div class="card-title">👤 회원 정보</div>
+        <div class="form-group"><label>이름</label><input type="text" id="profileName" placeholder="홍길동"/></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="profileEmail" placeholder="hello@wellypet.co.kr" readonly style="background:#f8f8f8;color:#aaa;"/></div>
+        <div class="form-group"><label>연락처</label><input type="tel" id="profilePhone" placeholder="010-0000-0000"/></div>
+        <button class="btn-primary" onclick="saveProfile()">저장</button>
+        <div class="save-msg" id="profileSaveMsg">✅ 저장됐어요!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 로그인 필요 -->
+<div id="loginRequired" style="display:none;">
+  <div class="login-required">
+    <div class="icon">🔒</div>
+    <p>로그인이 필요해요</p>
+    <button class="btn-login" onclick="showLoginModal()">로그인하기</button>
+  </div>
+</div>
+
+<!-- 로그인 모달 -->
+<div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;">
+    <button onclick="closeModal()" style="float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;">×</button>
+    <h2 style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:20px;">로그인 🐾</h2>
+    <div id="msgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;">이메일</label><input type="email" id="loginEmail" placeholder="hello@wellypet.co.kr" style="width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;"/></div>
+    <div style="margin-bottom:14px;"><label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;">비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요" style="width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;"/></div>
+    <button onclick="doSignIn()" style="width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">로그인</button>
+  </div>
+</div>
+
+<footer>
+  <div class="ft">
+    <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
+    <div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div>
+    <div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div>
+    <div class="f-col"><h4>고객센터</h4><a>공지사항</a><a>자주 묻는 질문</a><a>1:1 문의</a></div>
+  </div>
+  <div class="fb"><div class="f-biz">상호: 웰리펫 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div><div class="f-copy">© 2025 Wellipet. All rights reserved.</div></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser=null;
+
+function updateHeader(user){
+  currentUser=user;
+  const btnJoin=document.getElementById('btnJoin');
+  const btnLogout=document.getElementById('btnLogout');
+  const userNameDisplay=document.getElementById('userNameDisplay');
+  if(user){
+    const name=user.user_metadata?.name||user.email.split('@')[0];
+    btnJoin.style.display='none';
+    userNameDisplay.style.display='inline';
+    userNameDisplay.textContent=name+'님 🐾';
+    btnLogout.style.display='inline-block';
+    document.getElementById('sidebarName').textContent=name;
+    document.getElementById('sidebarEmail').textContent=user.email;
+    document.getElementById('profileName').value=name;
+    document.getElementById('profileEmail').value=user.email;
+    document.getElementById('pageWrap').style.display='grid';
+    document.getElementById('loginRequired').style.display='none';
+    loadOrders(user.email);
+    loadProfile(user.id);
+  } else {
+    btnJoin.style.display='inline-block';
+    userNameDisplay.style.display='none';
+    btnLogout.style.display='none';
+    document.getElementById('pageWrap').style.display='none';
+    document.getElementById('loginRequired').style.display='block';
+  }
+}
+
+_supabase.auth.getSession().then(({data:{session}})=>{updateHeader(session?.user||null);});
+_supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?.user||null);});
+
+async function doSignOut(){
+  await _supabase.auth.signOut();
+  location.href='/';
+}
+
+// 주문 내역
+async function loadOrders(email){
+  const {data}=await _supabase.from('orders').select('*').eq('customer_email',email).order('created_at',{ascending:false});
+  const list=document.getElementById('orderList');
+  if(!data||data.length===0){
+    list.innerHTML='<div class="empty-orders"><div class="icon">🛍️</div><p>아직 주문 내역이 없어요</p></div>';
+    return;
+  }
+  list.innerHTML=data.map(o=>{
+    const statusClass=o.status==='배송완료'?'s-done':o.status==='배송중'?'s-ship':o.status==='배송준비'?'s-ready':'s-complete';
+    return `
+      <div class="order-card">
+        <div class="order-header">
+          <span class="order-date">${new Date(o.created_at).toLocaleDateString('ko-KR')} 주문</span>
+          <span class="order-status ${statusClass}">${o.status||'결제완료'}</span>
+        </div>
+        <div class="order-body">
+          <div class="order-img">🐾</div>
+          <div class="order-info">
+            <div class="order-name">${o.product_name||'-'}</div>
+            <div class="order-price">${Number(o.amount||0).toLocaleString()}원</div>
+            <div class="order-don">🏠 ${Number(Math.round((o.amount||0)*0.03)).toLocaleString()}원 기부됨</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 프로필/배송지 불러오기
+async function loadProfile(userId){
+  const {data}=await _supabase.from('profiles').select('*').eq('user_id',userId).single();
+  if(data){
+    document.getElementById('profilePhone').value=data.phone||'';
+    document.getElementById('addrName').value=data.name||'';
+    document.getElementById('addrPhone').value=data.phone||'';
+    document.getElementById('addrZipcode').value=data.zipcode||'';
+    document.getElementById('addrAddress').value=data.address||'';
+    document.getElementById('addrDetail').value=data.address_detail||'';
+  }
+}
+
+// 배송지 저장
+async function saveAddress(){
+  if(!currentUser)return;
+  const profile={
+    user_id:currentUser.id,
+    name:document.getElementById('addrName').value,
+    phone:document.getElementById('addrPhone').value,
+    zipcode:document.getElementById('addrZipcode').value,
+    address:document.getElementById('addrAddress').value,
+    address_detail:document.getElementById('addrDetail').value,
+  };
+  await _supabase.from('profiles').upsert(profile,{onConflict:'user_id'});
+  document.getElementById('addrSaveMsg').style.display='block';
+  setTimeout(()=>document.getElementById('addrSaveMsg').style.display='none',2000);
+}
+
+// 회원 정보 저장
+async function saveProfile(){
+  if(!currentUser)return;
+  const name=document.getElementById('profileName').value;
+  const phone=document.getElementById('profilePhone').value;
+  await _supabase.auth.updateUser({data:{name}});
+  await _supabase.from('profiles').upsert({user_id:currentUser.id,name,phone},{onConflict:'user_id'});
+  document.getElementById('sidebarName').textContent=name;
+  document.getElementById('profileSaveMsg').style.display='block';
+  setTimeout(()=>document.getElementById('profileSaveMsg').style.display='none',2000);
+}
+
+function showTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.side-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+function searchAddr(){
+  new daum.Postcode({
+    oncomplete:function(data){
+      document.getElementById('addrZipcode').value=data.zonecode;
+      document.getElementById('addrAddress').value=data.roadAddress||data.jibunAddress;
+      document.getElementById('addrDetail').focus();
+    }
+  }).open();
+}
+
+function showLoginModal(){document.getElementById('authModal').style.display='flex';}
+function closeModal(){document.getElementById('authModal').style.display='none';}
+async function doSignIn(){
+  const email=document.getElementById('loginEmail').value;
+  const pw=document.getElementById('loginPw').value;
+  const{error}=await _supabase.auth.signInWithPassword({email,password:pw});
+  if(error){
+    const box=document.getElementById('msgBox');
+    box.style.display='block';box.style.background='#fff0f0';box.style.color='#e05050';
+    box.style.border='1px solid #ffd0d0';box.textContent='이메일 또는 비밀번호가 틀렸어요.';
+    return;
+  }
+  closeModal();
+}
+</script>
+</body>
+</html>
