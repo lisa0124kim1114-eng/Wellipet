@@ -15,7 +15,6 @@ header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:ce
 .header-right{display:flex;align-items:center;gap:16px;}
 .header-right a{font-size:12px;color:#a08090;text-decoration:none;}
 .header-right a:hover{color:var(--pkl);}
-
 .layout{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 64px);}
 .sidebar{background:#fff;border-right:1px solid var(--bd);padding:24px 0;}
 .nav-item{padding:12px 24px;font-size:13px;color:#888;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;font-weight:500;}
@@ -23,43 +22,29 @@ header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:ce
 .nav-item.active{background:var(--pkbg);color:var(--pk);border-right:3px solid var(--pk);}
 .nav-icon{font-size:16px;}
 .nav-divider{height:1px;background:var(--bd);margin:12px 24px;}
-
 .main{padding:32px;}
 .page{display:none;}
 .page.active{display:block;}
-
 .page-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:24px;}
-
-/* 대시보드 */
 .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
 .dash-card{background:#fff;border-radius:14px;padding:22px;border:1px solid var(--bd);}
 .dash-card .icon{font-size:28px;margin-bottom:10px;}
 .dash-card .num{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:var(--pk);margin-bottom:4px;}
 .dash-card .label{font-size:12px;color:var(--muted);font-weight:300;}
-
-/* 상품 관리 */
 .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
 .btn-primary{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;}
 .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
 .table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;}
 table{width:100%;border-collapse:collapse;}
 th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);}
 td{padding:14px 16px;font-size:13px;border-bottom:1px solid #fafafa;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
-.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
-.badge-ready{background:#fff3e0;color:#e65100;}
-.badge-shipping{background:#e3f2fd;color:#1565c0;}
-.badge-done{background:#e8f5e9;color:#2e7d32;}
-.badge-cancel{background:#fce4ec;color:#c62828;}
-
-/* 모달 */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:500px;max-height:80vh;overflow-y:auto;}
+.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;}
 .modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}
 .form-group{margin-bottom:16px;}
 .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
@@ -68,17 +53,25 @@ tr:hover td{background:#fafafa;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 
-/* 검색 */
+/* 이미지 업로드 */
+.img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.img-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
+.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.img-preview{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:none;}
+.img-upload-icon{font-size:36px;margin-bottom:8px;}
+.img-upload-text{font-size:13px;color:var(--muted);}
+.img-upload-hint{font-size:11px;color:#bbb;margin-top:4px;}
+.upload-progress{font-size:12px;color:var(--pk);margin-top:8px;display:none;}
+
 .search-bar{display:flex;gap:10px;margin-bottom:20px;}
 .search-input{flex:1;padding:10px 16px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
 .search-input:focus{border-color:var(--pk);}
-
-/* 상태 선택 */
 .status-select{padding:6px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;cursor:pointer;}
-
 .empty-state{text-align:center;padding:60px;color:var(--muted);}
 .empty-state .icon{font-size:48px;margin-bottom:16px;}
 .empty-state p{font-size:14px;}
+.prod-thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);}
+.prod-thumb-placeholder{width:48px;height:48px;background:var(--pkbg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid var(--bd);}
 </style>
 </head>
 <body>
@@ -89,16 +82,14 @@ tr:hover td{background:#fafafa;}
     <a href="#" onclick="adminSignOut()">로그아웃</a>
   </div>
 </header>
-
 <div class="layout">
   <div class="sidebar">
-    <div class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">📊</span> 대시보드</div>
-    <div class="nav-item" onclick="showPage('products')"><span class="nav-icon">📦</span> 상품 관리</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> 대시보드</div>
+    <div class="nav-item" onclick="showPage('products',this)"><span class="nav-icon">📦</span> 상품 관리</div>
     <div class="nav-divider"></div>
-    <div class="nav-item" onclick="showPage('orders')"><span class="nav-icon">🛍️</span> 주문 관리</div>
-    <div class="nav-item" onclick="showPage('members')"><span class="nav-icon">👤</span> 회원 관리</div>
+    <div class="nav-item" onclick="showPage('orders',this)"><span class="nav-icon">🛍️</span> 주문 관리</div>
+    <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
   </div>
-
   <div class="main">
     <!-- 대시보드 -->
     <div class="page active" id="page-dashboard">
@@ -106,11 +97,10 @@ tr:hover td{background:#fafafa;}
       <div class="dash-grid">
         <div class="dash-card"><div class="icon">📦</div><div class="num" id="totalProducts">0</div><div class="label">등록 상품 수</div></div>
         <div class="dash-card"><div class="icon">🛍️</div><div class="num" id="totalOrders">0</div><div class="label">총 주문 수</div></div>
-        <div class="dash-card"><div class="icon">👤</div><div class="num" id="totalMembers">0</div><div class="label">총 회원 수</div></div>
+        <div class="dash-card"><div class="icon">👤</div><div class="num" id="totalMembers">-</div><div class="label">총 회원 수</div></div>
         <div class="dash-card"><div class="icon">🏠</div><div class="num">1,247,000원</div><div class="label">이번 달 기부금</div></div>
       </div>
     </div>
-
     <!-- 상품 관리 -->
     <div class="page" id="page-products">
       <div class="page-title">📦 상품 관리</div>
@@ -121,14 +111,7 @@ tr:hover td{background:#fafafa;}
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>
-              <th>이모지</th>
-              <th>상품명</th>
-              <th>카테고리</th>
-              <th>가격</th>
-              <th>기부금</th>
-              <th>관리</th>
-            </tr>
+            <tr><th>이미지</th><th>상품명</th><th>카테고리</th><th>가격</th><th>기부금</th><th>관리</th></tr>
           </thead>
           <tbody id="productTable">
             <tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr>
@@ -136,7 +119,6 @@ tr:hover td{background:#fafafa;}
         </table>
       </div>
     </div>
-
     <!-- 주문 관리 -->
     <div class="page" id="page-orders">
       <div class="page-title">🛍️ 주문 관리</div>
@@ -147,15 +129,7 @@ tr:hover td{background:#fafafa;}
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>
-              <th>주문일</th>
-              <th>주문자</th>
-              <th>연락처</th>
-              <th>배송지</th>
-              <th>상품</th>
-              <th>금액</th>
-              <th>상태</th>
-            </tr>
+            <tr><th>주문일</th><th>주문자</th><th>연락처</th><th>배송지</th><th>상품</th><th>금액</th><th>상태</th></tr>
           </thead>
           <tbody id="orderTable">
             <tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>
@@ -163,26 +137,16 @@ tr:hover td{background:#fafafa;}
         </table>
       </div>
     </div>
-
     <!-- 회원 관리 -->
     <div class="page" id="page-members">
       <div class="page-title">👤 회원 관리</div>
-      <div class="search-bar">
-        <input class="search-input" placeholder="이름 또는 이메일로 검색" id="memberSearch"/>
-        <button class="btn-secondary" onclick="loadMembers()">검색</button>
-      </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>
-              <th>가입일</th>
-              <th>이름</th>
-              <th>이메일</th>
-              <th>마지막 로그인</th>
-            </tr>
+            <tr><th>가입일</th><th>이름</th><th>이메일</th><th>마지막 로그인</th></tr>
           </thead>
           <tbody id="memberTable">
-            <tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 정보를 불러오는 중...</p></div></td></tr>
+            <tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase 대시보드 → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr>
           </tbody>
         </table>
       </div>
@@ -194,9 +158,25 @@ tr:hover td{background:#fafafa;}
 <div class="modal-overlay" id="productModal">
   <div class="modal">
     <div class="modal-title" id="productModalTitle">상품 추가</div>
+
+    <!-- 이미지 업로드 -->
+    <div class="form-group">
+      <label>상품 이미지</label>
+      <div class="img-upload-area" id="imgUploadArea">
+        <input type="file" id="pImageFile" accept="image/*" onchange="previewImage(this)"/>
+        <img id="imgPreview" class="img-preview"/>
+        <div id="imgPlaceholder">
+          <div class="img-upload-icon">📷</div>
+          <div class="img-upload-text">클릭하거나 이미지를 드래그해서 올려줘요</div>
+          <div class="img-upload-hint">JPG, PNG, WEBP 지원 · 최대 5MB</div>
+        </div>
+      </div>
+      <div class="upload-progress" id="uploadProgress">⏳ 업로드 중...</div>
+    </div>
+
     <div class="form-group"><label>상품명</label><input type="text" id="pName" placeholder="웰리펫 순면 배변패드 50매"/></div>
     <div class="form-row">
-      <div class="form-group"><label>판매가 (원)</label><input type="number" id="pPrice" placeholder="18900"/></div>
+      <div class="form-group"><label>판매가 (원)</label><input type="number" id="pPrice" placeholder="18900" oninput="calcDonation(this)"/></div>
       <div class="form-group"><label>정가 (원, 없으면 비워요)</label><input type="number" id="pOriginalPrice" placeholder="23000"/></div>
     </div>
     <div class="form-row">
@@ -208,9 +188,6 @@ tr:hover td{background:#fafafa;}
           <option value="장난감·용품">장난감·용품</option>
         </select>
       </div>
-      <div class="form-group"><label>이모지</label><input type="text" id="pEmoji" placeholder="🧻"/></div>
-    </div>
-    <div class="form-row">
       <div class="form-group"><label>뱃지 (선택)</label>
         <select id="pBadge">
           <option value="">없음</option>
@@ -219,9 +196,11 @@ tr:hover td{background:#fafafa;}
           <option value="SALE">SALE</option>
         </select>
       </div>
-      <div class="form-group"><label>기부금 (원)</label><input type="number" id="pDonation" placeholder="567"/></div>
     </div>
-    <div class="form-group"><label>상품 설명</label><input type="text" id="pDescription" placeholder="처음 강아지를 맞이하는 분들을 위한..."/></div>
+    <div class="form-row">
+      <div class="form-group"><label>기부금 (원, 자동계산)</label><input type="number" id="pDonation" placeholder="567"/></div>
+      <div class="form-group"><label>상품 설명</label><input type="text" id="pDescription" placeholder="상품 설명을 입력해줘요"/></div>
+    </div>
     <div class="modal-btns">
       <button class="btn-secondary" onclick="closeProductModal()">취소</button>
       <button class="btn-primary" onclick="saveProduct()">저장</button>
@@ -236,15 +215,15 @@ const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let editingProductId = null;
+let currentImageUrl = null;
 
-function showPage(name) {
+function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  el.classList.add('active');
   if(name==='products') loadProducts();
   if(name==='orders') loadOrders();
-  if(name==='members') loadMembers();
   if(name==='dashboard') loadDashboard();
 }
 
@@ -255,7 +234,39 @@ async function loadDashboard() {
   document.getElementById('totalOrders').textContent = oc||0;
 }
 
-// 상품 관리
+// 이미지 미리보기
+function previewImage(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('imgPreview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    document.getElementById('imgPlaceholder').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// 가격 입력 시 기부금 자동계산
+function calcDonation(input) {
+  const price = parseInt(input.value)||0;
+  document.getElementById('pDonation').value = Math.round(price * 0.03);
+}
+
+// 이미지 업로드
+async function uploadImage(file) {
+  const ext = file.name.split('.').pop();
+  const fileName = `product_${Date.now()}.${ext}`;
+  document.getElementById('uploadProgress').style.display = 'block';
+  const {data, error} = await _supabase.storage.from('products').upload(fileName, file, {upsert:true});
+  document.getElementById('uploadProgress').style.display = 'none';
+  if(error) { alert('이미지 업로드 실패: '+error.message); return null; }
+  const {data:{publicUrl}} = _supabase.storage.from('products').getPublicUrl(fileName);
+  return publicUrl;
+}
+
+// 상품 목록
 async function loadProducts() {
   const {data} = await _supabase.from('products').select('*').order('created_at',{ascending:false});
   const tbody = document.getElementById('productTable');
@@ -265,11 +276,11 @@ async function loadProducts() {
   }
   tbody.innerHTML = data.map(p=>`
     <tr>
-      <td style="font-size:24px;">${p.emoji||'📦'}</td>
-      <td><strong>${p.name}</strong>${p.badge?`<span class="badge badge-ready" style="margin-left:8px;">${p.badge}</span>`:''}</td>
+      <td>${p.image_url?`<img src="${p.image_url}" class="prod-thumb"/>`:`<div class="prod-thumb-placeholder">📦</div>`}</td>
+      <td><strong>${p.name}</strong>${p.badge?`<span style="margin-left:8px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;">${p.badge}</span>`:''}</td>
       <td>${p.category}</td>
       <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
-      <td>${Number(p.donation_amount).toLocaleString()}원</td>
+      <td>${Number(p.donation_amount||0).toLocaleString()}원</td>
       <td style="display:flex;gap:6px;">
         <button class="btn-edit" onclick="editProduct(${p.id})">수정</button>
         <button class="btn-danger" onclick="deleteProduct(${p.id})">삭제</button>
@@ -278,20 +289,19 @@ async function loadProducts() {
   `).join('');
 }
 
-function openProductModal(id) {
+function openProductModal() {
   editingProductId = null;
+  currentImageUrl = null;
   document.getElementById('productModalTitle').textContent = '상품 추가';
   document.getElementById('pName').value='';
   document.getElementById('pPrice').value='';
   document.getElementById('pOriginalPrice').value='';
-  document.getElementById('pEmoji').value='';
   document.getElementById('pBadge').value='';
   document.getElementById('pDonation').value='';
-document.getElementById('pPrice').addEventListener('input',function(){
-  const price = parseInt(this.value)||0;
-  document.getElementById('pDonation').value = Math.round(price*0.03);
-});
   document.getElementById('pDescription').value='';
+  document.getElementById('pImageFile').value='';
+  document.getElementById('imgPreview').style.display='none';
+  document.getElementById('imgPlaceholder').style.display='block';
   document.getElementById('productModal').classList.add('open');
 }
 
@@ -299,30 +309,49 @@ async function editProduct(id) {
   const {data} = await _supabase.from('products').select('*').eq('id',id).single();
   if(!data) return;
   editingProductId = id;
+  currentImageUrl = data.image_url||null;
   document.getElementById('productModalTitle').textContent = '상품 수정';
   document.getElementById('pName').value=data.name||'';
   document.getElementById('pPrice').value=data.price||'';
   document.getElementById('pOriginalPrice').value=data.original_price||'';
-  document.getElementById('pEmoji').value=data.emoji||'';
   document.getElementById('pCategory').value=data.category||'배변패드';
   document.getElementById('pBadge').value=data.badge||'';
   document.getElementById('pDonation').value=data.donation_amount||'';
   document.getElementById('pDescription').value=data.description||'';
+  if(data.image_url){
+    document.getElementById('imgPreview').src=data.image_url;
+    document.getElementById('imgPreview').style.display='block';
+    document.getElementById('imgPlaceholder').style.display='none';
+  } else {
+    document.getElementById('imgPreview').style.display='none';
+    document.getElementById('imgPlaceholder').style.display='block';
+  }
   document.getElementById('productModal').classList.add('open');
 }
 
 async function saveProduct() {
+  const fileInput = document.getElementById('pImageFile');
+  let imageUrl = currentImageUrl;
+
+  // 새 이미지가 선택된 경우 업로드
+  if(fileInput.files[0]) {
+    imageUrl = await uploadImage(fileInput.files[0]);
+    if(!imageUrl) return;
+  }
+
   const product = {
     name: document.getElementById('pName').value,
     price: parseInt(document.getElementById('pPrice').value)||0,
     original_price: parseInt(document.getElementById('pOriginalPrice').value)||null,
     category: document.getElementById('pCategory').value,
-    emoji: document.getElementById('pEmoji').value,
     badge: document.getElementById('pBadge').value||null,
     donation_amount: parseInt(document.getElementById('pDonation').value)||0,
     description: document.getElementById('pDescription').value,
+    image_url: imageUrl,
   };
+
   if(!product.name||!product.price){alert('상품명과 가격은 필수예요!');return;}
+
   if(editingProductId){
     await _supabase.from('products').update(product).eq('id',editingProductId);
   } else {
@@ -338,7 +367,9 @@ async function deleteProduct(id) {
   loadProducts();
 }
 
-function closeProductModal(){document.getElementById('productModal').classList.remove('open');}
+function closeProductModal(){
+  document.getElementById('productModal').classList.remove('open');
+}
 document.getElementById('productModal').addEventListener('click',function(e){if(e.target===this)closeProductModal();});
 
 // 주문 관리
@@ -375,17 +406,6 @@ async function loadOrders() {
 
 async function updateOrderStatus(id, status) {
   await _supabase.from('orders').update({status}).eq('id',id);
-}
-
-// 회원 관리
-async function loadMembers() {
-  const {data, error} = await _supabase.auth.admin?.listUsers() || {};
-  const tbody = document.getElementById('memberTable');
-  
-  // auth.admin은 service key 필요 - 대신 메시지 표시
-  tbody.innerHTML=`<tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase 대시보드 → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr>`;
-  
-  document.getElementById('totalMembers').textContent = '확인필요';
 }
 
 async function adminSignOut(){
