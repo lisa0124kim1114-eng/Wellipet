@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>보호소 관리 · Wellipet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;}
+
+/* 로그인 화면 */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--pkbg);}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;border:1px solid var(--bd);}
+.login-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);margin-bottom:4px;}
+.login-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:28px;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;}
+.fg input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.fg input:focus{border-color:var(--pk);}
+.btn-login{width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;}
+.login-err{font-size:12px;color:#e05050;margin-top:8px;display:none;}
+
+/* 관리 화면 */
+.admin-wrap{display:none;}
+header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.admin-logo{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pkl);}
+.admin-logo span{color:#fff;font-weight:300;font-size:13px;margin-left:10px;}
+.header-right{display:flex;align-items:center;gap:16px;}
+.header-right a{font-size:12px;color:#a08090;text-decoration:none;cursor:pointer;}
+.header-right a:hover{color:var(--pkl);}
+.main{padding:32px 40px;}
+.page-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:8px;}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.btn-primary{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;}
+.btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);}
+td{padding:14px 16px;font-size:13px;border-bottom:1px solid #fafafa;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.dog-thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--bd);}
+.dog-thumb-placeholder{width:56px;height:56px;background:var(--pkbg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--bd);}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.s-wait{background:#fff3e0;color:#e65100;}
+.s-new{background:var(--pkp);color:var(--pk);}
+.s-urgent{background:#fce4ec;color:#c62828;}
+.s-done{background:#e8f5e9;color:#2e7d32;}
+
+/* 모달 */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;}
+.modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--pk);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;position:relative;transition:all .2s;}
+.img-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
+.img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.img-preview{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:none;}
+.upload-progress{font-size:12px;color:var(--pk);margin-top:6px;display:none;}
+.empty-state{text-align:center;padding:60px;color:var(--muted);}
+.empty-state .icon{font-size:48px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<!-- 로그인 화면 -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">Wellipet 🐾</div>
+    <div class="login-sub">보호소 관리자 로그인</div>
+    <div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="shelter@wellypet.co.kr"/></div>
+    <div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해줘요"/></div>
+    <button class="btn-login" onclick="shelterLogin()">로그인</button>
+    <div class="login-err" id="loginErr">이메일 또는 비밀번호가 틀렸어요.</div>
+  </div>
+</div>
+
+<!-- 관리 화면 -->
+<div class="admin-wrap" id="adminWrap">
+  <header>
+    <div class="admin-logo">Wellipet <span>보호소 관리</span></div>
+    <div class="header-right">
+      <a href="/adoption.html">← 입양 페이지 보기</a>
+      <a onclick="shelterLogout()">로그아웃</a>
+    </div>
+  </header>
+  <div class="main">
+    <div class="page-title">🐾 강아지 입양 관리</div>
+    <div class="page-sub">입양을 기다리는 강아지 정보를 등록하고 관리해요</div>
+    <div class="toolbar">
+      <div style="font-size:13px;color:var(--muted);" id="dogCount">등록된 강아지: 0마리</div>
+      <button class="btn-primary" onclick="openDogModal()">+ 강아지 등록</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>사진</th><th>이름</th><th>견종/나이/성별</th><th>크기/지역</th><th>상태</th><th>관리</th></tr>
+        </thead>
+        <tbody id="dogTable">
+          <tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 강아지 등록/수정 모달 -->
+<div class="modal-overlay" id="dogModal">
+  <div class="modal">
+    <div class="modal-title" id="dogModalTitle">강아지 등록</div>
+    <div class="form-group">
+      <label>📷 사진</label>
+      <div class="img-upload-area">
+        <input type="file" id="dogImageFile" accept="image/*" onchange="previewDogImage(this)"/>
+        <img id="dogImgPreview" class="img-preview"/>
+        <div id="dogImgPlaceholder">
+          <div style="font-size:28px;margin-bottom:6px;">📷</div>
+          <div style="font-size:12px;color:var(--muted);">클릭하거나 드래그해서 올려줘요</div>
+        </div>
+      </div>
+      <div class="upload-progress" id="dogUploadProgress">⏳ 업로드 중...</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>이름</label><input type="text" id="dName" placeholder="두부"/></div>
+      <div class="form-group"><label>견종</label><input type="text" id="dBreed" placeholder="믹스견"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>나이</label><input type="text" id="dAge" placeholder="3살"/></div>
+      <div class="form-group"><label>성별</label>
+        <select id="dGender">
+          <option value="수컷">수컷</option>
+          <option value="암컷">암컷</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>크기</label>
+        <select id="dSize">
+          <option value="소형">소형</option>
+          <option value="중형">중형</option>
+          <option value="대형">대형</option>
+        </select>
+      </div>
+      <div class="form-group"><label>지역</label><input type="text" id="dLocation" placeholder="서울 마포구"/></div>
+    </div>
+    <div class="form-group"><label>소개</label><textarea id="dDesc" placeholder="활발하고 사람을 좋아해요." rows="3"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>태그 (쉼표로 구분)</label><input type="text" id="dTags" placeholder="사교적,훈련완료,중성화"/></div>
+      <div class="form-group"><label>상태</label>
+        <select id="dStatus">
+          <option value="신규">신규</option>
+          <option value="대기중">대기중</option>
+          <option value="긴급">긴급</option>
+          <option value="입양완료">입양완료</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeDogModal()">취소</button>
+      <button class="btn-primary" onclick="saveDog()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let editingDogId = null;
+let currentDogImageUrl = null;
+
+// 로그인 확인
+_supabase.auth.getSession().then(({data:{session}})=>{
+  if(session) showAdmin();
+});
+
+async function shelterLogin(){
+  const email=document.getElementById('loginEmail').value;
+  const pw=document.getElementById('loginPw').value;
+  const {error}=await _supabase.auth.signInWithPassword({email,password:pw});
+  if(error){document.getElementById('loginErr').style.display='block';return;}
+  showAdmin();
+}
+
+function showAdmin(){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('adminWrap').style.display='block';
+  loadDogs();
+}
+
+async function shelterLogout(){
+  await _supabase.auth.signOut();
+  location.reload();
+}
+
+// 강아지 목록
+async function loadDogs(){
+  const {data}=await _supabase.from('dogs').select('*').order('created_at',{ascending:false});
+  const tbody=document.getElementById('dogTable');
+  document.getElementById('dogCount').textContent=`등록된 강아지: ${data?.length||0}마리`;
+  if(!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML=data.map(d=>`
+    <tr>
+      <td>${d.image_url?`<img src="${d.image_url}" class="dog-thumb"/>`:`<div class="dog-thumb-placeholder">🐶</div>`}</td>
+      <td><strong>${d.name}</strong></td>
+      <td>${d.breed||'-'} · ${d.age||'-'} · ${d.gender||'-'}</td>
+      <td>${d.size||'-'} · ${d.location||'-'}</td>
+      <td><span class="status-badge ${d.status==='신규'?'s-new':d.status==='긴급'?'s-urgent':d.status==='입양완료'?'s-done':'s-wait'}">${d.status||'대기중'}</span></td>
+      <td style="display:flex;gap:6px;">
+        <button class="btn-edit" onclick="editDog(${d.id})">수정</button>
+        <button class="btn-danger" onclick="deleteDog(${d.id})">삭제</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openDogModal(){
+  editingDogId=null;currentDogImageUrl=null;
+  document.getElementById('dogModalTitle').textContent='강아지 등록';
+  document.getElementById('dName').value='';document.getElementById('dBreed').value='';
+  document.getElementById('dAge').value='';document.getElementById('dGender').value='수컷';
+  document.getElementById('dSize').value='소형';document.getElementById('dLocation').value='';
+  document.getElementById('dDesc').value='';document.getElementById('dTags').value='';
+  document.getElementById('dStatus').value='신규';
+  document.getElementById('dogImageFile').value='';
+  document.getElementById('dogImgPreview').style.display='none';
+  document.getElementById('dogImgPlaceholder').style.display='block';
+  document.getElementById('dogModal').classList.add('open');
+}
+
+async function editDog(id){
+  const {data}=await _supabase.from('dogs').select('*').eq('id',id).single();
+  if(!data) return;
+  editingDogId=id;currentDogImageUrl=data.image_url||null;
+  document.getElementById('dogModalTitle').textContent='강아지 수정';
+  document.getElementById('dName').value=data.name||'';
+  document.getElementById('dBreed').value=data.breed||'';
+  document.getElementById('dAge').value=data.age||'';
+  document.getElementById('dGender').value=data.gender||'수컷';
+  document.getElementById('dSize').value=data.size||'소형';
+  document.getElementById('dLocation').value=data.location||'';
+  document.getElementById('dDesc').value=data.description||'';
+  document.getElementById('dTags').value=data.tags||'';
+  document.getElementById('dStatus').value=data.status||'대기중';
+  if(data.image_url){
+    document.getElementById('dogImgPreview').src=data.image_url;
+    document.getElementById('dogImgPreview').style.display='block';
+    document.getElementById('dogImgPlaceholder').style.display='none';
+  } else {
+    document.getElementById('dogImgPreview').style.display='none';
+    document.getElementById('dogImgPlaceholder').style.display='block';
+  }
+  document.getElementById('dogModal').classList.add('open');
+}
+
+function previewDogImage(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('dogImgPreview').src=e.target.result;
+    document.getElementById('dogImgPreview').style.display='block';
+    document.getElementById('dogImgPlaceholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadDogImage(file){
+  const ext=file.name.split('.').pop();
+  const fileName=`dog_${Date.now()}.${ext}`;
+  document.getElementById('dogUploadProgress').style.display='block';
+  const {error}=await _supabase.storage.from('products').upload(fileName,file,{upsert:true});
+  document.getElementById('dogUploadProgress').style.display='none';
+  if(error){alert('업로드 실패: '+error.message);return null;}
+  const {data:{publicUrl}}=_supabase.storage.from('products').getPublicUrl(fileName);
+  return publicUrl;
+}
+
+async function saveDog(){
+  let imageUrl=currentDogImageUrl;
+  const file=document.getElementById('dogImageFile').files[0];
+  if(file){imageUrl=await uploadDogImage(file);if(!imageUrl)return;}
+  const dog={
+    name:document.getElementById('dName').value,
+    breed:document.getElementById('dBreed').value,
+    age:document.getElementById('dAge').value,
+    gender:document.getElementById('dGender').value,
+    size:document.getElementById('dSize').value,
+    location:document.getElementById('dLocation').value,
+    description:document.getElementById('dDesc').value,
+    tags:document.getElementById('dTags').value,
+    status:document.getElementById('dStatus').value,
+    image_url:imageUrl,
+  };
+  if(!dog.name){alert('이름은 필수예요!');return;}
+  if(editingDogId){await _supabase.from('dogs').update(dog).eq('id',editingDogId);}
+  else{await _supabase.from('dogs').insert(dog);}
+  closeDogModal();loadDogs();
+}
+
+async function deleteDog(id){
+  if(!confirm('정말 삭제할까요?'))return;
+  await _supabase.from('dogs').delete().eq('id',id);
+  loadDogs();
+}
+
+function closeDogModal(){document.getElementById('dogModal').classList.remove('open');}
+document.getElementById('dogModal').addEventListener('click',function(e){if(e.target===this)closeDogModal();});
+</script>
+</body>
+</html>
