@@ -21,12 +21,14 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
 .form-group input{width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;color:var(--tx);}
 .form-group input:focus{border-color:var(--pk);}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.product-item{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
-.product-img{width:60px;height:60px;background:var(--pkp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;}
+.product-item{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #fafafa;}
+.product-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.product-img{width:60px;height:60px;background:var(--pkp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;}
+.product-img img{width:100%;height:100%;object-fit:cover;}
 .product-info{flex:1;}
 .product-name{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:4px;}
 .product-option{font-size:12px;color:var(--muted);font-weight:300;}
-.product-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);}
+.product-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);white-space:nowrap;}
 .summary-row{display:flex;justify-content:space-between;margin-bottom:12px;}
 .summary-row .label{font-size:13px;color:var(--muted);font-weight:300;}
 .summary-row .value{font-size:13px;color:var(--tx);}
@@ -44,12 +46,13 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
 .pm-name{font-size:12px;color:var(--muted);}
 .btn-pay{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;}
 .safe-badge{text-align:center;font-size:11px;color:#bbb;font-weight:300;}
+.empty-cart{text-align:center;padding:40px;color:var(--muted);}
 </style>
 </head>
 <body>
 <header>
   <a class="logo" href="/">Welli<em>pet</em> 🐾</a>
-  <a class="back-btn" href="/">← 쇼핑 계속하기</a>
+  <a class="back-btn" href="cart.html">← 장바구니로 돌아가기</a>
 </header>
 <div class="container">
   <div>
@@ -73,100 +76,193 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
         <div class="pay-method" onclick="selectMethod(this,'네이버페이')"><div class="pm-icon">🟢</div><div class="pm-name">네이버페이</div></div>
         <div class="pay-method" onclick="selectMethod(this,'토스페이')"><div class="pm-icon">🔵</div><div class="pm-name">토스페이</div></div>
       </div>
-      <button class="btn-pay" onclick="requestPayment()">18,900원 결제하기</button>
+      <button class="btn-pay" id="btnPay" onclick="requestPayment()">결제하기</button>
       <div class="safe-badge">🔒 SSL 보안 결제 · 개인정보 안전 보호</div>
     </div>
   </div>
   <div>
     <div class="section">
       <div class="section-title">주문 상품</div>
-      <div class="product-item">
-        <div class="product-img">🧻</div>
-        <div class="product-info">
-          <div class="product-name">웰리펫 순면 배변패드 50매</div>
-          <div class="product-option">수량 1개</div>
-        </div>
-        <div class="product-price">18,900원</div>
-      </div>
+      <div id="orderItems"><div class="empty-cart">상품 정보를 불러오는 중...</div></div>
     </div>
     <div class="section">
       <div class="section-title">결제 금액</div>
-      <div class="summary-row"><span class="label">상품 금액</span><span class="value">18,900원</span></div>
+      <div class="summary-row"><span class="label">상품 금액</span><span class="value" id="sumAmount">0원</span></div>
       <div class="summary-row"><span class="label">배송비</span><span class="value" style="color:#2a7a5a;">무료</span></div>
-      <div class="donation-notice"><span class="icon">🏠</span><span class="text">이 주문으로 567원이 유기견 보호소에 기부돼요</span></div>
-      <div class="summary-row total"><span class="label">최종 결제금액</span><span class="value">18,900원</span></div>
+      <div class="donation-notice"><span class="icon">🏠</span><span class="text" id="donationText">이 주문으로 0원이 유기견 보호소에 기부돼요</span></div>
+      <div class="summary-row total"><span class="label">최종 결제금액</span><span class="value" id="totalAmount">0원</span></div>
     </div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://js.tosspayments.com/v1"></script>
 <script>
-const CLIENT_KEY = 'test_ck_6BYq7GWPVvx4N9za6O6l8NE5vbo1';
-let selectedMethod = '카드';
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const CLIENT_KEY='test_ck_6BYq7GWPVvx4N9za6O6l8NE5vbo1';
 
-function selectMethod(el, method) {
-  document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
-  el.classList.add('active');
-  selectedMethod = method;
+let selectedMethod='카드';
+let cartItems=[];
+let totalPrice=0;
+let totalDonation=0;
+let orderName='';
+
+// 장바구니에서 상품 불러오기
+function loadCartItems(){
+  cartItems=JSON.parse(localStorage.getItem('cart')||'[]');
+
+  // URL 파라미터에서 단일 상품 구매인지 확인
+  const params=new URLSearchParams(window.location.search);
+  const productId=params.get('id');
+  const qty=parseInt(params.get('qty')||'1');
+
+  if(cartItems.length===0 && !productId){
+    document.getElementById('orderItems').innerHTML='<div class="empty-cart">장바구니가 비어있어요. <a href="shop.html" style="color:var(--pk);">쇼핑하러 가기</a></div>';
+    return;
+  }
+
+  totalPrice=0;totalDonation=0;
+  const itemsHtml=cartItems.map(item=>{
+    const itemTotal=item.price*(item.qty||1);
+    totalPrice+=itemTotal;
+    totalDonation+=(item.donation_amount||0)*(item.qty||1);
+    return `
+      <div class="product-item">
+        <div class="product-img">${item.image_url?`<img src="${item.image_url}"/>`:'🐾'}</div>
+        <div class="product-info">
+          <div class="product-name">${item.name}</div>
+          <div class="product-option">수량 ${item.qty||1}개</div>
+        </div>
+        <div class="product-price">${Number(itemTotal).toLocaleString()}원</div>
+      </div>
+    `;
+  }).join('');
+
+  orderName=cartItems.length===1?cartItems[0].name:`${cartItems[0].name} 외 ${cartItems.length-1}건`;
+
+  document.getElementById('orderItems').innerHTML=itemsHtml;
+  document.getElementById('sumAmount').textContent=Number(totalPrice).toLocaleString()+'원';
+  document.getElementById('totalAmount').textContent=Number(totalPrice).toLocaleString()+'원';
+  document.getElementById('donationText').textContent=`이 주문으로 ${Number(totalDonation).toLocaleString()}원이 유기견 보호소에 기부돼요`;
+  document.getElementById('btnPay').textContent=`${Number(totalPrice).toLocaleString()}원 결제하기`;
+
+  // 로그인 회원 정보 자동 입력
+  _supabase.auth.getSession().then(({data:{session}})=>{
+    if(session){
+      const user=session.user;
+      document.getElementById('customerName').value=user.user_metadata?.name||'';
+      document.getElementById('customerEmail').value=user.email||'';
+    }
+  });
 }
 
-function searchAddress() {
+function selectMethod(el,method){
+  document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+  selectedMethod=method;
+}
+
+function searchAddress(){
   new daum.Postcode({
-    oncomplete: function(data) {
-      document.getElementById('zipcode').value = data.zonecode;
-      document.getElementById('address').value = data.roadAddress || data.jibunAddress;
+    oncomplete:function(data){
+      document.getElementById('zipcode').value=data.zonecode;
+      document.getElementById('address').value=data.roadAddress||data.jibunAddress;
       document.getElementById('addressDetail').focus();
     }
   }).open();
 }
 
-async function requestPayment() {
-  const customerName = document.getElementById('customerName').value;
-  const customerEmail = document.getElementById('customerEmail').value;
-  const customerPhone = document.getElementById('customerPhone').value;
+// 주문 정보 Supabase에 저장
+async function saveOrder(paymentKey, orderId){
+  const name=document.getElementById('customerName').value;
+  const phone=document.getElementById('customerPhone').value;
+  const email=document.getElementById('customerEmail').value;
+  const zipcode=document.getElementById('zipcode').value;
+  const address=document.getElementById('address').value;
+  const addressDetail=document.getElementById('addressDetail').value;
 
-  if (!customerName || !customerEmail || !customerPhone) {
+  // 각 상품별로 주문 저장
+  for(const item of cartItems){
+    await _supabase.from('orders').insert({
+      customer_name: name,
+      customer_email: email,
+      customer_phone: phone,
+      zipcode: zipcode,
+      address: address,
+      address_detail: addressDetail,
+      product_name: item.name,
+      amount: item.price*(item.qty||1),
+      status: '결제완료',
+    });
+  }
+
+  // 결제 완료 후 장바구니 비우기
+  localStorage.removeItem('cart');
+}
+
+async function requestPayment(){
+  const name=document.getElementById('customerName').value;
+  const email=document.getElementById('customerEmail').value;
+  const phone=document.getElementById('customerPhone').value;
+  const address=document.getElementById('address').value;
+
+  if(!name||!phone||!address){
     alert('배송 정보를 모두 입력해주세요.');
     return;
   }
+  if(totalPrice===0){
+    alert('주문할 상품이 없어요.');
+    return;
+  }
 
-  const orderId = 'order-' + Date.now();
+  const orderId='order-'+Date.now();
 
-  try {
-    // SDK v2 방식
-    const tossPayments = TossPayments(CLIENT_KEY);
+  // 결제 전에 배송 정보 localStorage에 임시 저장
+  localStorage.setItem('pendingOrder',JSON.stringify({
+    name,email,phone,
+    zipcode:document.getElementById('zipcode').value,
+    address,
+    addressDetail:document.getElementById('addressDetail').value,
+    items:cartItems,
+    amount:totalPrice,
+  }));
 
-    if (selectedMethod === '카드') {
-      await tossPayments.requestPayment('카드', {
-        amount: 18900,
-        orderId: orderId,
-        orderName: '웰리펫 순면 배변패드 50매',
-        customerName: customerName,
-        customerEmail: customerEmail,
-        successUrl: window.location.origin + '/success.html',
-        failUrl: window.location.origin + '/fail.html',
+  try{
+    const tossPayments=TossPayments(CLIENT_KEY);
+    if(selectedMethod==='카드'){
+      await tossPayments.requestPayment('카드',{
+        amount:totalPrice,
+        orderId:orderId,
+        orderName:orderName,
+        customerName:name,
+        customerEmail:email,
+        successUrl:window.location.origin+'/success.html',
+        failUrl:window.location.origin+'/fail.html',
       });
     } else {
-      const easyPayProvider = selectedMethod === '카카오페이' ? 'KAKAOPAY'
-        : selectedMethod === '네이버페이' ? 'NAVERPAY' : 'TOSSPAY';
-      await tossPayments.requestPayment('간편결제', {
-        amount: 18900,
-        orderId: orderId,
-        orderName: '웰리펫 순면 배변패드 50매',
-        customerName: customerName,
-        customerEmail: customerEmail,
-        easyPay: easyPayProvider,
-        successUrl: window.location.origin + '/success.html',
-        failUrl: window.location.origin + '/fail.html',
+      const easyPayProvider=selectedMethod==='카카오페이'?'KAKAOPAY':selectedMethod==='네이버페이'?'NAVERPAY':'TOSSPAY';
+      await tossPayments.requestPayment('간편결제',{
+        amount:totalPrice,
+        orderId:orderId,
+        orderName:orderName,
+        customerName:name,
+        customerEmail:email,
+        easyPay:easyPayProvider,
+        successUrl:window.location.origin+'/success.html',
+        failUrl:window.location.origin+'/fail.html',
       });
     }
-  } catch (error) {
-    if (error.code !== 'USER_CANCEL') {
-      alert('결제 오류: ' + error.message);
+  } catch(error){
+    if(error.code!=='USER_CANCEL'){
+      alert('결제 오류: '+error.message);
     }
   }
 }
+
+loadCartItems();
 </script>
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script src="https://js.tosspayments.com/v1"></script>
 </body>
 </html>
