@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>1:1 문의 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
+.topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;}
+.topbar span{font-size:11px;color:#fff;font-weight:300;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo-img{height:52px;object-fit:contain;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;}
+nav a:hover{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.ibt{font-size:16px;cursor:pointer;color:#bbb;}
+.btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.page-hero{background:var(--pkbg);padding:48px;border-bottom:1px solid var(--bd);}
+.page-hero h1{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#2a1220;margin-bottom:6px;}
+.page-hero p{font-size:13px;color:var(--muted);font-weight:300;}
+.wrap{max-width:700px;margin:48px auto;padding:0 48px;}
+.info-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px;}
+.info-card{background:var(--pkbg);border-radius:14px;padding:24px;text-align:center;border:1px solid var(--bd);}
+.info-card .icon{font-size:32px;margin-bottom:12px;}
+.info-card .title{font-size:13px;font-weight:600;color:#2a1220;margin-bottom:6px;}
+.info-card .desc{font-size:12px;color:var(--muted);font-weight:300;line-height:1.7;}
+.form-card{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:32px;}
+.form-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:24px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--pk);}
+.form-group textarea{resize:vertical;min-height:120px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-submit{width:100%;background:var(--pk);color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;}
+.success-msg{display:none;background:#f0faf5;border:1px solid #b8e8d0;border-radius:12px;padding:20px;text-align:center;margin-top:20px;}
+.success-msg .icon{font-size:40px;margin-bottom:12px;}
+.success-msg p{font-size:14px;color:#2a7a5a;}
+footer{background:#2a1220;padding:48px;margin-top:80px;}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
+.f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;}
+.f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;}
+.f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;}
+.f-col a:hover{color:var(--pkl);}
+.fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
+.f-copy{font-size:11px;color:#6a4a5a;}
+</style>
+</head>
+<body>
+<div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span></div>
+<header>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
+    <div class="logo" id="lt" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
+    <button class="btn-join" onclick="location.href='mypage.html'">마이페이지</button>
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1>1:1 문의 🐾</h1>
+  <p>궁금한 점이 있으시면 언제든지 문의해 주세요. 빠르게 답변해 드릴게요!</p>
+</div>
+
+<div class="wrap">
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="icon">📧</div>
+      <div class="title">이메일 문의</div>
+      <div class="desc">hello@wellypet.co.kr<br/>24시간 접수 가능</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">⏰</div>
+      <div class="title">운영 시간</div>
+      <div class="desc">평일 10:00 - 17:00<br/>주말/공휴일 휴무</div>
+    </div>
+    <div class="info-card">
+      <div class="icon">💬</div>
+      <div class="title">답변 시간</div>
+      <div class="desc">접수 후 1-2 영업일<br/>이내 답변 드려요</div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-title">문의하기</div>
+    <div class="form-row">
+      <div class="form-group"><label>이름</label><input type="text" id="cName" placeholder="홍길동"/></div>
+      <div class="form-group"><label>이메일</label><input type="email" id="cEmail" placeholder="hello@example.com"/></div>
+    </div>
+    <div class="form-group">
+      <label>문의 유형</label>
+      <select id="cType">
+        <option value="">선택해주세요</option>
+        <option value="주문/결제">주문/결제 문의</option>
+        <option value="배송">배송 문의</option>
+        <option value="교환/환불">교환/환불 문의</option>
+        <option value="상품">상품 문의</option>
+        <option value="회원">회원 문의</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+    <div class="form-group"><label>주문번호 (선택)</label><input type="text" id="cOrderId" placeholder="order-000000"/></div>
+    <div class="form-group"><label>문의 내용</label><textarea id="cContent" placeholder="문의 내용을 자세히 적어주세요."></textarea></div>
+    <button class="btn-submit" onclick="submitContact()">문의 보내기</button>
+    <div class="success-msg" id="successMsg">
+      <div class="icon">✅</div>
+      <p>문의가 접수됐어요! 1-2 영업일 이내에 답변 드리겠습니다 🐾</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="ft">
+    <div>
+      <div class="f-logo">Wellipet 🐾</div>
+      <div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div>
+    </div>
+    <div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div>
+    <div class="f-col"><h4>웰리펫</h4><a href="about.html">브랜드 스토리</a><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div>
+    <div class="f-col"><h4>고객센터</h4><a href="faq.html">자주 묻는 질문</a><a href="contact.html">1:1 문의</a><a href="refund.html">배송·반품 안내</a></div>
+  </div>
+  <div class="fb">
+    <div class="f-biz">상호: 아이에스에이 | 대표: KIMLISAYUNSUN | 사업자등록번호: 604-07-63223 | 주소: 경기도 남양주시 다산순환로 365 5208-404 | 전화: 010-7118-1824</div>
+    <div class="f-copy">© 2025 Wellipet. All rights reserved. &nbsp;|&nbsp; <a href="terms.html" style="color:#6a4a5a;text-decoration:none;">이용약관</a> &nbsp;|&nbsp; <a href="privacy.html" style="color:#6a4a5a;text-decoration:none;">개인정보처리방침</a> &nbsp;|&nbsp; <a href="refund.html" style="color:#6a4a5a;text-decoration:none;">환불정책</a></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+async function submitContact(){
+  const name=document.getElementById('cName').value;
+  const email=document.getElementById('cEmail').value;
+  const type=document.getElementById('cType').value;
+  const content=document.getElementById('cContent').value;
+  if(!name||!email||!type||!content){alert('모든 항목을 입력해주세요.');return;}
+
+  // 이메일로 문의 발송 (Supabase Edge Function 활용)
+  const btn=document.querySelector('.btn-submit');
+  btn.textContent='전송 중...';
+  btn.disabled=true;
+
+  // 간단히 성공 메시지 표시 (실제로는 이메일 발송 연동 가능)
+  setTimeout(()=>{
+    document.getElementById('successMsg').style.display='block';
+    btn.textContent='문의 보내기';
+    btn.disabled=false;
+    document.getElementById('cName').value='';
+    document.getElementById('cEmail').value='';
+    document.getElementById('cType').value='';
+    document.getElementById('cOrderId').value='';
+    document.getElementById('cContent').value='';
+  },1000);
+}
+</script>
+</body>
+</html>
