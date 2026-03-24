@@ -54,8 +54,6 @@ tr:hover td{background:#fafafa;}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
 .section-divider{border:none;border-top:1px solid var(--bd);margin:20px 0;}
 .section-label{font-size:13px;font-weight:600;color:#2a1220;margin-bottom:12px;}
-
-/* 메인 이미지 업로드 */
 .img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
 .img-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
 .img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
@@ -64,8 +62,6 @@ tr:hover td{background:#fafafa;}
 .img-upload-text{font-size:12px;color:var(--muted);}
 .img-upload-hint{font-size:11px;color:#bbb;margin-top:3px;}
 .upload-progress{font-size:12px;color:var(--pk);margin-top:6px;display:none;}
-
-/* 상세 이미지 업로드 */
 .detail-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
 .detail-upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
 .detail-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
@@ -73,7 +69,6 @@ tr:hover td{background:#fafafa;}
 .detail-img-item{position:relative;width:80px;height:80px;}
 .detail-img-item img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--bd);}
 .detail-img-remove{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
-
 .search-bar{display:flex;gap:10px;margin-bottom:20px;}
 .search-input{flex:1;padding:10px 16px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
 .search-input:focus{border-color:var(--pk);}
@@ -83,6 +78,18 @@ tr:hover td{background:#fafafa;}
 .empty-state p{font-size:14px;}
 .prod-thumb{width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);}
 .prod-thumb-placeholder{width:48px;height:48px;background:var(--pkbg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid var(--bd);}
+
+/* 옵션 스타일 */
+.option-section{background:var(--pkbg);border-radius:12px;padding:16px;margin-bottom:16px;}
+.option-section-title{font-size:13px;font-weight:600;color:#2a1220;margin-bottom:12px;}
+.option-input-row{display:flex;gap:8px;margin-bottom:8px;}
+.option-input-row input{flex:1;padding:8px 12px;border:1px solid var(--bd);border-radius:8px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.option-input-row input:focus{border-color:var(--pk);}
+.btn-add-option{background:var(--pk);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.option-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.option-tag{display:flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--bd);border-radius:20px;padding:4px 10px;font-size:12px;}
+.option-tag-remove{background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;line-height:1;padding:0;}
+.option-tag-remove:hover{color:#ff6b6b;}
 </style>
 </head>
 <body>
@@ -213,6 +220,29 @@ tr:hover td{background:#fafafa;}
       <div class="form-group"><label>기부금 (원, 자동계산)</label><input type="number" id="pDonation" placeholder="567"/></div>
       <div class="form-group"><label>상품 설명 (한 줄)</label><input type="text" id="pDescription" placeholder="상품 설명을 입력해줘요"/></div>
     </div>
+
+    <hr class="section-divider"/>
+
+    <!-- 색상 옵션 -->
+    <div class="option-section">
+      <div class="option-section-title">🎨 색상 옵션 (선택사항)</div>
+      <div class="option-input-row">
+        <input type="text" id="colorInput" placeholder="예: 블랙, 화이트, 핑크" onkeydown="if(event.key==='Enter'){addOption('color');event.preventDefault();}"/>
+        <button class="btn-add-option" onclick="addOption('color')">+ 추가</button>
+      </div>
+      <div class="option-tags" id="colorTags"></div>
+    </div>
+
+    <!-- 사이즈 옵션 -->
+    <div class="option-section">
+      <div class="option-section-title">📏 사이즈 옵션 (선택사항)</div>
+      <div class="option-input-row">
+        <input type="text" id="sizeInput" placeholder="예: S, M, L, XL" onkeydown="if(event.key==='Enter'){addOption('size');event.preventDefault();}"/>
+        <button class="btn-add-option" onclick="addOption('size')">+ 추가</button>
+      </div>
+      <div class="option-tags" id="sizeTags"></div>
+    </div>
+
     <div class="modal-btns">
       <button class="btn-secondary" onclick="closeProductModal()">취소</button>
       <button class="btn-primary" onclick="saveProduct()">저장</button>
@@ -226,108 +256,119 @@ const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let editingProductId = null;
-let currentImageUrl = null;
-let currentDetailImages = []; // 기존 상세 이미지 URL 배열
-let newDetailFiles = []; // 새로 선택한 상세 이미지 파일들
+let editingProductId=null;
+let currentImageUrl=null;
+let currentDetailImages=[];
+let newDetailFiles=[];
+let colorOptions=[];
+let sizeOptions=[];
 
-function showPage(name, el) {
+function showPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
-  if(name==='products') loadProducts();
-  if(name==='orders') loadOrders();
-  if(name==='dashboard') loadDashboard();
+  if(name==='products')loadProducts();
+  if(name==='orders')loadOrders();
+  if(name==='dashboard')loadDashboard();
 }
 
-async function loadDashboard() {
-  const {count:pc} = await _supabase.from('products').select('*',{count:'exact',head:true});
-  const {count:oc} = await _supabase.from('orders').select('*',{count:'exact',head:true});
-  document.getElementById('totalProducts').textContent = pc||0;
-  document.getElementById('totalOrders').textContent = oc||0;
+async function loadDashboard(){
+  const {count:pc}=await _supabase.from('products').select('*',{count:'exact',head:true});
+  const {count:oc}=await _supabase.from('orders').select('*',{count:'exact',head:true});
+  document.getElementById('totalProducts').textContent=pc||0;
+  document.getElementById('totalOrders').textContent=oc||0;
 }
 
-// 메인 이미지 미리보기
-function previewMainImage(input) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const preview = document.getElementById('imgPreview');
-    preview.src = e.target.result;
-    preview.style.display = 'block';
-    document.getElementById('imgPlaceholder').style.display = 'none';
+function previewMainImage(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const preview=document.getElementById('imgPreview');
+    preview.src=e.target.result;preview.style.display='block';
+    document.getElementById('imgPlaceholder').style.display='none';
   };
   reader.readAsDataURL(file);
 }
 
-// 상세 이미지 미리보기
-function previewDetailImages(input) {
-  const files = Array.from(input.files);
-  newDetailFiles = [...newDetailFiles, ...files];
+function previewDetailImages(input){
+  const files=Array.from(input.files);
+  newDetailFiles=[...newDetailFiles,...files];
   renderDetailPreviews();
 }
 
-function renderDetailPreviews() {
-  const list = document.getElementById('detailImgList');
-  // 기존 URL 이미지
-  const existingHtml = currentDetailImages.map((url, i) => `
+function renderDetailPreviews(){
+  const list=document.getElementById('detailImgList');
+  const existingHtml=currentDetailImages.map((url,i)=>`
     <div class="detail-img-item">
       <img src="${url}"/>
       <button class="detail-img-remove" onclick="removeExistingDetail(${i})">×</button>
-    </div>
-  `).join('');
-  // 새로 선택한 파일 미리보기
-  const newHtml = newDetailFiles.map((file, i) => {
-    const url = URL.createObjectURL(file);
-    return `
-      <div class="detail-img-item">
-        <img src="${url}"/>
-        <button class="detail-img-remove" onclick="removeNewDetail(${i})">×</button>
-      </div>
-    `;
+    </div>`).join('');
+  const newHtml=newDetailFiles.map((file,i)=>{
+    const url=URL.createObjectURL(file);
+    return`<div class="detail-img-item"><img src="${url}"/><button class="detail-img-remove" onclick="removeNewDetail(${i})">×</button></div>`;
   }).join('');
-  list.innerHTML = existingHtml + newHtml;
+  list.innerHTML=existingHtml+newHtml;
 }
 
-function removeExistingDetail(i) {
-  currentDetailImages.splice(i, 1);
-  renderDetailPreviews();
+function removeExistingDetail(i){currentDetailImages.splice(i,1);renderDetailPreviews();}
+function removeNewDetail(i){newDetailFiles.splice(i,1);renderDetailPreviews();}
+function calcDonation(input){document.getElementById('pDonation').value=Math.round((parseInt(input.value)||0)*0.03);}
+
+// 옵션 추가/삭제
+function addOption(type){
+  const input=document.getElementById(type==='color'?'colorInput':'sizeInput');
+  const val=input.value.trim();
+  if(!val)return;
+  if(type==='color'){
+    if(!colorOptions.includes(val))colorOptions.push(val);
+  } else {
+    if(!sizeOptions.includes(val))sizeOptions.push(val);
+  }
+  input.value='';
+  renderOptionTags();
 }
 
-function removeNewDetail(i) {
-  newDetailFiles.splice(i, 1);
-  renderDetailPreviews();
+function removeOption(type,val){
+  if(type==='color')colorOptions=colorOptions.filter(v=>v!==val);
+  else sizeOptions=sizeOptions.filter(v=>v!==val);
+  renderOptionTags();
 }
 
-// 기부금 자동계산
-function calcDonation(input) {
-  document.getElementById('pDonation').value = Math.round((parseInt(input.value)||0) * 0.03);
+function renderOptionTags(){
+  document.getElementById('colorTags').innerHTML=colorOptions.map(v=>`
+    <div class="option-tag">${v}<button class="option-tag-remove" onclick="removeOption('color','${v}')">×</button></div>`).join('');
+  document.getElementById('sizeTags').innerHTML=sizeOptions.map(v=>`
+    <div class="option-tag">${v}<button class="option-tag-remove" onclick="removeOption('size','${v}')">×</button></div>`).join('');
 }
 
-// 이미지 업로드
-async function uploadImage(file, prefix='product') {
-  const ext = file.name.split('.').pop();
-  const fileName = `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2,5)}.${ext}`;
-  const {error} = await _supabase.storage.from('products').upload(fileName, file, {upsert:true});
-  if(error) { alert('업로드 실패: '+error.message); return null; }
-  const {data:{publicUrl}} = _supabase.storage.from('products').getPublicUrl(fileName);
+async function uploadImage(file,prefix='product'){
+  const ext=file.name.split('.').pop();
+  const fileName=`${prefix}_${Date.now()}_${Math.random().toString(36).substr(2,5)}.${ext}`;
+  const {error}=await _supabase.storage.from('products').upload(fileName,file,{upsert:true});
+  if(error){alert('업로드 실패: '+error.message);return null;}
+  const {data:{publicUrl}}=_supabase.storage.from('products').getPublicUrl(fileName);
   return publicUrl;
 }
 
-// 상품 목록
-async function loadProducts() {
-  const {data} = await _supabase.from('products').select('*').order('created_at',{ascending:false});
-  const tbody = document.getElementById('productTable');
+async function loadProducts(){
+  const {data}=await _supabase.from('products').select('*').order('created_at',{ascending:false});
+  const tbody=document.getElementById('productTable');
   if(!data||data.length===0){
     tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>상품을 추가해봐요!</p></div></td></tr>';
     return;
   }
-  tbody.innerHTML = data.map(p=>`
+  tbody.innerHTML=data.map(p=>`
     <tr>
       <td>${p.image_url?`<img src="${p.image_url}" class="prod-thumb"/>`:`<div class="prod-thumb-placeholder">📦</div>`}</td>
-      <td><strong>${p.name}</strong>${p.badge?`<span style="margin-left:8px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;">${p.badge}</span>`:''}</td>
+      <td>
+        <strong>${p.name}</strong>
+        ${p.badge?`<span style="margin-left:8px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;">${p.badge}</span>`:''}
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;">
+          ${p.color_options?(JSON.parse(p.color_options||'[]')).map(c=>`<span style="font-size:10px;background:#f0d8e6;color:#c45c8a;padding:2px 7px;border-radius:10px;">🎨${c}</span>`).join(''):''}
+          ${p.size_options?(JSON.parse(p.size_options||'[]')).map(s=>`<span style="font-size:10px;background:#e8f0fe;color:#3b6fd4;padding:2px 7px;border-radius:10px;">📏${s}</span>`).join(''):''}
+        </div>
+      </td>
       <td>${p.category}</td>
       <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
       <td>${Number(p.donation_amount||0).toLocaleString()}원</td>
@@ -335,16 +376,13 @@ async function loadProducts() {
         <button class="btn-edit" onclick="editProduct(${p.id})">수정</button>
         <button class="btn-danger" onclick="deleteProduct(${p.id})">삭제</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
-function openProductModal() {
-  editingProductId = null;
-  currentImageUrl = null;
-  currentDetailImages = [];
-  newDetailFiles = [];
-  document.getElementById('productModalTitle').textContent = '상품 추가';
+function openProductModal(){
+  editingProductId=null;currentImageUrl=null;currentDetailImages=[];newDetailFiles=[];
+  colorOptions=[];sizeOptions=[];
+  document.getElementById('productModalTitle').textContent='상품 추가';
   document.getElementById('pName').value='';
   document.getElementById('pPrice').value='';
   document.getElementById('pOriginalPrice').value='';
@@ -356,19 +394,22 @@ function openProductModal() {
   document.getElementById('imgPreview').style.display='none';
   document.getElementById('imgPlaceholder').style.display='block';
   document.getElementById('detailImgList').innerHTML='';
+  document.getElementById('colorInput').value='';
+  document.getElementById('sizeInput').value='';
+  renderOptionTags();
   document.getElementById('productModal').classList.add('open');
 }
 
-async function editProduct(id) {
-  const {data} = await _supabase.from('products').select('*').eq('id',id).single();
-  if(!data) return;
-  editingProductId = id;
-  currentImageUrl = data.image_url||null;
-  // 기존 상세 이미지 파싱
-  try { currentDetailImages = data.detail_images ? JSON.parse(data.detail_images) : []; }
-  catch { currentDetailImages = []; }
-  newDetailFiles = [];
-  document.getElementById('productModalTitle').textContent = '상품 수정';
+async function editProduct(id){
+  const {data}=await _supabase.from('products').select('*').eq('id',id).single();
+  if(!data)return;
+  editingProductId=id;
+  currentImageUrl=data.image_url||null;
+  try{currentDetailImages=data.detail_images?JSON.parse(data.detail_images):[];}catch{currentDetailImages=[];}
+  try{colorOptions=data.color_options?JSON.parse(data.color_options):[];}catch{colorOptions=[];}
+  try{sizeOptions=data.size_options?JSON.parse(data.size_options):[];}catch{sizeOptions=[];}
+  newDetailFiles=[];
+  document.getElementById('productModalTitle').textContent='상품 수정';
   document.getElementById('pName').value=data.name||'';
   document.getElementById('pPrice').value=data.price||'';
   document.getElementById('pOriginalPrice').value=data.original_price||'';
@@ -378,6 +419,8 @@ async function editProduct(id) {
   document.getElementById('pDescription').value=data.description||'';
   document.getElementById('pImageFile').value='';
   document.getElementById('pDetailFiles').value='';
+  document.getElementById('colorInput').value='';
+  document.getElementById('sizeInput').value='';
   if(data.image_url){
     document.getElementById('imgPreview').src=data.image_url;
     document.getElementById('imgPreview').style.display='block';
@@ -387,45 +430,39 @@ async function editProduct(id) {
     document.getElementById('imgPlaceholder').style.display='block';
   }
   renderDetailPreviews();
+  renderOptionTags();
   document.getElementById('productModal').classList.add('open');
 }
 
-async function saveProduct() {
-  // 메인 이미지
-  let imageUrl = currentImageUrl;
-  const mainFile = document.getElementById('pImageFile').files[0];
-  if(mainFile) {
+async function saveProduct(){
+  let imageUrl=currentImageUrl;
+  const mainFile=document.getElementById('pImageFile').files[0];
+  if(mainFile){
     document.getElementById('uploadProgress').style.display='block';
-    imageUrl = await uploadImage(mainFile, 'main');
+    imageUrl=await uploadImage(mainFile,'main');
     document.getElementById('uploadProgress').style.display='none';
-    if(!imageUrl) return;
+    if(!imageUrl)return;
   }
-
-  // 상세 이미지 업로드
-  let detailUrls = [...currentDetailImages];
-  if(newDetailFiles.length > 0) {
+  let detailUrls=[...currentDetailImages];
+  if(newDetailFiles.length>0){
     document.getElementById('uploadProgressDetail').style.display='block';
-    for(const file of newDetailFiles) {
-      const url = await uploadImage(file, 'detail');
-      if(url) detailUrls.push(url);
-    }
+    for(const file of newDetailFiles){const url=await uploadImage(file,'detail');if(url)detailUrls.push(url);}
     document.getElementById('uploadProgressDetail').style.display='none';
   }
-
-  const product = {
-    name: document.getElementById('pName').value,
-    price: parseInt(document.getElementById('pPrice').value)||0,
-    original_price: parseInt(document.getElementById('pOriginalPrice').value)||null,
-    category: document.getElementById('pCategory').value,
-    badge: document.getElementById('pBadge').value||null,
-    donation_amount: parseInt(document.getElementById('pDonation').value)||0,
-    description: document.getElementById('pDescription').value,
-    image_url: imageUrl,
-    detail_images: detailUrls.length > 0 ? JSON.stringify(detailUrls) : null,
+  const product={
+    name:document.getElementById('pName').value,
+    price:parseInt(document.getElementById('pPrice').value)||0,
+    original_price:parseInt(document.getElementById('pOriginalPrice').value)||null,
+    category:document.getElementById('pCategory').value,
+    badge:document.getElementById('pBadge').value||null,
+    donation_amount:parseInt(document.getElementById('pDonation').value)||0,
+    description:document.getElementById('pDescription').value,
+    image_url:imageUrl,
+    detail_images:detailUrls.length>0?JSON.stringify(detailUrls):null,
+    color_options:colorOptions.length>0?JSON.stringify(colorOptions):null,
+    size_options:sizeOptions.length>0?JSON.stringify(sizeOptions):null,
   };
-
   if(!product.name||!product.price){alert('상품명과 가격은 필수예요!');return;}
-
   if(editingProductId){
     await _supabase.from('products').update(product).eq('id',editingProductId);
   } else {
@@ -435,29 +472,26 @@ async function saveProduct() {
   loadProducts();
 }
 
-async function deleteProduct(id) {
-  if(!confirm('정말 삭제할까요?')) return;
+async function deleteProduct(id){
+  if(!confirm('정말 삭제할까요?'))return;
   await _supabase.from('products').delete().eq('id',id);
   loadProducts();
 }
 
-function closeProductModal(){
-  document.getElementById('productModal').classList.remove('open');
-}
+function closeProductModal(){document.getElementById('productModal').classList.remove('open');}
 document.getElementById('productModal').addEventListener('click',function(e){if(e.target===this)closeProductModal();});
 
-// 주문 관리
-async function loadOrders() {
-  const search = document.getElementById('orderSearch')?.value||'';
-  let query = _supabase.from('orders').select('*').order('created_at',{ascending:false});
-  if(search) query = query.or(`customer_name.ilike.%${search}%,customer_email.ilike.%${search}%`);
-  const {data} = await query;
-  const tbody = document.getElementById('orderTable');
+async function loadOrders(){
+  const search=document.getElementById('orderSearch')?.value||'';
+  let query=_supabase.from('orders').select('*').order('created_at',{ascending:false});
+  if(search)query=query.or(`customer_name.ilike.%${search}%,customer_email.ilike.%${search}%`);
+  const {data}=await query;
+  const tbody=document.getElementById('orderTable');
   if(!data||data.length===0){
     tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>';
     return;
   }
-  tbody.innerHTML = data.map(o=>`
+  tbody.innerHTML=data.map(o=>`
     <tr>
       <td>${new Date(o.created_at).toLocaleDateString('ko-KR')}</td>
       <td><strong>${o.customer_name}</strong></td>
@@ -474,18 +508,11 @@ async function loadOrders() {
           <option value="취소" ${o.status==='취소'?'selected':''}>취소</option>
         </select>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
-async function updateOrderStatus(id, status) {
-  await _supabase.from('orders').update({status}).eq('id',id);
-}
-
-async function adminSignOut(){
-  await _supabase.auth.signOut();
-  location.href='/';
-}
+async function updateOrderStatus(id,status){await _supabase.from('orders').update({status}).eq('id',id);}
+async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
 
 loadDashboard();
 </script>
