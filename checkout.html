@@ -180,7 +180,7 @@ function searchAddress(){
 }
 
 // 주문 정보 Supabase에 저장
-async function saveOrder(paymentKey, orderId){
+async function saveOrder(paymentKey, orderId){ fetch("https://ai-lisa.duckdns.org/webhook/97a1a8f7-0e34-4e56-9098-3cb5704e4bed",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({customer_name:document.getElementById("name")?.value||"",product_name:"웰리펫 주문",amount:finalAmount||0})}).catch(e=>console.log(e));
   const name=document.getElementById('customerName').value;
   const phone=document.getElementById('customerPhone').value;
   const email=document.getElementById('customerEmail').value;
