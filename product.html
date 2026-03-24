@@ -45,7 +45,16 @@ nav a:hover{color:var(--pk);}
 .product-price{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:var(--pk);}
 .product-original{font-size:14px;color:#ccc;text-decoration:line-through;margin-left:8px;}
 .product-donation{background:var(--pkbg);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--pk);margin-bottom:20px;display:flex;align-items:center;gap:8px;}
-.product-desc{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:28px;font-weight:300;}
+.product-desc{font-size:14px;color:var(--muted);line-height:1.9;margin-bottom:24px;font-weight:300;}
+
+/* 옵션 선택 */
+.option-wrap{margin-bottom:20px;}
+.option-label{font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:500;}
+.option-btns{display:flex;flex-wrap:wrap;gap:8px;}
+.option-btn{padding:7px 16px;border:1.5px solid var(--bd);border-radius:20px;font-size:13px;cursor:pointer;background:#fff;font-family:'Noto Sans KR',sans-serif;color:var(--tx);transition:all .15s;}
+.option-btn:hover{border-color:var(--pk);color:var(--pk);}
+.option-btn.selected{border-color:var(--pk);background:var(--pk);color:#fff;}
+
 .qty-wrap{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
 .qty-label{font-size:13px;color:var(--muted);}
 .qty-control{display:flex;align-items:center;border:1px solid var(--bd);border-radius:10px;overflow:hidden;}
@@ -54,14 +63,10 @@ nav a:hover{color:var(--pk);}
 .qty-num{width:48px;height:36px;text-align:center;border:none;border-left:1px solid var(--bd);border-right:1px solid var(--bd);font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;}
 .btn-buy{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;}
 .btn-cart{width:100%;background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:15px;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
-/* 상세 이미지 섹션 */
 .detail-images-section{border-top:1px solid var(--bd);padding-top:48px;margin-bottom:48px;}
 .detail-images-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:24px;}
 .detail-images-wrap{display:flex;flex-direction:column;gap:12px;}
 .detail-images-wrap img{width:100%;border-radius:12px;border:1px solid var(--bd);}
-
-/* 후기 섹션 */
 .reviews-section{border-top:1px solid var(--bd);padding-top:48px;}
 .reviews-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
 .reviews-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;}
@@ -83,11 +88,8 @@ nav a:hover{color:var(--pk);}
 .review-stars{color:#ffc107;font-size:14px;margin-bottom:8px;}
 .review-content{font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;}
 .no-reviews{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
-
-/* 토스트 */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#2a1220;color:#fff;padding:12px 24px;border-radius:12px;font-size:13px;display:none;z-index:300;}
 .toast.show{display:block;}
-
 footer{background:#2a1220;padding:48px;margin-top:80px;}
 .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
 .f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
@@ -142,7 +144,6 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 <div class="breadcrumb"><a href="/">홈</a> &gt; <a href="shop.html">Products</a> &gt; <span id="breadProduct">상품</span></div>
 
 <div class="product-wrap">
-  <!-- 상품 메인 -->
   <div class="product-main">
     <div class="product-img-wrap" id="productImgWrap">
       <div class="product-img-placeholder">🐾</div>
@@ -156,6 +157,19 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       </div>
       <div class="product-donation">🏠 이 상품을 구매하면 <strong id="donationAmt">-</strong>원이 유기견 보호소에 기부돼요</div>
       <div class="product-desc" id="productDesc">상품 설명이 없어요</div>
+
+      <!-- 색상 옵션 -->
+      <div class="option-wrap" id="colorWrap" style="display:none;">
+        <div class="option-label">🎨 색상</div>
+        <div class="option-btns" id="colorBtns"></div>
+      </div>
+
+      <!-- 사이즈 옵션 -->
+      <div class="option-wrap" id="sizeWrap" style="display:none;">
+        <div class="option-label">📏 사이즈</div>
+        <div class="option-btns" id="sizeBtns"></div>
+      </div>
+
       <div class="qty-wrap">
         <span class="qty-label">수량</span>
         <div class="qty-control">
@@ -164,18 +178,16 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
           <button class="qty-btn" onclick="changeQty(1)">+</button>
         </div>
       </div>
-      <button class="btn-buy" onclick="location.href='checkout.html'">바로 구매하기</button>
+      <button class="btn-buy" onclick="buyNow()">바로 구매하기</button>
       <button class="btn-cart" onclick="addToCart()">🛒 장바구니 담기</button>
     </div>
   </div>
 
-  <!-- 상세 이미지 섹션 -->
   <div class="detail-images-section" id="detailImagesSection" style="display:none;">
     <div class="detail-images-title">상품 상세 이미지</div>
     <div class="detail-images-wrap" id="detailImagesWrap"></div>
   </div>
 
-  <!-- 후기 섹션 -->
   <div class="reviews-section">
     <div class="reviews-header">
       <div class="reviews-title">고객 후기 ⭐</div>
@@ -247,14 +259,16 @@ const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const params = new URLSearchParams(window.location.search);
-const productId = params.get('id');
-let selectedRating = 0;
-let currentUser = null;
-let currentProduct = null;
+const params=new URLSearchParams(window.location.search);
+const productId=params.get('id');
+let selectedRating=0;
+let currentUser=null;
+let currentProduct=null;
+let selectedColor=null;
+let selectedSize=null;
 
 function updateHeader(user){
-  currentUser = user;
+  currentUser=user;
   const btnJoin=document.getElementById('btnJoin');
   const btnLogout=document.getElementById('btnLogout');
   const userNameDisplay=document.getElementById('userNameDisplay');
@@ -265,19 +279,19 @@ _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(se
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
 async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
 
-async function loadProduct() {
+async function loadProduct(){
   if(!productId){document.getElementById('productName').textContent='상품을 찾을 수 없어요';return;}
-  const {data:p} = await _supabase.from('products').select('*').eq('id',productId).single();
+  const {data:p}=await _supabase.from('products').select('*').eq('id',productId).single();
   if(!p){document.getElementById('productName').textContent='상품을 찾을 수 없어요';return;}
-  currentProduct = p;
+  currentProduct=p;
 
-  document.title = p.name + ' · Wellipet';
-  document.getElementById('breadProduct').textContent = p.name;
-  document.getElementById('productCat').textContent = p.category;
-  document.getElementById('productName').textContent = p.name;
-  document.getElementById('productPrice').textContent = Number(p.price).toLocaleString()+'원';
-  document.getElementById('donationAmt').textContent = Number(p.donation_amount||0).toLocaleString();
-  document.getElementById('productDesc').textContent = p.description||'상품 설명이 없어요';
+  document.title=p.name+' · Wellipet';
+  document.getElementById('breadProduct').textContent=p.name;
+  document.getElementById('productCat').textContent=p.category;
+  document.getElementById('productName').textContent=p.name;
+  document.getElementById('productPrice').textContent=Number(p.price).toLocaleString()+'원';
+  document.getElementById('donationAmt').textContent=Number(p.donation_amount||0).toLocaleString();
+  document.getElementById('productDesc').textContent=p.description||'상품 설명이 없어요';
 
   if(p.original_price){
     const orig=document.getElementById('productOriginal');
@@ -285,7 +299,6 @@ async function loadProduct() {
     orig.style.display='inline';
   }
 
-  // 메인 이미지
   const imgWrap=document.getElementById('productImgWrap');
   if(p.image_url){
     imgWrap.innerHTML=`${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge}</span>`:''}<img src="${p.image_url}" class="product-img" alt="${p.name}"/>`;
@@ -293,31 +306,85 @@ async function loadProduct() {
     imgWrap.innerHTML=`<div class="product-img-placeholder">🐾</div>`;
   }
 
-  // 상세 이미지
   if(p.detail_images){
-    try {
-      const imgs = JSON.parse(p.detail_images);
-      if(imgs && imgs.length > 0){
+    try{
+      const imgs=JSON.parse(p.detail_images);
+      if(imgs&&imgs.length>0){
         document.getElementById('detailImagesSection').style.display='block';
-        document.getElementById('detailImagesWrap').innerHTML = imgs.map(url=>`<img src="${url}" alt="상세이미지"/>`).join('');
+        document.getElementById('detailImagesWrap').innerHTML=imgs.map(url=>`<img src="${url}" alt="상세이미지"/>`).join('');
       }
-    } catch(e) {}
+    }catch(e){}
+  }
+
+  // 색상 옵션 렌더링
+  if(p.color_options){
+    try{
+      const colors=JSON.parse(p.color_options);
+      if(colors&&colors.length>0){
+        document.getElementById('colorWrap').style.display='block';
+        document.getElementById('colorBtns').innerHTML=colors.map(c=>`
+          <button class="option-btn" onclick="selectOption('color','${c}',this)">${c}</button>
+        `).join('');
+      }
+    }catch(e){}
+  }
+
+  // 사이즈 옵션 렌더링
+  if(p.size_options){
+    try{
+      const sizes=JSON.parse(p.size_options);
+      if(sizes&&sizes.length>0){
+        document.getElementById('sizeWrap').style.display='block';
+        document.getElementById('sizeBtns').innerHTML=sizes.map(s=>`
+          <button class="option-btn" onclick="selectOption('size','${s}',this)">${s}</button>
+        `).join('');
+      }
+    }catch(e){}
   }
 }
 
-// 장바구니
+function selectOption(type, val, el){
+  if(type==='color'){
+    selectedColor=val;
+    document.querySelectorAll('#colorBtns .option-btn').forEach(b=>b.classList.remove('selected'));
+  } else {
+    selectedSize=val;
+    document.querySelectorAll('#sizeBtns .option-btn').forEach(b=>b.classList.remove('selected'));
+  }
+  el.classList.add('selected');
+}
+
 function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
 function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart));}
+
 function addToCart(){
-  if(!currentProduct) return;
-  const qty = parseInt(document.getElementById('qty').value)||1;
-  const cart = getCart();
-  const existing = cart.find(i=>i.id===currentProduct.id);
+  if(!currentProduct)return;
+  // 옵션 체크
+  const colorOptions=currentProduct.color_options?JSON.parse(currentProduct.color_options||'[]'):[];
+  const sizeOptions=currentProduct.size_options?JSON.parse(currentProduct.size_options||'[]'):[];
+  if(colorOptions.length>0&&!selectedColor){showToast('색상을 선택해줘요!');return;}
+  if(sizeOptions.length>0&&!selectedSize){showToast('사이즈를 선택해줘요!');return;}
+
+  const qty=parseInt(document.getElementById('qty').value)||1;
+  const cart=getCart();
+  const key=`${currentProduct.id}_${selectedColor||''}_${selectedSize||''}`;
+  const existing=cart.find(i=>i._key===key);
   if(existing){existing.qty=(existing.qty||1)+qty;}
-  else{cart.push({...currentProduct,qty});}
+  else{cart.push({...currentProduct,qty,selectedColor,selectedSize,_key:key});}
   saveCart(cart);
   showToast('🛒 장바구니에 담았어요!');
 }
+
+function buyNow(){
+  if(!currentProduct)return;
+  const colorOptions=currentProduct.color_options?JSON.parse(currentProduct.color_options||'[]'):[];
+  const sizeOptions=currentProduct.size_options?JSON.parse(currentProduct.size_options||'[]'):[];
+  if(colorOptions.length>0&&!selectedColor){showToast('색상을 선택해줘요!');return;}
+  if(sizeOptions.length>0&&!selectedSize){showToast('사이즈를 선택해줘요!');return;}
+  addToCart();
+  location.href='checkout.html';
+}
+
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');
@@ -333,7 +400,7 @@ function toggleReviewForm(){document.getElementById('reviewForm').classList.togg
 function setStar(n){selectedRating=n;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));}
 
 async function loadReviews(){
-  if(!productId) return;
+  if(!productId)return;
   const {data}=await _supabase.from('reviews').select('*').eq('product_id',productId).order('created_at',{ascending:false});
   const list=document.getElementById('reviewList');
   if(!data||data.length===0){list.innerHTML='<div class="no-reviews">아직 후기가 없어요. 첫 후기를 남겨줘요! 🐾</div>';return;}
@@ -342,8 +409,7 @@ async function loadReviews(){
       <div class="review-top"><span class="review-author">${r.user_name||'익명'}</span><span class="review-date">${new Date(r.created_at).toLocaleDateString('ko-KR')}</span></div>
       <div class="review-stars">${'★'.repeat(r.rating||5)}${'☆'.repeat(5-(r.rating||5))}</div>
       <div class="review-content">${r.content}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function submitReview(){
