@@ -28,8 +28,6 @@ nav a:hover{color:var(--pk);}
 .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
 .user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
-
-/* 히어로 - 오른쪽 더 작게 */
 .hero{display:grid;grid-template-columns:1.4fr 0.6fr;min-height:320px;}
 .hero-l{background:var(--pkbg);padding:60px 56px;display:flex;flex-direction:column;justify-content:center;}
 .hpill{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--pkl);padding:5px 14px;border-radius:20px;margin-bottom:20px;width:fit-content;}
@@ -48,50 +46,32 @@ nav a:hover{color:var(--pk);}
 .hst2{position:absolute;top:16px;left:12px;background:#fff;border-radius:10px;padding:7px 10px;border:1px solid var(--bd);}
 .hst2 .t{font-size:9px;color:var(--muted);font-weight:300;}
 .hst2 .v{font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--pk);}
-
 .dstrip{background:var(--pk);padding:14px 48px;display:flex;align-items:center;justify-content:space-between;}
 .ds-l{display:flex;align-items:center;gap:12px;}
 .ds-dot{width:6px;height:6px;background:var(--pkl);border-radius:50%;flex-shrink:0;}
 .ds-txt{font-size:11px;color:#fce8f2;font-weight:300;}
 .ds-stat{font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:#fff;}
 .ds-stat small{font-size:10px;color:var(--pkl);font-weight:300;margin-left:4px;}
-
 .sec{padding:56px 48px;}
 .sl{font-size:10px;color:var(--pkm);letter-spacing:3px;margin-bottom:8px;}
 .st{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;margin-bottom:4px;}
 .ss{font-size:12px;color:#bbb;font-weight:300;margin-bottom:28px;}
-
-.set-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.set-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--bd);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.set-card:hover{transform:translateY(-5px);box-shadow:0 14px 36px rgba(196,92,138,.1);}
-.set-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:52px;}
-.sp{background:var(--pkp);}.sc{background:var(--cr);}.sl2{background:#fff0f7;}
-.set-info{padding:18px;}
-.set-tag{font-size:10px;color:var(--pk);background:var(--pkp);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px;}
-.set-name{font-size:14px;font-weight:500;color:#2a1220;margin-bottom:6px;}
-.set-desc{font-size:11px;color:#bbb;font-weight:300;margin-bottom:10px;line-height:1.6;}
-.set-price{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:var(--pk);}
-.set-price s{font-size:11px;color:#ccc;margin-left:4px;font-weight:300;}
-
 .prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
 .pcard{border-radius:16px;overflow:hidden;border:1px solid var(--bd);background:#fff;cursor:pointer;transition:transform .2s;}
 .pcard:hover{transform:translateY(-4px);}
-.pimg{height:140px;display:flex;align-items:center;justify-content:center;font-size:48px;}
-.pp{background:var(--pkp);}.pc{background:var(--cr);}.pl{background:#fff0f7;}
+.pimg{height:140px;display:flex;align-items:center;justify-content:center;font-size:48px;background:var(--pkp);overflow:hidden;}
+.pimg img{width:100%;height:100%;object-fit:cover;}
 .pinfo{padding:14px;}
 .ptag{font-size:10px;color:var(--pk);background:var(--pkp);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:7px;}
 .pname{font-size:12px;color:#333;margin-bottom:6px;line-height:1.4;}
 .pprice{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);}
 .pprice s{font-size:10px;color:#ccc;margin-left:3px;font-weight:300;}
 .pdon{font-size:10px;color:var(--pkm);margin-top:4px;font-weight:300;}
-
 .view-all{display:block;margin:32px auto 0;background:transparent;color:var(--pk);border:1.5px solid var(--pk);padding:12px 40px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
 .main-cta{background:#2a1220;padding:64px 48px;text-align:center;}
 .main-cta h2{font-family:'Nunito',sans-serif;font-size:32px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
 .main-cta p{font-size:13px;color:var(--pkm);font-weight:300;margin-bottom:24px;}
 .btn-cta{background:var(--pkl);color:#2a1220;border:none;padding:14px 36px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;}
-
 footer{background:#2a1220;padding:48px;}
 .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
 .f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;}
@@ -104,7 +84,6 @@ footer{background:#2a1220;padding:48px;}
 .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
 .f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;}
 .f-copy{font-size:11px;color:#6a4a5a;}
-
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;}
@@ -149,7 +128,6 @@ footer{background:#2a1220;padding:48px;}
   </div>
 </header>
 
-<!-- 히어로 -->
 <section class="hero">
   <div class="hero-l">
     <div class="hpill"><span>ECO · LOVELY · PET BRAND</span></div>
@@ -167,27 +145,22 @@ footer{background:#2a1220;padding:48px;}
   </div>
 </section>
 
-<!-- 기부 띠 -->
 <div class="dstrip">
   <div class="ds-l"><div class="ds-dot"></div><div class="ds-txt">구매금액의 3%가 유기견 보호소에 자동 기부됩니다 — 쇼핑만으로 선한 영향력을 만들어요</div></div>
   <div class="ds-stat">매달 함께해요 <small>🏠 기부 중</small></div>
 </div>
 
-<!-- 베스트 상품 -->
+<!-- 최신 상품 (Supabase에서 불러오기) -->
 <section class="sec" style="background:var(--pkbg);padding-top:56px;padding-bottom:56px;">
   <div class="sl">BEST SELLERS</div>
   <div class="st">베스트 상품 🏆</div>
   <div class="ss">지금 가장 인기 있는 제품들이에요</div>
-  <div class="prod-grid">
-    <div class="pcard"><div class="pimg pp">🧻</div><div class="pinfo"><div class="ptag">베스트</div><div class="pname">웰리펫 순면 배변패드 50매</div><div class="pprice">18,900원 <s>23,000원</s></div><div class="pdon">🏠 567원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pc">🦴</div><div class="pinfo"><div class="ptag">유기농</div><div class="pname">유기농 강아지 간식 모음</div><div class="pprice">14,500원 <s>18,000원</s></div><div class="pdon">🏠 435원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pl">🛁</div><div class="pinfo"><div class="ptag">신제품</div><div class="pname">천연 성분 강아지 샴푸</div><div class="pprice">16,000원</div><div class="pdon">🏠 480원 기부</div></div></div>
-    <div class="pcard"><div class="pimg pp">🎾</div><div class="pinfo"><div class="ptag">친환경</div><div class="pname">재활용 소재 장난감 세트</div><div class="pprice">12,900원 <s>15,000원</s></div><div class="pdon">🏠 387원 기부</div></div></div>
+  <div class="prod-grid" id="bestGrid">
+    <div style="grid-column:span 4;text-align:center;padding:40px;color:var(--muted);font-size:13px;">상품을 불러오는 중...</div>
   </div>
   <button class="view-all" onclick="location.href='shop.html'">전체 상품 보기 →</button>
 </section>
 
-<!-- 하단 CTA -->
 <div class="main-cta">
   <h2>지금 가입하면 첫 주문 10% 할인 🎁</h2>
   <p>웰리펫 회원이 되어 유기견 보호 캠페인에 함께해요</p>
@@ -246,10 +219,43 @@ footer{background:#2a1220;padding:48px;}
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
+
+function updateHeader(user){
+  const btnJoin=document.getElementById('btnJoin');
+  const btnLogout=document.getElementById('btnLogout');
+  const userNameDisplay=document.getElementById('userNameDisplay');
+  if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}
+  else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}
+}
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
 async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
+
+// 최신 상품 4개 불러오기
+async function loadBestProducts(){
+  const {data}=await _supabase.from('products').select('*').order('created_at',{ascending:false}).limit(4);
+  const grid=document.getElementById('bestGrid');
+  if(!data||data.length===0){
+    grid.innerHTML='<div style="grid-column:span 4;text-align:center;padding:40px;color:var(--muted);font-size:13px;">아직 상품이 없어요</div>';
+    return;
+  }
+  grid.innerHTML=data.map(p=>`
+    <div class="pcard" onclick="location.href='product.html?id=${p.id}'">
+      <div class="pimg">
+        ${p.image_url?`<img src="${p.image_url}" alt="${p.name}"/>`:'🐾'}
+      </div>
+      <div class="pinfo">
+        <div class="ptag">${p.badge||p.category}</div>
+        <div class="pname">${p.name}</div>
+        <div class="pprice">${Number(p.price).toLocaleString()}원 ${p.original_price?`<s>${Number(p.original_price).toLocaleString()}원</s>`:''}</div>
+        <div class="pdon">🏠 ${Number(p.donation_amount||0).toLocaleString()}원 기부</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+loadBestProducts();
+
 function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
 async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}document.getElementById('formSignup').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
 async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
