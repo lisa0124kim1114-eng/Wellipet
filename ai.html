@@ -180,6 +180,7 @@ nav{display:none;}
       <div class="result-emoji" id="rEmoji">🐶</div>
       <div class="result-breed" id="rBreed">-</div>
       <div class="result-breed-en" id="rBreedEn">-</div>
+      <div class="result-mix" id="rMixComposition" style="display:none;background:rgba(255,255,255,.2);border-radius:12px;padding:8px 14px;font-size:13px;margin-top:8px;line-height:1.6;">🧬 <span id="rMixText"></span></div>
       <div class="result-confidence" id="rConfidence">-</div>
     </div>
     <div class="result-body">
@@ -391,6 +392,15 @@ async function analyze() {
     document.getElementById('rEmotion').textContent = data.emotion || '-';
     document.getElementById('rPersonality').textContent = data.personality || '-';
     document.getElementById('rTip').textContent = data.tip || '-';
+
+    // 믹스견 구성 표시
+    const mixEl = document.getElementById('rMixComposition');
+    if(data.is_mix && data.mix_composition) {
+      document.getElementById('rMixText').textContent = data.mix_composition;
+      mixEl.style.display = 'block';
+    } else {
+      mixEl.style.display = 'none';
+    }
 
     document.getElementById('resultCard').style.display = 'block';
     document.getElementById('shopBanner').style.display = 'flex';
