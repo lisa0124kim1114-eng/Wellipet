@@ -118,9 +118,19 @@ footer{background:#2a1220;padding:48px;}
 .find-link:hover{color:var(--pk);}
 .back-link{font-size:12px;color:var(--pk);cursor:pointer;background:none;border:none;font-family:'Noto Sans KR',sans-serif;margin-bottom:14px;display:inline-block;}
 .back-link:hover{text-decoration:underline;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;transition:all .3s;}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
+.mobile-nav.open{display:block;}
+.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
+.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
+.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;transition:all .2s;}
+.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
+.mobile-nav-inner a.active{color:var(--pk);}
 @media(max-width:768px){
   header{padding:0 16px;height:60px;}
   nav{display:none;}
+  .hamburger{display:flex;}
   .sbox{display:none;}
   .hero{grid-template-columns:1fr;padding:32px 20px;}
   .hero-right{display:none;}
@@ -162,6 +172,7 @@ footer{background:#2a1220;padding:48px;}
   <div class="hicons">
     <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
+    <button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
     <span class="ibt">👤</span>
     <span class="user-name" id="userNameDisplay"></span>
     <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
@@ -409,7 +420,21 @@ function switchTab(tab){
 }
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 </script>
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
+    <a href="/">🏠 홈</a>
+    <a href="shop.html">🛍️ Products</a>
+    <a href="adoption.html">🐾 입양 스토리</a>
+    <a href="donation.html">🏠 후원 프로젝트</a>
+    <a href="ai.html">🤖 AI 분석</a>
+    <a href="mypage.html">👤 마이페이지</a>
+    <a href="cart.html">🛒 장바구니</a>
+  </div>
+</div>
 <script>
+function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
+function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
 }
