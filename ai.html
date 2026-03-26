@@ -311,13 +311,11 @@ function handleFile(file) {
         const b64 = out.substring(out.indexOf(',') + 1);
         if (b64 && b64.length > 2000) { compressedB64 = b64; done = true; }
       } catch(err) {}
-      // canvas 실패 or 결과 이상 → 원본 사용 (5MB 이하)
-      if (!done) {
-        if (file.size <= 4.9 * 1024 * 1024) compressedB64 = rawB64;
-      }
+      // canvas 실패 or 결과 이상 → 원본 그대로 사용
+      if (!done) compressedB64 = rawB64;
     };
     img.onerror = function() {
-      if (file.size <= 4.9 * 1024 * 1024) compressedB64 = rawB64;
+      compressedB64 = rawB64;
     };
     img.src = dataUrl;
   };
@@ -352,7 +350,7 @@ async function analyze() {
     }
     if (!compressedB64) {
       document.getElementById('loading').style.display = 'none';
-      alert('사진 용량이 너무 커요. 카메라로 직접 찍거나 더 작은 사진을 선택해주세요.');
+      alert('사진을 불러오지 못했어요. 다른 사진을 선택해주세요.');
       resetUpload();
       return;
     }
