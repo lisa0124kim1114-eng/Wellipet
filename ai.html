@@ -74,6 +74,7 @@ nav a:hover,nav a.active{color:var(--pk);}
 .shop-banner-text strong{color:var(--pk);}
 .btn-shop{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
 
+.disclaimer{font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6;background:var(--pkbg);padding:10px 14px;border-radius:10px;}
 .how-wrap{max-width:680px;margin:0 auto;padding:0 24px 60px;}
 .how-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:20px;text-align:center;}
 .how-steps{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
@@ -156,6 +157,7 @@ nav{display:none;}
     </div>
   </div>
   <input type="file" id="cameraInput" capture="environment" style="display:none;" onchange="handleFile(this.files[0])"/>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;">🤖 AI 분석은 참고용이에요. 품종·감정은 실제와 다를 수 있어요.</p>
 
 
   <!-- 미리보기 -->
@@ -195,7 +197,7 @@ nav{display:none;}
         <div class="info-label">케어 팁 💡</div>
         <div class="info-text" id="rTip">-</div>
       </div>
-      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6;background:var(--pkbg);padding:10px 14px;border-radius:10px;">
+      <div class="disclaimer">
         🤖 AI 분석 결과는 참고용이에요. 품종·감정은 실제와 다를 수 있으니 전문가 의견을 함께 참고해주세요.
       </div>
       <div class="result-actions">
@@ -365,16 +367,23 @@ async function analyze() {
       resetUpload();
       return;
     }
+    const supported = ['image/jpeg','image/png','image/gif','image/webp'];
+    const mediaType = supported.includes(currentFile?.type) ? currentFile.type : 'image/jpeg';
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: compressedB64, mediaType: 'image/jpeg' })
+      body: JSON.stringify({ image: compressedB64, mediaType })
     });
     const data = await res.json();
     document.getElementById('loading').style.display = 'none';
 
     if (data.error) {
-      alert('분석 실패: ' + data.error);
+      const msg = data.error || '';
+      if (msg.includes('5 MB') || msg.includes('5mb') || msg.includes('size')) {
+        alert('사진 용량이 너무 커요. 카메라로 직접 찍어주세요 📷');
+      } else {
+        alert('분석 실패: ' + msg);
+      }
       resetUpload();
       return;
     }
