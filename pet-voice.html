@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>우리 아이가 말해요 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);text-decoration:none;}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;transition:color .2s;}
+nav a:hover,nav a.active{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
+.mobile-nav.open{display:block;}
+.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
+.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
+.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;}
+.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
+@media(max-width:768px){.hamburger{display:flex;}nav{display:none;}}
+
+.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:60px 32px;text-align:center;border-bottom:1px solid var(--bd);}
+.hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.hero h1{font-family:'Nunito',sans-serif;font-size:34px;font-weight:800;color:#2a1220;margin-bottom:12px;line-height:1.3;}
+.hero p{font-size:15px;color:var(--muted);font-weight:300;line-height:1.8;}
+
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px;}
+
+/* 업로드 영역 */
+.upload-area{border:2.5px dashed var(--bd);border-radius:24px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;position:relative;overflow:hidden;}
+.upload-area:hover,.upload-area.drag{border-color:var(--pk);background:var(--pkbg);}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-icon{font-size:56px;margin-bottom:16px;}
+.upload-title{font-size:18px;font-weight:700;color:#2a1220;margin-bottom:8px;}
+.upload-sub{font-size:13px;color:var(--muted);}
+
+/* 미리보기 */
+.preview-wrap{display:none;text-align:center;margin-bottom:24px;}
+.preview-wrap img{max-width:100%;max-height:320px;border-radius:20px;border:2px solid var(--bd);object-fit:cover;}
+.preview-change{display:inline-block;margin-top:10px;font-size:12px;color:var(--pk);cursor:pointer;text-decoration:underline;}
+
+/* 버튼 */
+.btn-analyze{display:block;width:100%;padding:16px;background:var(--pk);color:#fff;border:none;border-radius:20px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;margin-top:20px;}
+.btn-analyze:hover{background:var(--pkm);}
+.btn-analyze:disabled{background:#ccc;cursor:default;}
+
+/* 로딩 */
+.loading{display:none;text-align:center;padding:40px 0;}
+.loading-dots{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+.loading-dots span{width:10px;height:10px;background:var(--pkl);border-radius:50%;animation:bounce .8s infinite alternate;}
+.loading-dots span:nth-child(2){animation-delay:.2s;}
+.loading-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{to{transform:translateY(-10px);background:var(--pk);}}
+.loading p{color:var(--muted);font-size:14px;}
+
+/* 결과 */
+.result{display:none;margin-top:32px;}
+
+.result-scene{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);border-radius:28px;padding:32px 24px;border:1.5px solid var(--bd);position:relative;}
+
+/* 동물 사진 + 말풍선 레이아웃 */
+.scene-inner{display:flex;align-items:flex-start;gap:20px;}
+.pet-photo-wrap{flex-shrink:0;width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid var(--pk);box-shadow:0 4px 16px rgba(196,92,138,.2);}
+.pet-photo-wrap img{width:100%;height:100%;object-fit:cover;}
+.speech-side{flex:1;}
+
+/* 말풍선 */
+.speech-bubble{background:#fff;border:2px solid var(--pk);border-radius:20px;border-bottom-left-radius:4px;padding:20px;position:relative;box-shadow:0 4px 16px rgba(196,92,138,.1);}
+.speech-bubble::before{content:'';position:absolute;bottom:-1px;left:-14px;width:0;height:0;border-top:10px solid var(--pk);border-left:14px solid transparent;border-bottom:0;}
+.speech-bubble::after{content:'';position:absolute;bottom:1px;left:-11px;width:0;height:0;border-top:9px solid #fff;border-left:12px solid transparent;border-bottom:0;}
+.speech-emoji{font-size:28px;margin-bottom:8px;display:block;}
+.speech-text{font-size:16px;line-height:1.8;color:#2a1220;font-weight:500;}
+
+/* 동물 정보 태그 */
+.pet-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.pet-tag{font-size:12px;background:var(--pkbg);color:var(--pk);padding:4px 12px;border-radius:20px;font-weight:600;border:1px solid var(--bd);}
+.pet-tag.emotion{background:linear-gradient(90deg,#fff0f7,var(--pkbg));}
+
+/* 다시하기 버튼 */
+.btn-retry{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:10px 20px;background:#fff;border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
+.btn-retry:hover{border-color:var(--pk);color:var(--pk);}
+
+/* 공유 버튼 */
+.btn-share{display:inline-flex;align-items:center;gap:6px;margin-top:20px;margin-left:8px;padding:10px 20px;background:var(--pk);border:none;border-radius:20px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
+.btn-share:hover{background:var(--pkm);}
+
+/* 에러 */
+.error-msg{display:none;background:#fff0f0;border:1px solid #ffcccc;border-radius:16px;padding:16px 20px;color:#cc4444;font-size:14px;margin-top:20px;text-align:center;}
+
+/* 힌트 */
+.hint{background:var(--pkbg);border-radius:16px;padding:16px 20px;margin-top:24px;font-size:13px;color:var(--muted);line-height:1.8;}
+.hint strong{color:var(--pk);}
+
+footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
+.fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.f-links{display:flex;gap:20px;}
+.f-links a{font-size:12px;color:#a08090;text-decoration:none;}
+.f-copy{font-size:12px;color:#6a4a5a;}
+
+@media(max-width:768px){
+  header{padding:0 16px;height:60px;}
+  .hero{padding:40px 20px;}
+  .hero h1{font-size:26px;}
+  .wrap{padding:32px 16px;}
+  .scene-inner{flex-direction:column;align-items:center;}
+  .speech-bubble{border-radius:20px;border-top-left-radius:4px;}
+  .speech-bubble::before,.speech-bubble::after{display:none;}
+  footer{padding:24px 20px;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a class="logo" href="/">Welli<em>pet</em> 🐾</a>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+      <a href="ai-hub.html" class="active">🐾 AI 놀이터</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <span style="font-size:16px;cursor:pointer;" onclick="location.href='cart.html'">🛒</span>
+    <button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">💬 우리 아이가 말해요</div>
+  <h1>우리 아이 사진을 올리면<br>직접 말해줘요 🐾</h1>
+  <p>AI가 사진을 보고 우리 아이의 기분과 성격을 파악해서<br>지금 이 순간 하고 싶은 말을 전해드려요</p>
+</div>
+
+<div class="wrap">
+
+  <!-- 업로드 영역 -->
+  <div class="upload-area" id="uploadArea">
+    <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)"/>
+    <div class="upload-icon">📸</div>
+    <div class="upload-title">우리 아이 사진을 올려주세요</div>
+    <div class="upload-sub">강아지, 고양이 모두 가능해요<br>JPG, PNG, WEBP · 최대 10MB</div>
+  </div>
+
+  <!-- 미리보기 -->
+  <div class="preview-wrap" id="previewWrap">
+    <img id="previewImg" src="" alt="미리보기"/>
+    <div class="preview-change" onclick="resetUpload()">📁 다른 사진 선택하기</div>
+  </div>
+
+  <!-- 분석 버튼 -->
+  <button class="btn-analyze" id="btnAnalyze" disabled onclick="analyze()">
+    💬 우리 아이 목소리 듣기
+  </button>
+
+  <!-- 로딩 -->
+  <div class="loading" id="loading">
+    <div class="loading-dots"><span></span><span></span><span></span></div>
+    <p>우리 아이의 마음을 읽고 있어요...</p>
+  </div>
+
+  <!-- 에러 -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- 결과 -->
+  <div class="result" id="result">
+    <div class="result-scene">
+      <div class="scene-inner">
+        <div class="pet-photo-wrap">
+          <img id="resultPhoto" src="" alt="반려동물"/>
+        </div>
+        <div class="speech-side">
+          <div class="speech-bubble">
+            <span class="speech-emoji" id="resultEmoji"></span>
+            <div class="speech-text" id="resultMessage"></div>
+          </div>
+          <div class="pet-tags" id="petTags"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="btn-retry" onclick="resetAll()">🔄 다시 하기</button>
+      <button class="btn-share" onclick="copyMessage()">📋 메시지 복사</button>
+    </div>
+  </div>
+
+  <!-- 힌트 -->
+  <div class="hint">
+    💡 <strong>이런 사진이 잘 나와요!</strong><br>
+    · 얼굴이 잘 보이는 사진<br>
+    · 밝은 곳에서 찍은 사진<br>
+    · 강아지, 고양이 모두 가능해요
+  </div>
+
+</div>
+
+<footer>
+  <div class="fb">
+    <div class="f-links">
+      <a href="terms.html">이용약관</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="refund.html">환불정책</a>
+    </div>
+    <div class="f-copy">© 2025 Wellipet. All rights reserved.</div>
+  </div>
+</footer>
+
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
+    <a href="/">🏠 홈</a>
+    <a href="shop.html">🛍️ Products</a>
+    <a href="adoption.html">🐾 입양 스토리</a>
+    <a href="donation.html">🏠 후원 프로젝트</a>
+    <a href="ai-hub.html">🤖 AI 놀이터</a>
+    <a href="mypage.html">👤 마이페이지</a>
+    <a href="cart.html">🛒 장바구니</a>
+  </div>
+</div>
+
+<script>
+const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/pet-voice';
+
+let selectedFile = null;
+let selectedDataUrl = null;
+
+function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
+function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
+
+function onFileSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) {
+    showError('파일 크기가 너무 커요. 10MB 이하 사진을 올려주세요.');
+    return;
+  }
+  selectedFile = file;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    selectedDataUrl = ev.target.result;
+    document.getElementById('previewImg').src = selectedDataUrl;
+    document.getElementById('uploadArea').style.display = 'none';
+    document.getElementById('previewWrap').style.display = 'block';
+    document.getElementById('btnAnalyze').disabled = false;
+    document.getElementById('result').style.display = 'none';
+    hideError();
+  };
+  reader.readAsDataURL(file);
+}
+
+// 드래그앤드롭
+const uploadArea = document.getElementById('uploadArea');
+uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('drag'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag'));
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const fakeEvent = { target: { files: [file] } };
+    onFileSelected(fakeEvent);
+  }
+});
+
+function resetUpload() {
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('previewWrap').style.display = 'none';
+  document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('fileInput').value = '';
+  selectedFile = null;
+  selectedDataUrl = null;
+}
+
+function resetAll() {
+  resetUpload();
+  document.getElementById('result').style.display = 'none';
+  hideError();
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError() {
+  document.getElementById('errorMsg').style.display = 'none';
+}
+
+async function analyze() {
+  if (!selectedDataUrl) return;
+
+  // UI 상태
+  document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('result').style.display = 'none';
+  hideError();
+
+  try {
+    // base64 추출 (data:image/jpeg;base64, 이후 부분)
+    const [header, base64] = selectedDataUrl.split(',');
+    const mediaTypeMatch = header.match(/data:([^;]+);/);
+    const mediaType = mediaTypeMatch ? mediaTypeMatch[1] : 'image/jpeg';
+
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_base64: base64, media_type: mediaType }),
+    });
+
+    if (!res.ok) throw new Error('서버 오류가 발생했어요');
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    renderResult(data);
+  } catch (err) {
+    showError('앗, 분석 중 오류가 생겼어요. 다시 시도해주세요 🙏');
+    console.error(err);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('btnAnalyze').disabled = false;
+  }
+}
+
+const EMOTION_MAP = {
+  '행복': '😊 행복해요',
+  '졸림': '😪 졸려요',
+  '신남': '🤩 신났어요',
+  '배고픔': '🍖 배고파요',
+  '편안함': '😌 편안해요',
+};
+
+function renderResult(data) {
+  // 사진
+  document.getElementById('resultPhoto').src = selectedDataUrl;
+
+  // 이모지 + 메시지
+  document.getElementById('resultEmoji').textContent = data.emoji || '🐾';
+  document.getElementById('resultMessage').textContent = data.message || '사진을 분석했어요!';
+
+  // 태그
+  const tagsEl = document.getElementById('petTags');
+  tagsEl.innerHTML = '';
+  if (data.animal_type) tagsEl.innerHTML += `<span class="pet-tag">${data.animal_type === '강아지' ? '🐶' : data.animal_type === '고양이' ? '🐱' : '🐾'} ${data.animal_type}</span>`;
+  if (data.breed) tagsEl.innerHTML += `<span class="pet-tag">🏷️ ${data.breed}</span>`;
+  if (data.emotion) tagsEl.innerHTML += `<span class="pet-tag emotion">${EMOTION_MAP[data.emotion] || data.emotion}</span>`;
+
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function copyMessage() {
+  const msg = document.getElementById('resultMessage').textContent;
+  const emoji = document.getElementById('resultEmoji').textContent;
+  const text = `${emoji} ${msg}\n\n🐾 Wellipet AI · wellipet.co.kr`;
+  try {
+    await navigator.clipboard.writeText(text);
+    const btn = document.querySelector('.btn-share');
+    btn.textContent = '✅ 복사됐어요!';
+    setTimeout(() => { btn.innerHTML = '📋 메시지 복사'; }, 2000);
+  } catch {
+    alert(text);
+  }
+}
+</script>
+</body>
+</html>
