@@ -291,45 +291,42 @@ function handleFile(file) {
   reader.readAsDataURL(file);
 }
 
-function compressForUpload() {
-  return new Promise((resolve) => {
-    const objectUrl = URL.createObjectURL(currentFile);
-    const img = new Image();
-    img.onerror = function() {
-      URL.revokeObjectURL(objectUrl);
-      // canvas 불가 시 원본 base64 크기 체크 후 그대로 전송
-      const b64 = currentDataUrl.substring(currentDataUrl.indexOf(',') + 1);
-      if (b64.length * 0.75 <= 4.5 * 1024 * 1024) {
-        resolve({ base64: b64, mediaType: 'image/jpeg' });
-      } else {
-        resolve(null);
+async function compressForUpload() {
+  // 원본 base64 추출
+  const comma = currentDataUrl.indexOf(',');
+  const rawB64 = currentDataUrl.substring(comma + 1);
+  const rawBytes = rawB64.length * 0.75;
+  const LIMIT = 4.5 * 1024 * 1024;
+
+  // 이미 작으면 바로 전송
+  if (rawBytes <= LIMIT) {
+    return { base64: rawB64, mediaType: 'image/jpeg' };
+  }
+
+  // createImageBitmap 시도 (캔버스보다 더 넓은 브라우저 지원)
+  try {
+    const bitmap = await createImageBitmap(currentFile);
+    const TARGET = 3.5 * 1024 * 1024;
+    const steps = [[800,0.8],[600,0.7],[400,0.6]];
+    for (const [px, q] of steps) {
+      let w = bitmap.width, h = bitmap.height;
+      if (w > h) { h = Math.round(h * px / w); w = px; }
+      else { w = Math.round(w * px / h); h = px; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', q);
+      const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+      if (b64.length * 0.75 <= TARGET) {
+        return { base64: b64, mediaType: 'image/jpeg' };
       }
-    };
-    img.onload = function() {
-      URL.revokeObjectURL(objectUrl);
-      const TARGET = 3.5 * 1024 * 1024;
-      const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5],[400,0.3]];
-      for (const [px, q] of steps) {
-        let w = img.naturalWidth, h = img.naturalHeight;
-        if (!w || !h) continue;
-        if (w > h) { h = Math.round(h * px / w); w = px; }
-        else { w = Math.round(w * px / h); h = px; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', q);
-        const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-        if (b64.length * 0.75 <= TARGET) {
-          resolve({ base64: b64, mediaType: 'image/jpeg' });
-          return;
-        }
-      }
-      // 모든 단계 실패 시 원본 전송 시도
-      const rawB64 = currentDataUrl.substring(currentDataUrl.indexOf(',') + 1);
-      resolve({ base64: rawB64, mediaType: 'image/jpeg' });
-    };
-    img.src = objectUrl;
-  });
+    }
+  } catch(e) {
+    // createImageBitmap 미지원 또는 실패
+  }
+
+  // 마지막 수단: 원본 그대로 전송 (서버에서 오류나면 사용자에게 알림)
+  return { base64: rawB64, mediaType: 'image/jpeg' };
 }
 
 // 드래그앤드롭
@@ -355,12 +352,6 @@ async function analyze() {
 
   try {
     const compressed = await compressForUpload();
-    if (!compressed) {
-      document.getElementById('loading').style.display = 'none';
-      alert('이미지 처리에 실패했어요. 다른 사진을 선택해주세요.');
-      resetUpload();
-      return;
-    }
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
