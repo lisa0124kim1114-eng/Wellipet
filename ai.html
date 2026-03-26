@@ -293,28 +293,32 @@ function handleFile(file) {
 
 function compressForUpload() {
   return new Promise((resolve) => {
-    const img = new Image();
-    img.onerror = function() { resolve(null); };
-    img.onload = function() {
-      const TARGET = 3.5 * 1024 * 1024;
-      const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5]];
-      for (const [px, q] of steps) {
-        let w = img.width, h = img.height;
-        if (w > h) { h = Math.round(h * px / w); w = px; }
-        else { w = Math.round(w * px / h); h = px; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL('image/jpeg', q);
-        const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-        if (b64.length * 0.75 <= TARGET) {
-          resolve({ base64: b64, mediaType: 'image/jpeg' });
-          return;
-        }
-      }
+    const previewImg = document.getElementById('previewImg');
+    const srcW = previewImg.naturalWidth || previewImg.width;
+    const srcH = previewImg.naturalHeight || previewImg.height;
+
+    if (!srcW || !srcH) {
       resolve(null);
-    };
-    img.src = currentDataUrl;
+      return;
+    }
+
+    const TARGET = 3.5 * 1024 * 1024;
+    const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5],[400,0.3]];
+    for (const [px, q] of steps) {
+      let w = srcW, h = srcH;
+      if (w > h) { h = Math.round(h * px / w); w = px; }
+      else { w = Math.round(w * px / h); h = px; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(previewImg, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', q);
+      const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+      if (b64.length * 0.75 <= TARGET) {
+        resolve({ base64: b64, mediaType: 'image/jpeg' });
+        return;
+      }
+    }
+    resolve(null);
   });
 }
 
