@@ -153,10 +153,10 @@ nav{display:none;}
     <div class="upload-sub">클릭하거나 사진을 끌어다 놓으세요<br>JPG, PNG · 최대 10MB</div>
     <div class="upload-btns">
       <button class="btn-upload" onclick="document.getElementById('fileInput').click();event.stopPropagation();">📁 사진 선택</button>
-      <button class="btn-camera" onclick="openCamera();event.stopPropagation();">📷 카메라로 찍기</button>
+      <label class="btn-camera" for="cameraInput" onclick="event.stopPropagation();">📷 카메라로 찍기</label>
     </div>
   </div>
-  <input type="file" id="cameraInput" accept="image/*" capture style="display:none;" onchange="handleFile(this.files[0])"/>
+  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleFile(this.files[0])"/>
 
   <!-- 미리보기 -->
   <div class="preview-wrap" id="previewWrap">
