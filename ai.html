@@ -353,11 +353,19 @@ async function analyze() {
     }
     const supported = ['image/jpeg','image/png','image/gif','image/webp'];
     const mediaType = supported.includes(currentFile?.type) ? currentFile.type : 'image/jpeg';
-    const res = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: compressedB64, mediaType })
-    });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 20000);
+    let res;
+    try {
+      res = await fetch(FUNCTION_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: compressedB64, mediaType }),
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timer);
+    }
     const data = await res.json();
     document.getElementById('loading').style.display = 'none';
 
