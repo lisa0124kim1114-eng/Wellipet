@@ -101,6 +101,13 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 .fg input:focus{border-color:var(--pk);}
 .btn-submit{width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;}
 .modal-close{float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;}
+.kakao-btn{width:100%;background:#FEE500;color:#3A1D1D;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;}
+.kakao-btn:hover{background:#f0d800;}
+.kakao-icon{width:20px;height:20px;}
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd);}
+.divider span{font-size:11px;color:var(--muted);white-space:nowrap;}
+.text-link{background:none;border:none;color:var(--pk);font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;padding:0;text-decoration:underline;}
 .dc{display:flex;align-items:center;gap:8px;margin-top:12px;}
 .dc input{width:auto;}
 .dc label{font-size:12px;color:var(--pkm);margin:0;}
@@ -171,6 +178,11 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       <button class="mtab" id="tabLogin" onclick="switchTab('login')">로그인</button>
     </div>
     <div id="formSignup">
+      <button class="kakao-btn" onclick="signInWithKakao()">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.536 1.457 4.766 3.657 6.142l-.93 3.472 4.007-2.64A11.4 11.4 0 0012 18c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" fill="#3A1D1D"/></svg>
+        카카오로 시작하기
+      </button>
+      <div class="divider"><span>또는 이메일로 가입</span></div>
       <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
       <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="wellypet1209@gmail.com"/></div>
       <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
@@ -178,9 +190,31 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       <button class="btn-submit" onclick="signUp()">가입하기</button>
     </div>
     <div id="formLogin" style="display:none;">
+      <button class="kakao-btn" onclick="signInWithKakao()">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.536 1.457 4.766 3.657 6.142l-.93 3.472 4.007-2.64A11.4 11.4 0 0012 18c5.523 0 10-3.477 10-7.5S17.523 3 12 3z" fill="#3A1D1D"/></svg>
+        카카오로 로그인
+      </button>
+      <div class="divider"><span>또는 이메일로 로그인</span></div>
       <div class="fg"><label>이메일</label><input type="email" id="loginEmail" placeholder="wellypet1209@gmail.com"/></div>
       <div class="fg"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호를 입력해주세요"/></div>
       <button class="btn-submit" onclick="signIn()">로그인</button>
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:12px;">
+        <button class="text-link" onclick="showSection('formFindId')">아이디 찾기</button>
+        <span style="color:var(--bd);font-size:12px;">|</span>
+        <button class="text-link" onclick="showSection('formFindPw')">비밀번호 찾기</button>
+      </div>
+    </div>
+    <div id="formFindId" style="display:none;">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">웰리펫은 이메일 주소가 아이디입니다.<br>가입 시 사용한 이메일로 로그인해주세요.</div>
+      <div class="fg"><label>가입 시 입력한 이름</label><input type="text" id="findIdName" placeholder="홍길동"/></div>
+      <button class="btn-submit" onclick="findId()">확인</button>
+      <button class="text-link" style="display:block;margin:12px auto 0;" onclick="switchTab('login')">← 로그인으로 돌아가기</button>
+    </div>
+    <div id="formFindPw" style="display:none;">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.7;">가입한 이메일을 입력하면 비밀번호 재설정 링크를 보내드려요.</div>
+      <div class="fg"><label>가입한 이메일</label><input type="email" id="resetEmail" placeholder="wellypet1209@gmail.com"/></div>
+      <button class="btn-submit" onclick="resetPassword()">재설정 메일 보내기</button>
+      <button class="text-link" style="display:block;margin:12px auto 0;" onclick="switchTab('login')">← 로그인으로 돌아가기</button>
     </div>
     <div id="formDone" style="display:none;text-align:center;padding:20px 0;">
       <div style="font-size:48px;margin-bottom:14px;">🎉</div>
@@ -193,7 +227,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
-const SUPABASE_KEY='sb_publishable_1LOWmRTjPF-UKiW6tVHA1w_aDqsrWea';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
@@ -288,11 +322,15 @@ _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(se
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
 async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
 function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
-async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}document.getElementById('formSignup').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
-async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
+function showSection(id){const sections=['formSignup','formLogin','formFindId','formFindPw','formDone'];sections.forEach(s=>document.getElementById(s).style.display='none');document.getElementById(id).style.display='block';document.getElementById('msgBox').style.display='none';}
+async function signUp(){const name=document.getElementById('signupName').value;const email=document.getElementById('signupEmail').value;const pw=document.getElementById('signupPw').value;if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});if(error){showMsg('오류: '+error.message,true);return;}showSection('formDone');document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';}
+async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';showSection('formDone');document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
+async function signInWithKakao(){const{error}=await _supabase.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:window.location.origin+window.location.pathname}});if(error)showMsg('카카오 로그인 오류: '+error.message,true);}
+async function resetPassword(){const email=document.getElementById('resetEmail').value;if(!email){showMsg('이메일을 입력해주세요.',true);return;}const{error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});if(error){showMsg('오류: '+error.message,true);return;}showMsg('📧 비밀번호 재설정 메일을 보냈어요! 이메일을 확인해주세요.',false);}
+function findId(){const name=document.getElementById('findIdName').value.trim();if(!name){showMsg('이름을 입력해주세요.',true);return;}showMsg('웰리펫은 이메일 주소가 아이디입니다. 가입 시 사용한 이메일로 로그인해주세요. 이메일이 기억나지 않으시면 고객센터로 문의해주세요.',false);}
 function openModal(tab){document.getElementById('authModal').classList.add('open');switchTab(tab||'signup');document.getElementById('msgBox').style.display='none';}
 function closeModal(){document.getElementById('authModal').classList.remove('open');}
-function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
+function switchTab(tab){const sections=['formSignup','formLogin','formFindId','formFindPw','formDone'];sections.forEach(s=>document.getElementById(s).style.display='none');if(tab==='signup')document.getElementById('formSignup').style.display='block';else document.getElementById('formLogin').style.display='block';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
 renderCart();

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "mcp__claude_ai_Supabase__list_projects",
+      "Bash(head -20 grep -n \"kakao\\\\|signInWithKakao\\\\|카카오\\\\|supabase\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/checkout.html)",
+      "mcp__claude_ai_Supabase__get_project",
+      "Bash(head -10 grep -n \"authModal\\\\|formSignup\\\\|formLogin\\\\|openModal\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/cart.html)",
+      "WebFetch(domain:wellypet.co.kr)",
+      "mcp__claude_ai_Supabase__execute_sql",
+      "mcp__claude_ai_Supabase__get_publishable_keys",
+      "Bash(grep:*)"
+    ]
+  }
+}
