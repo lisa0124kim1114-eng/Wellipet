@@ -275,38 +275,49 @@ function openCamera() {
   document.getElementById('cameraInput').click();
 }
 
+let currentFile = null;
+
 function handleFile(file) {
   if (!file) return;
+  currentFile = file;
   const reader = new FileReader();
   reader.onload = function(e) {
-    const img = new Image();
-    img.onload = function() {
-      const TARGET_BYTES = 3.5 * 1024 * 1024; // 3.5MB 디코딩 기준
-      function compress(maxPx, quality) {
-        let w = img.width, h = img.height;
-        if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
-        else { w = Math.round(w * maxPx / h); h = maxPx; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        return canvas.toDataURL('image/jpeg', quality);
-      }
-      let result = compress(800, 0.75);
-      let b64 = result.substring(result.indexOf(',') + 1);
-      // base64 → 실제 바이트: length * 3/4
-      if (b64.length * 0.75 > TARGET_BYTES) result = compress(800, 0.6),  b64 = result.substring(result.indexOf(',') + 1);
-      if (b64.length * 0.75 > TARGET_BYTES) result = compress(600, 0.6),  b64 = result.substring(result.indexOf(',') + 1);
-      if (b64.length * 0.75 > TARGET_BYTES) result = compress(600, 0.5),  b64 = result.substring(result.indexOf(',') + 1);
-      if (b64.length * 0.75 > TARGET_BYTES) result = compress(400, 0.5),  b64 = result.substring(result.indexOf(',') + 1);
-      currentBase64 = b64;
-      currentMediaType = 'image/jpeg';
-      document.getElementById('previewImg').src = result;
-      document.getElementById('uploadArea').style.display = 'none';
-      document.getElementById('previewWrap').style.display = 'block';
-    };
-    img.src = e.target.result;
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('uploadArea').style.display = 'none';
+    document.getElementById('previewWrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
+}
+
+function compressForUpload(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onerror = function() { resolve(null); };
+      img.onload = function() {
+        const TARGET = 3.5 * 1024 * 1024;
+        const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5]];
+        for (const [px, q] of steps) {
+          let w = img.width, h = img.height;
+          if (w > h) { h = Math.round(h * px / w); w = px; }
+          else { w = Math.round(w * px / h); h = px; }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', q);
+          const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+          if (b64.length * 0.75 <= TARGET) {
+            resolve({ base64: b64, mediaType: 'image/jpeg' });
+            return;
+          }
+        }
+        resolve(null);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 // 드래그앤드롭
@@ -321,7 +332,7 @@ uploadArea.addEventListener('drop', function(e) {
 });
 
 async function analyze() {
-  if (!currentBase64) return;
+  if (!currentFile) return;
   const { data: { session } } = await _supabase.auth.getSession();
   if (!session) {
     document.getElementById('loginPrompt').style.display = 'flex';
@@ -331,10 +342,17 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
 
   try {
+    const compressed = await compressForUpload(currentFile);
+    if (!compressed) {
+      document.getElementById('loading').style.display = 'none';
+      alert('이미지 처리에 실패했어요. 다른 사진을 선택해주세요.');
+      resetUpload();
+      return;
+    }
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: currentBase64, mediaType: currentMediaType })
+      body: JSON.stringify({ image: compressed.base64, mediaType: compressed.mediaType })
     });
     const data = await res.json();
     document.getElementById('loading').style.display = 'none';
@@ -365,6 +383,7 @@ async function analyze() {
 }
 
 function resetUpload() {
+  currentFile = null;
   currentBase64 = null;
   currentMediaType = null;
   document.getElementById('uploadArea').style.display = 'block';
