@@ -156,7 +156,7 @@ nav{display:none;}
       <button class="btn-camera" onclick="openCamera();event.stopPropagation();">📷 카메라로 찍기</button>
     </div>
   </div>
-  <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleFile(this.files[0])"/>
+  <input type="file" id="cameraInput" accept="image/*" capture style="display:none;" onchange="handleFile(this.files[0])"/>
 
   <!-- 미리보기 -->
   <div class="preview-wrap" id="previewWrap">
