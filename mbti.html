@@ -120,21 +120,21 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 <div class="hero">
   <div class="hero-badge">🧠 강아지 MBTI</div>
   <h1>우리 강아지는<br>어떤 성격일까요?</h1>
-  <p>5가지 질문으로 강아지 성격 유형을 알아봐요<br>친구에게 공유하고 비교해봐요!</p>
+  <p>12가지 질문으로 강아지 성격 유형을 알아봐요<br>친구에게 공유하고 비교해봐요!</p>
 </div>
 
 <div class="wrap">
   <div class="progress-wrap">
     <div class="progress-label">
-      <span id="progressText">1 / 5</span>
-      <span id="progressPct">20%</span>
+      <span id="progressText">1 / 12</span>
+      <span id="progressPct">8%</span>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:8%"></div></div>
   </div>
 
-  <!-- Q1 -->
+  <!-- Q1 E/I -->
   <div class="question-wrap active" id="q1">
-    <div class="q-num">질문 1 / 5</div>
+    <div class="q-num">질문 1 / 12</div>
     <div class="q-icon">🚶</div>
     <div class="q-text">산책할 때 우리 강아지는?</div>
     <div class="q-sub">평소 산책 스타일을 골라주세요</div>
@@ -150,9 +150,9 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
     </div>
   </div>
 
-  <!-- Q2 -->
+  <!-- Q2 E/I -->
   <div class="question-wrap" id="q2">
-    <div class="q-num">질문 2 / 5</div>
+    <div class="q-num">질문 2 / 12</div>
     <div class="q-icon">🚪</div>
     <div class="q-text">손님이 집에 오면?</div>
     <div class="q-sub">낯선 사람을 만났을 때 반응이에요</div>
@@ -168,56 +168,182 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
     </div>
   </div>
 
-  <!-- Q3 -->
+  <!-- Q3 E/I -->
   <div class="question-wrap" id="q3">
-    <div class="q-num">질문 3 / 5</div>
+    <div class="q-num">질문 3 / 12</div>
+    <div class="q-icon">🐶</div>
+    <div class="q-text">다른 강아지를 만나면?</div>
+    <div class="q-sub">강아지 친구를 만났을 때 반응이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(3,'E')">
+        <span class="choice-icon">🐾</span>
+        <span class="choice-text">꼬리 흔들며 먼저 달려가서 놀고 싶어해요</span>
+      </div>
+      <div class="choice" onclick="answer(3,'I')">
+        <span class="choice-icon">👀</span>
+        <span class="choice-text">멀리서 바라보거나 보호자 뒤에 숨어요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 S/N -->
+  <div class="question-wrap" id="q4">
+    <div class="q-num">질문 4 / 12</div>
     <div class="q-icon">🧸</div>
     <div class="q-text">새 장난감을 주면?</div>
     <div class="q-sub">장난감을 처음 받았을 때 반응이에요</div>
     <div class="choices">
-      <div class="choice" onclick="answer(3,'S')">
+      <div class="choice" onclick="answer(4,'S')">
         <span class="choice-icon">😋</span>
         <span class="choice-text">바로 물고 씹어요. 일단 먹는 게 최고!</span>
       </div>
-      <div class="choice" onclick="answer(3,'N')">
+      <div class="choice" onclick="answer(4,'N')">
         <span class="choice-icon">🔍</span>
         <span class="choice-text">이리저리 굴리고 탐색해요. 어떻게 노는 건지 연구해요</span>
       </div>
     </div>
   </div>
 
-  <!-- Q4 -->
-  <div class="question-wrap" id="q4">
-    <div class="q-num">질문 4 / 5</div>
+  <!-- Q5 S/N -->
+  <div class="question-wrap" id="q5">
+    <div class="q-num">질문 5 / 12</div>
+    <div class="q-icon">🗺️</div>
+    <div class="q-text">처음 가는 낯선 장소에서?</div>
+    <div class="q-sub">새로운 환경에서의 행동이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(5,'S')">
+        <span class="choice-icon">👃</span>
+        <span class="choice-text">바닥 냄새를 열심히 맡으며 꼼꼼히 탐색해요</span>
+      </div>
+      <div class="choice" onclick="answer(5,'N')">
+        <span class="choice-icon">👁️</span>
+        <span class="choice-text">주변을 두리번거리며 전체적인 분위기를 파악해요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 S/N -->
+  <div class="question-wrap" id="q6">
+    <div class="q-num">질문 6 / 12</div>
+    <div class="q-icon">🎾</div>
+    <div class="q-text">놀이 스타일은?</div>
+    <div class="q-sub">평소 어떻게 노는지 골라주세요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(6,'S')">
+        <span class="choice-icon">🦴</span>
+        <span class="choice-text">항상 하던 대로 좋아하는 장난감만 갖고 놀아요</span>
+      </div>
+      <div class="choice" onclick="answer(6,'N')">
+        <span class="choice-icon">💡</span>
+        <span class="choice-text">집 안 물건도 장난감으로 만들어요. 창의적이에요!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 T/F -->
+  <div class="question-wrap" id="q7">
+    <div class="q-num">질문 7 / 12</div>
     <div class="q-icon">🍖</div>
     <div class="q-text">밥을 줄 때 우리 강아지는?</div>
     <div class="q-sub">식사 시간 행동이에요</div>
     <div class="choices">
-      <div class="choice" onclick="answer(4,'T')">
+      <div class="choice" onclick="answer(7,'T')">
         <span class="choice-icon">🏃</span>
         <span class="choice-text">기다리지 못하고 뛰어다니며 보채요</span>
       </div>
-      <div class="choice" onclick="answer(4,'F')">
+      <div class="choice" onclick="answer(7,'F')">
         <span class="choice-icon">😇</span>
         <span class="choice-text">눈을 초롱초롱 빛내며 얌전히 기다려요</span>
       </div>
     </div>
   </div>
 
-  <!-- Q5 -->
-  <div class="question-wrap" id="q5">
-    <div class="q-num">질문 5 / 5</div>
+  <!-- Q8 T/F -->
+  <div class="question-wrap" id="q8">
+    <div class="q-num">질문 8 / 12</div>
+    <div class="q-icon">😢</div>
+    <div class="q-text">보호자가 슬퍼 보이면?</div>
+    <div class="q-sub">보호자 감정에 반응하는 방식이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(8,'T')">
+        <span class="choice-icon">🎮</span>
+        <span class="choice-text">평소와 다름없이 자기 할 일 해요</span>
+      </div>
+      <div class="choice" onclick="answer(8,'F')">
+        <span class="choice-icon">🥺</span>
+        <span class="choice-text">다가와서 핥거나 옆에 딱 붙어서 위로해줘요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q9 T/F -->
+  <div class="question-wrap" id="q9">
+    <div class="q-num">질문 9 / 12</div>
+    <div class="q-icon">🏆</div>
+    <div class="q-text">훈련할 때 칭찬을 받으면?</div>
+    <div class="q-sub">칭찬에 대한 반응이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(9,'T')">
+        <span class="choice-icon">🍪</span>
+        <span class="choice-text">간식이 있을 때만 열심히 해요. 현실적이에요!</span>
+      </div>
+      <div class="choice" onclick="answer(9,'F')">
+        <span class="choice-icon">🌸</span>
+        <span class="choice-text">칭찬 말 한마디에 꼬리가 멈추질 않아요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 J/P -->
+  <div class="question-wrap" id="q10">
+    <div class="q-num">질문 10 / 12</div>
     <div class="q-icon">🏠</div>
     <div class="q-text">보호자 없이 혼자 있을 때?</div>
     <div class="q-sub">혼자 있을 때 행동이에요</div>
     <div class="choices">
-      <div class="choice" onclick="answer(5,'J')">
+      <div class="choice" onclick="answer(10,'J')">
         <span class="choice-icon">😴</span>
         <span class="choice-text">정해진 자리에서 조용히 자거나 쉬어요</span>
       </div>
-      <div class="choice" onclick="answer(5,'P')">
+      <div class="choice" onclick="answer(10,'P')">
         <span class="choice-icon">🌀</span>
         <span class="choice-text">집 안을 돌아다니거나 물건을 가지고 놀아요</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q11 J/P -->
+  <div class="question-wrap" id="q11">
+    <div class="q-num">질문 11 / 12</div>
+    <div class="q-icon">⏰</div>
+    <div class="q-text">매일 같은 시간에 산책을 나가면?</div>
+    <div class="q-sub">루틴에 대한 반응이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(11,'J')">
+        <span class="choice-icon">🚪</span>
+        <span class="choice-text">시간이 되면 스스로 문 앞에서 기다려요</span>
+      </div>
+      <div class="choice" onclick="answer(11,'P')">
+        <span class="choice-icon">🎲</span>
+        <span class="choice-text">갑자기 나가도 상관없어요. 언제든 신나요!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q12 J/P -->
+  <div class="question-wrap" id="q12">
+    <div class="q-num">질문 12 / 12</div>
+    <div class="q-icon">🛏️</div>
+    <div class="q-text">자는 장소가?</div>
+    <div class="q-sub">잠자는 습관이에요</div>
+    <div class="choices">
+      <div class="choice" onclick="answer(12,'J')">
+        <span class="choice-icon">📍</span>
+        <span class="choice-text">항상 정해진 자리에서만 자요</span>
+      </div>
+      <div class="choice" onclick="answer(12,'P')">
+        <span class="choice-icon">🌈</span>
+        <span class="choice-text">그날그날 기분에 따라 다른 곳에서 자요</span>
       </div>
     </div>
   </div>
@@ -300,6 +426,7 @@ const TYPES = {
   ISTJ:{emoji:'📚',name:'꼼꼼이 강아지',color:'linear-gradient(135deg,#d4fc79,#96e6a1)',desc:'신뢰할 수 있고 꼼꼼한 강아지예요. 루틴을 중요하게 여기고 안정된 환경에서 가장 행복해해요.',traits:['신뢰할 수 있어요','규칙적이에요','차분해요','충직해요'],match:'ESFP형 강아지'},
 };
 
+const TOTAL = 12;
 let currentQ = 1;
 
 function answer(q, type) {
@@ -311,31 +438,36 @@ function answer(q, type) {
 }
 
 function nextQ(q) {
-  if (q < 5) {
+  if (q < TOTAL) {
     document.getElementById('q'+q).classList.remove('active');
     document.getElementById('q'+(q+1)).classList.add('active');
     currentQ = q + 1;
-    const pct = (currentQ / 5) * 100;
+    const pct = Math.round((currentQ / TOTAL) * 100);
     document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressText').textContent = currentQ + ' / 5';
-    document.getElementById('progressPct').textContent = Math.round(pct) + '%';
+    document.getElementById('progressText').textContent = currentQ + ' / ' + TOTAL;
+    document.getElementById('progressPct').textContent = pct + '%';
   } else {
     showResult();
   }
 }
 
+function majority(a, b, c, posVal) {
+  const cnt = [a,b,c].filter(v => v === posVal).length;
+  return cnt >= 2 ? posVal : (posVal === 'E' ? 'I' : posVal === 'S' ? 'N' : posVal === 'T' ? 'F' : 'P');
+}
+
 function showResult() {
-  document.getElementById('q5').classList.remove('active');
+  document.getElementById('q'+TOTAL).classList.remove('active');
   document.getElementById('loading').style.display = 'block';
   document.getElementById('progressFill').style.width = '100%';
   document.getElementById('progressText').textContent = '완료!';
   document.getElementById('progressPct').textContent = '100%';
 
   setTimeout(() => {
-    const ei = answers[1] === 'E' && answers[2] === 'E' ? 'E' : answers[1] === 'I' && answers[2] === 'I' ? 'I' : (answers[1] === 'E' ? 'E' : 'I');
-    const sn = answers[3];
-    const tf = answers[4];
-    const jp = answers[5];
+    const ei = majority(answers[1], answers[2], answers[3], 'E');
+    const sn = majority(answers[4], answers[5], answers[6], 'S');
+    const tf = majority(answers[7], answers[8], answers[9], 'T');
+    const jp = majority(answers[10], answers[11], answers[12], 'J');
     const mbti = ei + sn + tf + jp;
     const data = TYPES[mbti] || TYPES['ENFP'];
 
@@ -358,9 +490,10 @@ function retry() {
   document.querySelectorAll('.choice').forEach(c => c.classList.remove('selected'));
   document.getElementById('q1').classList.add('active');
   document.getElementById('result').style.display = 'none';
-  document.getElementById('progressFill').style.width = '20%';
-  document.getElementById('progressText').textContent = '1 / 5';
-  document.getElementById('progressPct').textContent = '20%';
+  const initPct = Math.round((1 / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = initPct + '%';
+  document.getElementById('progressText').textContent = '1 / ' + TOTAL;
+  document.getElementById('progressPct').textContent = initPct + '%';
 }
 
 function shareResult() {
