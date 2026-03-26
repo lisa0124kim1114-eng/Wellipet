@@ -228,6 +228,17 @@ nav{display:none;}
   </div>
 </div>
 
+<!-- 로그인 유도 모달 -->
+<div id="loginPrompt" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;width:90%;max-width:360px;text-align:center;">
+    <div style="font-size:48px;margin-bottom:16px;">🔐</div>
+    <div style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:8px;">로그인이 필요해요</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7;">AI 분석 결과를 보려면<br>웰리펫 회원가입 또는 로그인이 필요해요 🐾</div>
+    <button onclick="location.href='index.html'" style="width:100%;background:var(--pk);color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;">로그인 / 가입하기</button>
+    <button onclick="document.getElementById('loginPrompt').style.display='none'" style="width:100%;background:transparent;color:var(--muted);border:none;padding:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
+  </div>
+</div>
+
 <footer>
   <div class="fb">
     <div class="f-links">
@@ -239,8 +250,13 @@ nav{display:none;}
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/analyze-dog';
+const _supabase = window.supabase.createClient(
+  'https://pzzunxgbzkhdqemmgavd.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030'
+);
 let currentBase64 = null;
 let currentMediaType = null;
 
@@ -276,6 +292,11 @@ uploadArea.addEventListener('drop', function(e) {
 
 async function analyze() {
   if (!currentBase64) return;
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (!session) {
+    document.getElementById('loginPrompt').style.display = 'flex';
+    return;
+  }
   document.getElementById('previewWrap').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
 
