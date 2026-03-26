@@ -147,7 +147,7 @@ nav{display:none;}
 </style>
 </head>
 <body>
-<div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span><a href="donation.html">후원 현황 보기 →</a></div>
+<div class="topbar"><span>🏠 구매금액의 3%가 유기견·유기묘 보호소에 자동 기부됩니다</span><a href="donation.html">후원 현황 보기 →</a></div>
 <header>
   <div class="header-left">
     <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';document.getElementById('lt').style.display='block'"/></a>
@@ -186,7 +186,7 @@ nav{display:none;}
     <div class="summary-row"><span class="k">배송비</span><span class="v" id="sumShipping">3,000원</span></div>
     <hr class="summary-divider"/>
     <div class="summary-total"><span class="k">총 결제금액</span><span class="v" id="sumTotal">0원</span></div>
-    <div class="summary-don" id="sumDon">🏠 0원이 유기견 보호소에 기부돼요</div>
+    <div class="summary-don" id="sumDon">🏠 0원이 유기견·유기묘 보호소에 기부돼요</div>
     <button class="btn-checkout" onclick="location.href='checkout.html'">결제하기</button>
     <button class="btn-continue" onclick="location.href='shop.html'">계속 쇼핑하기</button>
   </div>
@@ -194,9 +194,9 @@ nav{display:none;}
 
 <footer>
   <div class="ft">
-    <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
+    <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">반려동물을 사랑하고, 유기동물도 함께하는 펫 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
     <div class="f-col"><h4>쇼핑</h4><a href="shop.html">전체 상품</a><a href="shop.html">배변패드</a><a href="shop.html">간식·푸드</a></div>
-    <div class="f-col"><h4>웰리펫</h4><a href="donation.html">후원 프로젝트</a><a href="adoption.html">유기견 입양</a></div>
+    <div class="f-col"><h4>웰리펫</h4><a href="donation.html">후원 프로젝트</a><a href="adoption.html">입양 스토리</a></div>
     <div class="f-col"><h4>고객센터</h4><a href="faq.html">자주 묻는 질문</a><a href="contact.html">1:1 문의</a><a href="refund.html">배송·반품 안내</a></div>
   </div>
   <div class="fb"><div class="f-biz">상호: 아이에스에이 | 대표: KIMLISAYUNSUN | 사업자등록번호: 604-07-63223 | 주소: 경기도 남양주시 다산순환로 365 5208-404 | 전화: 010-7118-1824</div><div class="f-copy">© 2025 Wellipet. All rights reserved. &nbsp;|&nbsp; <a href="terms.html" style="color:#6a4a5a;text-decoration:none;">이용약관</a> &nbsp;|&nbsp; <a href="privacy.html" style="color:#6a4a5a;text-decoration:none;">개인정보처리방침</a> &nbsp;|&nbsp; <a href="refund.html" style="color:#6a4a5a;text-decoration:none;">환불정책</a></div></div>
@@ -221,7 +221,7 @@ nav{display:none;}
       <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
       <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="wellypet1209@gmail.com"/></div>
       <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
-      <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기견 보호 캠페인에 참여합니다</label></div>
+      <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기동물 보호 캠페인에 참여합니다</label></div>
       <button class="btn-submit" onclick="signUp()">가입하기</button>
     </div>
     <div id="formLogin" style="display:none;">
@@ -330,7 +330,7 @@ function updateSummary(){
   document.getElementById('sumShipping').textContent = shipping === 0 ? '무료' : '3,000원';
   document.getElementById('sumShipping').style.color = shipping === 0 ? 'var(--pk)' : 'var(--tx)';
   document.getElementById('sumTotal').textContent = Number(total + shipping).toLocaleString()+'원';
-  document.getElementById('sumDon').textContent = `🏠 ${Number(don).toLocaleString()}원이 유기견 보호소에 기부돼요`;
+  document.getElementById('sumDon').textContent = `🏠 ${Number(don).toLocaleString()}원이 유기견·유기묘 보호소에 기부돼요`;
 }
 
 function changeQty(i, delta){
