@@ -58,6 +58,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
   <div>
     <div class="section">
       <div class="section-title">배송 정보</div>
+      <div style="font-size:12px;color:#a08090;background:#fff5f9;border:1px solid #f0d8e6;border-radius:10px;padding:10px 14px;margin-bottom:16px;">💡 처음 주문 시 입력한 주소는 다음부터 자동으로 채워져요. 변경이 필요하면 수정 후 결제하세요.</div>
       <div class="form-group"><label>받는 분</label><input type="text" id="customerName" placeholder="홍길동"/></div>
       <div class="form-group"><label>연락처</label><input type="tel" id="customerPhone" placeholder="010-0000-0000"/></div>
       <div class="form-group"><label>이메일</label><input type="email" id="customerEmail" placeholder="wellypet1209@gmail.com"/></div>
@@ -209,6 +210,18 @@ async function saveOrder(paymentKey, orderId){ fetch("https://ai-lisa.duckdns.or
       amount: item.price*(item.qty||1),
       status: '결제완료',
     });
+  }
+
+  // 배송 정보를 profiles에 저장 (다음 주문 시 자동 채우기)
+  const {data:{session}} = await _supabase.auth.getSession();
+  if(session){
+    await _supabase.from('profiles').upsert({
+      user_id: session.user.id,
+      phone: phone,
+      zipcode: zipcode,
+      address: address,
+      address_detail: addressDetail,
+    },{onConflict:'user_id'});
   }
 
   // 결제 완료 후 장바구니 비우기
