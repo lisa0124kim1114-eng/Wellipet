@@ -281,24 +281,26 @@ function handleFile(file) {
   reader.onload = function(e) {
     const img = new Image();
     img.onload = function() {
-      const MAX = 800;
-      let w = img.width, h = img.height;
-      if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-      else { w = Math.round(w * MAX / h); h = MAX; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      let quality = 0.75;
-      let compressed = canvas.toDataURL('image/jpeg', quality);
-      // 3MB 초과면 품질 낮춰서 재압축
-      while (compressed.length > 3 * 1024 * 1024 * 1.37 && quality > 0.3) {
-        quality -= 0.1;
-        compressed = canvas.toDataURL('image/jpeg', quality);
+      const TARGET_BYTES = 3.5 * 1024 * 1024; // 3.5MB 디코딩 기준
+      function compress(maxPx, quality) {
+        let w = img.width, h = img.height;
+        if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+        else { w = Math.round(w * maxPx / h); h = maxPx; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        return canvas.toDataURL('image/jpeg', quality);
       }
-      const comma = compressed.indexOf(',');
-      currentBase64 = compressed.substring(comma + 1);
+      let result = compress(800, 0.75);
+      let b64 = result.substring(result.indexOf(',') + 1);
+      // base64 → 실제 바이트: length * 3/4
+      if (b64.length * 0.75 > TARGET_BYTES) result = compress(800, 0.6),  b64 = result.substring(result.indexOf(',') + 1);
+      if (b64.length * 0.75 > TARGET_BYTES) result = compress(600, 0.6),  b64 = result.substring(result.indexOf(',') + 1);
+      if (b64.length * 0.75 > TARGET_BYTES) result = compress(600, 0.5),  b64 = result.substring(result.indexOf(',') + 1);
+      if (b64.length * 0.75 > TARGET_BYTES) result = compress(400, 0.5),  b64 = result.substring(result.indexOf(',') + 1);
+      currentBase64 = b64;
       currentMediaType = 'image/jpeg';
-      document.getElementById('previewImg').src = compressed;
+      document.getElementById('previewImg').src = result;
       document.getElementById('uploadArea').style.display = 'none';
       document.getElementById('previewWrap').style.display = 'block';
     };
