@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>우리 아이가 말해요 · Wellipet 웰리펫</title>
+<title>우리 아이 꾸미기 · Wellipet 웰리펫</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -27,77 +27,57 @@ nav a:hover,nav a.active{color:var(--pk);}
 .mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
 @media(max-width:768px){.hamburger{display:flex;}nav{display:none;}}
 
-.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:60px 32px;text-align:center;border-bottom:1px solid var(--bd);}
+.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:56px 32px;text-align:center;border-bottom:1px solid var(--bd);}
 .hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:16px;}
-.hero h1{font-family:'Nunito',sans-serif;font-size:34px;font-weight:800;color:#2a1220;margin-bottom:12px;line-height:1.3;}
+.hero h1{font-family:'Nunito',sans-serif;font-size:34px;font-weight:800;color:#2a1220;margin-bottom:10px;line-height:1.3;}
 .hero p{font-size:15px;color:var(--muted);font-weight:300;line-height:1.8;}
 
-.wrap{max-width:680px;margin:0 auto;padding:48px 24px;}
+.wrap{max-width:720px;margin:0 auto;padding:48px 24px;}
 
 /* 업로드 영역 */
-.upload-area{border:2.5px dashed var(--bd);border-radius:24px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;position:relative;overflow:hidden;}
+.upload-area{border:2.5px dashed var(--bd);border-radius:24px;padding:56px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;position:relative;}
 .upload-area:hover,.upload-area.drag{border-color:var(--pk);background:var(--pkbg);}
 .upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
 .upload-icon{font-size:56px;margin-bottom:16px;}
 .upload-title{font-size:18px;font-weight:700;color:#2a1220;margin-bottom:8px;}
 .upload-sub{font-size:13px;color:var(--muted);}
 
-/* 미리보기 */
-.preview-wrap{display:none;text-align:center;margin-bottom:24px;}
-.preview-wrap img{max-width:100%;max-height:320px;border-radius:20px;border:2px solid var(--bd);object-fit:cover;}
-.preview-change{display:inline-block;margin-top:10px;font-size:12px;color:var(--pk);cursor:pointer;text-decoration:underline;}
+/* 편집 영역 */
+.editor{display:none;}
+
+/* 캔버스 */
+.canvas-wrap{text-align:center;margin-bottom:24px;position:relative;}
+canvas{max-width:100%;border-radius:20px;box-shadow:0 8px 32px rgba(196,92,138,.15);display:block;margin:0 auto;}
+
+/* 필터 선택 */
+.section-title{font-size:14px;font-weight:700;color:#2a1220;margin-bottom:12px;}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-btn{border:2px solid var(--bd);border-radius:14px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted);font-family:'Noto Sans KR',sans-serif;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--pk);color:var(--pk);background:var(--pkbg);}
+
+/* 스티커 */
+.stickers{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.sticker-btn{width:48px;height:48px;border:2px solid var(--bd);border-radius:14px;font-size:22px;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.sticker-btn:hover{border-color:var(--pk);background:var(--pkbg);transform:scale(1.1);}
+.sticker-btn.active{border-color:var(--pk);background:var(--pkbg);}
+
+/* 스티커 크기 슬라이더 */
+.size-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.size-row label{font-size:13px;color:var(--muted);white-space:nowrap;}
+.size-row input[type=range]{flex:1;accent-color:var(--pk);}
 
 /* 버튼 */
-.btn-analyze{display:block;width:100%;padding:16px;background:var(--pk);color:#fff;border:none;border-radius:20px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;margin-top:20px;}
-.btn-analyze:hover{background:var(--pkm);}
-.btn-analyze:disabled{background:#ccc;cursor:default;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.btn{padding:12px 24px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;border:none;}
+.btn-primary{background:var(--pk);color:#fff;}
+.btn-primary:hover{background:var(--pkm);}
+.btn-secondary{background:#fff;border:1.5px solid var(--bd);color:var(--muted);}
+.btn-secondary:hover{border-color:var(--pk);color:var(--pk);}
+.btn-download{background:linear-gradient(90deg,var(--pk),var(--pkm));color:#fff;}
+.btn-download:hover{opacity:.9;}
 
-/* 로딩 */
-.loading{display:none;text-align:center;padding:40px 0;}
-.loading-dots{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
-.loading-dots span{width:10px;height:10px;background:var(--pkl);border-radius:50%;animation:bounce .8s infinite alternate;}
-.loading-dots span:nth-child(2){animation-delay:.2s;}
-.loading-dots span:nth-child(3){animation-delay:.4s;}
-@keyframes bounce{to{transform:translateY(-10px);background:var(--pk);}}
-.loading p{color:var(--muted);font-size:14px;}
-
-/* 결과 */
-.result{display:none;margin-top:32px;}
-
-.result-scene{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);border-radius:28px;padding:32px 24px;border:1.5px solid var(--bd);position:relative;}
-
-/* 동물 사진 + 말풍선 레이아웃 */
-.scene-inner{display:flex;align-items:flex-start;gap:20px;}
-.pet-photo-wrap{flex-shrink:0;width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid var(--pk);box-shadow:0 4px 16px rgba(196,92,138,.2);}
-.pet-photo-wrap img{width:100%;height:100%;object-fit:cover;}
-.speech-side{flex:1;}
-
-/* 말풍선 */
-.speech-bubble{background:#fff;border:2px solid var(--pk);border-radius:20px;border-bottom-left-radius:4px;padding:20px;position:relative;box-shadow:0 4px 16px rgba(196,92,138,.1);}
-.speech-bubble::before{content:'';position:absolute;bottom:-1px;left:-14px;width:0;height:0;border-top:10px solid var(--pk);border-left:14px solid transparent;border-bottom:0;}
-.speech-bubble::after{content:'';position:absolute;bottom:1px;left:-11px;width:0;height:0;border-top:9px solid #fff;border-left:12px solid transparent;border-bottom:0;}
-.speech-emoji{font-size:28px;margin-bottom:8px;display:block;}
-.speech-text{font-size:16px;line-height:1.8;color:#2a1220;font-weight:500;}
-
-/* 동물 정보 태그 */
-.pet-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
-.pet-tag{font-size:12px;background:var(--pkbg);color:var(--pk);padding:4px 12px;border-radius:20px;font-weight:600;border:1px solid var(--bd);}
-.pet-tag.emotion{background:linear-gradient(90deg,#fff0f7,var(--pkbg));}
-
-/* 다시하기 버튼 */
-.btn-retry{display:inline-flex;align-items:center;gap:6px;margin-top:20px;padding:10px 20px;background:#fff;border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
-.btn-retry:hover{border-color:var(--pk);color:var(--pk);}
-
-/* 공유 버튼 */
-.btn-share{display:inline-flex;align-items:center;gap:6px;margin-top:20px;margin-left:8px;padding:10px 20px;background:var(--pk);border:none;border-radius:20px;font-size:13px;font-weight:600;color:#fff;cursor:pointer;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
-.btn-share:hover{background:var(--pkm);}
-
-/* 에러 */
-.error-msg{display:none;background:#fff0f0;border:1px solid #ffcccc;border-radius:16px;padding:16px 20px;color:#cc4444;font-size:14px;margin-top:20px;text-align:center;}
-
-/* 힌트 */
-.hint{background:var(--pkbg);border-radius:16px;padding:16px 20px;margin-top:24px;font-size:13px;color:var(--muted);line-height:1.8;}
-.hint strong{color:var(--pk);}
+/* 안내 */
+.canvas-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px;}
 
 footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 .fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
@@ -107,13 +87,12 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 
 @media(max-width:768px){
   header{padding:0 16px;height:60px;}
-  .hero{padding:40px 20px;}
+  .hero{padding:36px 20px;}
   .hero h1{font-size:26px;}
   .wrap{padding:32px 16px;}
-  .scene-inner{flex-direction:column;align-items:center;}
-  .speech-bubble{border-radius:20px;border-top-left-radius:4px;}
-  .speech-bubble::before,.speech-bubble::after{display:none;}
   footer{padding:24px 20px;}
+  .filters{gap:6px;}
+  .filter-btn{padding:6px 12px;font-size:11px;}
 }
 </style>
 </head>
@@ -135,71 +114,73 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 </header>
 
 <div class="hero">
-  <div class="hero-badge">💬 우리 아이가 말해요</div>
-  <h1>우리 아이 사진을 올리면<br>직접 말해줘요 🐾</h1>
-  <p>AI가 사진을 보고 우리 아이의 기분과 성격을 파악해서<br>지금 이 순간 하고 싶은 말을 전해드려요</p>
+  <div class="hero-badge">📸 우리 아이 꾸미기</div>
+  <h1>우리 아이 사진을<br>귀엽게 꾸며봐요 🐾</h1>
+  <p>필터와 스티커로 우리 아이 사진을 더 귀엽게!<br>꾸민 사진을 바로 저장할 수 있어요</p>
 </div>
 
 <div class="wrap">
 
-  <!-- 업로드 영역 -->
+  <!-- 업로드 -->
   <div class="upload-area" id="uploadArea">
     <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)"/>
-    <div class="upload-icon">📸</div>
+    <div class="upload-icon">📷</div>
     <div class="upload-title">우리 아이 사진을 올려주세요</div>
-    <div class="upload-sub">강아지, 고양이 모두 가능해요<br>JPG, PNG, WEBP · 최대 10MB</div>
+    <div class="upload-sub">클릭하거나 사진을 여기로 끌어다 놓으세요<br>JPG, PNG, WEBP</div>
   </div>
 
-  <!-- 미리보기 -->
-  <div class="preview-wrap" id="previewWrap">
-    <img id="previewImg" src="" alt="미리보기"/>
-    <div class="preview-change" onclick="resetUpload()">📁 다른 사진 선택하기</div>
-  </div>
+  <!-- 편집 영역 -->
+  <div class="editor" id="editor">
 
-  <!-- 분석 버튼 -->
-  <button class="btn-analyze" id="btnAnalyze" disabled onclick="analyze()">
-    💬 우리 아이 목소리 듣기
-  </button>
-
-  <!-- 로딩 -->
-  <div class="loading" id="loading">
-    <div class="loading-dots"><span></span><span></span><span></span></div>
-    <p>우리 아이의 마음을 읽고 있어요...</p>
-  </div>
-
-  <!-- 에러 -->
-  <div class="error-msg" id="errorMsg"></div>
-
-  <!-- 결과 -->
-  <div class="result" id="result">
-    <div class="result-scene">
-      <div class="scene-inner">
-        <div class="pet-photo-wrap">
-          <img id="resultPhoto" src="" alt="반려동물"/>
-        </div>
-        <div class="speech-side">
-          <div class="speech-bubble">
-            <span class="speech-emoji" id="resultEmoji"></span>
-            <div class="speech-text" id="resultMessage"></div>
-          </div>
-          <div class="pet-tags" id="petTags"></div>
-        </div>
-      </div>
+    <!-- 캔버스 -->
+    <div class="canvas-wrap">
+      <canvas id="canvas"></canvas>
+      <div class="canvas-hint">스티커를 클릭해서 추가하고, 캔버스에서 드래그로 이동해요</div>
     </div>
-    <div>
-      <button class="btn-retry" onclick="resetAll()">🔄 다시 하기</button>
-      <button class="btn-share" onclick="copyMessage()">📋 메시지 복사</button>
+
+    <!-- 필터 -->
+    <div class="section-title">✨ 필터</div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('none')" data-filter="none">🖼️ 원본</button>
+      <button class="filter-btn" onclick="setFilter('warm')" data-filter="warm">🌸 웜톤</button>
+      <button class="filter-btn" onclick="setFilter('pink')" data-filter="pink">💗 핑크</button>
+      <button class="filter-btn" onclick="setFilter('pastel')" data-filter="pastel">🍬 파스텔</button>
+      <button class="filter-btn" onclick="setFilter('bright')" data-filter="bright">☀️ 밝게</button>
+      <button class="filter-btn" onclick="setFilter('soft')" data-filter="soft">🌙 부드럽게</button>
+      <button class="filter-btn" onclick="setFilter('bw')" data-filter="bw">🤍 흑백</button>
     </div>
-  </div>
 
-  <!-- 힌트 -->
-  <div class="hint">
-    💡 <strong>이런 사진이 잘 나와요!</strong><br>
-    · 얼굴이 잘 보이는 사진<br>
-    · 밝은 곳에서 찍은 사진<br>
-    · 강아지, 고양이 모두 가능해요
-  </div>
+    <!-- 스티커 -->
+    <div class="section-title">🎀 스티커 추가</div>
+    <div class="stickers">
+      <button class="sticker-btn" onclick="addSticker('🐾')">🐾</button>
+      <button class="sticker-btn" onclick="addSticker('❤️')">❤️</button>
+      <button class="sticker-btn" onclick="addSticker('🌸')">🌸</button>
+      <button class="sticker-btn" onclick="addSticker('⭐')">⭐</button>
+      <button class="sticker-btn" onclick="addSticker('🎀')">🎀</button>
+      <button class="sticker-btn" onclick="addSticker('✨')">✨</button>
+      <button class="sticker-btn" onclick="addSticker('🍖')">🍖</button>
+      <button class="sticker-btn" onclick="addSticker('🎾')">🎾</button>
+      <button class="sticker-btn" onclick="addSticker('🐶')">🐶</button>
+      <button class="sticker-btn" onclick="addSticker('🐱')">🐱</button>
+      <button class="sticker-btn" onclick="addSticker('🌈')">🌈</button>
+      <button class="sticker-btn" onclick="addSticker('💕')">💕</button>
+    </div>
 
+    <!-- 스티커 크기 -->
+    <div class="size-row">
+      <label>스티커 크기</label>
+      <input type="range" id="stickerSize" min="20" max="120" value="50" oninput="render()"/>
+    </div>
+
+    <!-- 버튼 -->
+    <div class="btn-row">
+      <button class="btn btn-download" onclick="download()">💾 사진 저장하기</button>
+      <button class="btn btn-secondary" onclick="undoSticker()">↩️ 스티커 되돌리기</button>
+      <button class="btn btn-secondary" onclick="resetAll()">🔄 처음부터</button>
+    </div>
+
+  </div>
 </div>
 
 <footer>
@@ -227,31 +208,39 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 </div>
 
 <script>
-const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/pet-voice';
-
-let selectedFile = null;
-let selectedDataUrl = null;
-
 function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
 function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
 
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let img = null;
+let currentFilter = 'none';
+let stickers = []; // {emoji, x, y, size}
+let dragging = null;
+let dragOffX = 0, dragOffY = 0;
+
+// 파일 선택
 function onFileSelected(e) {
   const file = e.target.files[0];
   if (!file) return;
-  if (file.size > 10 * 1024 * 1024) {
-    showError('파일 크기가 너무 커요. 10MB 이하 사진을 올려주세요.');
-    return;
-  }
-  selectedFile = file;
   const reader = new FileReader();
   reader.onload = (ev) => {
-    selectedDataUrl = ev.target.result;
-    document.getElementById('previewImg').src = selectedDataUrl;
-    document.getElementById('uploadArea').style.display = 'none';
-    document.getElementById('previewWrap').style.display = 'block';
-    document.getElementById('btnAnalyze').disabled = false;
-    document.getElementById('result').style.display = 'none';
-    hideError();
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      // 캔버스 크기 설정 (최대 600px)
+      const maxSize = 600;
+      let w = image.width, h = image.height;
+      if (w > maxSize) { h = h * maxSize / w; w = maxSize; }
+      if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
+      canvas.width = Math.round(w);
+      canvas.height = Math.round(h);
+      stickers = [];
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('editor').style.display = 'block';
+      render();
+    };
+    image.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -264,112 +253,157 @@ uploadArea.addEventListener('drop', (e) => {
   e.preventDefault();
   uploadArea.classList.remove('drag');
   const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) {
-    const fakeEvent = { target: { files: [file] } };
-    onFileSelected(fakeEvent);
-  }
+  if (file && file.type.startsWith('image/')) onFileSelected({ target: { files: [file] } });
 });
 
-function resetUpload() {
-  document.getElementById('uploadArea').style.display = 'block';
-  document.getElementById('previewWrap').style.display = 'none';
-  document.getElementById('btnAnalyze').disabled = true;
-  document.getElementById('fileInput').value = '';
-  selectedFile = null;
-  selectedDataUrl = null;
+// 필터 설정
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  render();
+}
+
+// 스티커 추가
+function addSticker(emoji) {
+  const size = parseInt(document.getElementById('stickerSize').value);
+  stickers.push({
+    emoji,
+    x: canvas.width / 2 + (Math.random() - 0.5) * 80,
+    y: canvas.height / 2 + (Math.random() - 0.5) * 80,
+    size,
+  });
+  render();
+}
+
+function undoSticker() {
+  stickers.pop();
+  render();
+}
+
+// 렌더링
+function render() {
+  if (!img) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 필터 적용
+  ctx.save();
+  applyFilter();
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+
+  // 스티커 렌더링
+  const size = parseInt(document.getElementById('stickerSize').value);
+  stickers.forEach(s => {
+    ctx.font = `${s.size || size}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.emoji, s.x, s.y);
+  });
+}
+
+function applyFilter() {
+  switch(currentFilter) {
+    case 'warm':
+      ctx.filter = 'saturate(1.3) sepia(0.2) brightness(1.05)';
+      break;
+    case 'pink':
+      ctx.filter = 'saturate(1.2) hue-rotate(320deg) brightness(1.05)';
+      break;
+    case 'pastel':
+      ctx.filter = 'saturate(0.8) brightness(1.15) contrast(0.9)';
+      break;
+    case 'bright':
+      ctx.filter = 'brightness(1.25) contrast(1.1)';
+      break;
+    case 'soft':
+      ctx.filter = 'brightness(1.05) contrast(0.85) saturate(0.9)';
+      break;
+    case 'bw':
+      ctx.filter = 'grayscale(1) contrast(1.1)';
+      break;
+    default:
+      ctx.filter = 'none';
+  }
+}
+
+// 스티커 드래그
+function getCanvasPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY,
+  };
+}
+
+function findSticker(x, y) {
+  const size = parseInt(document.getElementById('stickerSize').value);
+  for (let i = stickers.length - 1; i >= 0; i--) {
+    const s = stickers[i];
+    const r = (s.size || size) / 2;
+    if (Math.abs(x - s.x) < r && Math.abs(y - s.y) < r) return i;
+  }
+  return -1;
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  const pos = getCanvasPos(e);
+  const idx = findSticker(pos.x, pos.y);
+  if (idx >= 0) {
+    dragging = idx;
+    dragOffX = pos.x - stickers[idx].x;
+    dragOffY = pos.y - stickers[idx].y;
+  }
+});
+canvas.addEventListener('mousemove', (e) => {
+  if (dragging === null) return;
+  const pos = getCanvasPos(e);
+  stickers[dragging].x = pos.x - dragOffX;
+  stickers[dragging].y = pos.y - dragOffY;
+  render();
+});
+canvas.addEventListener('mouseup', () => { dragging = null; });
+
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  const pos = getCanvasPos(e);
+  const idx = findSticker(pos.x, pos.y);
+  if (idx >= 0) {
+    dragging = idx;
+    dragOffX = pos.x - stickers[idx].x;
+    dragOffY = pos.y - stickers[idx].y;
+  }
+}, { passive: false });
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  if (dragging === null) return;
+  const pos = getCanvasPos(e);
+  stickers[dragging].x = pos.x - dragOffX;
+  stickers[dragging].y = pos.y - dragOffY;
+  render();
+}, { passive: false });
+canvas.addEventListener('touchend', () => { dragging = null; });
+
+// 저장
+function download() {
+  render();
+  const link = document.createElement('a');
+  link.download = 'wellipet-cutie.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 
 function resetAll() {
-  resetUpload();
-  document.getElementById('result').style.display = 'none';
-  hideError();
-}
-
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function hideError() {
-  document.getElementById('errorMsg').style.display = 'none';
-}
-
-async function analyze() {
-  if (!selectedDataUrl) return;
-
-  // UI 상태
-  document.getElementById('btnAnalyze').disabled = true;
-  document.getElementById('loading').style.display = 'block';
-  document.getElementById('result').style.display = 'none';
-  hideError();
-
-  try {
-    // base64 추출 (data:image/jpeg;base64, 이후 부분)
-    const [header, base64] = selectedDataUrl.split(',');
-    const mediaTypeMatch = header.match(/data:([^;]+);/);
-    const mediaType = mediaTypeMatch ? mediaTypeMatch[1] : 'image/jpeg';
-
-    const res = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image_base64: base64, media_type: mediaType }),
-    });
-
-    if (!res.ok) throw new Error('서버 오류가 발생했어요');
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-
-    renderResult(data);
-  } catch (err) {
-    showError('앗, 분석 중 오류가 생겼어요. 다시 시도해주세요 🙏');
-    console.error(err);
-  } finally {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('btnAnalyze').disabled = false;
-  }
-}
-
-const EMOTION_MAP = {
-  '행복': '😊 행복해요',
-  '졸림': '😪 졸려요',
-  '신남': '🤩 신났어요',
-  '배고픔': '🍖 배고파요',
-  '편안함': '😌 편안해요',
-};
-
-function renderResult(data) {
-  // 사진
-  document.getElementById('resultPhoto').src = selectedDataUrl;
-
-  // 이모지 + 메시지
-  document.getElementById('resultEmoji').textContent = data.emoji || '🐾';
-  document.getElementById('resultMessage').textContent = data.message || '사진을 분석했어요!';
-
-  // 태그
-  const tagsEl = document.getElementById('petTags');
-  tagsEl.innerHTML = '';
-  if (data.animal_type) tagsEl.innerHTML += `<span class="pet-tag">${data.animal_type === '강아지' ? '🐶' : data.animal_type === '고양이' ? '🐱' : '🐾'} ${data.animal_type}</span>`;
-  if (data.breed) tagsEl.innerHTML += `<span class="pet-tag">🏷️ ${data.breed}</span>`;
-  if (data.emotion) tagsEl.innerHTML += `<span class="pet-tag emotion">${EMOTION_MAP[data.emotion] || data.emotion}</span>`;
-
-  document.getElementById('result').style.display = 'block';
-  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-async function copyMessage() {
-  const msg = document.getElementById('resultMessage').textContent;
-  const emoji = document.getElementById('resultEmoji').textContent;
-  const text = `${emoji} ${msg}\n\n🐾 Wellipet AI · wellipet.co.kr`;
-  try {
-    await navigator.clipboard.writeText(text);
-    const btn = document.querySelector('.btn-share');
-    btn.textContent = '✅ 복사됐어요!';
-    setTimeout(() => { btn.innerHTML = '📋 메시지 복사'; }, 2000);
-  } catch {
-    alert(text);
-  }
+  img = null;
+  stickers = [];
+  currentFilter = 'none';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'none'));
+  document.getElementById('editor').style.display = 'none';
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('fileInput').value = '';
 }
 </script>
 </body>
