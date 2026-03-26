@@ -103,6 +103,7 @@ footer{background:#2a1220;padding:48px;}
     <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
   </div>
+<button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
 </header>
 
 <div class="page-hero">
@@ -166,6 +167,23 @@ function openModal(tab){document.getElementById('authModal').classList.add('open
 function closeModal(){document.getElementById('authModal').classList.remove('open');}
 function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+</script>
+
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">x</button>
+    <a href="/">홈</a>
+    <a href="shop.html">Products</a>
+    <a href="adoption.html">입양 스토리</a>
+    <a href="donation.html">후원 프로젝트</a>
+    <a href="ai.html">AI 분석</a>
+    <a href="mypage.html">마이페이지</a>
+    <a href="cart.html">장바구니</a>
+  </div>
+</div>
+<script>
+function openMobileNav(){document.getElementById("mobileNav").classList.add("open");}
+function closeMobileNav(e){if(!e||e.target===document.getElementById("mobileNav"))document.getElementById("mobileNav").classList.remove("open");}
 </script>
 </body>
 </html>

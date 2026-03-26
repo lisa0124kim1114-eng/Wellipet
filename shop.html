@@ -118,7 +118,17 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 .text-link{background:none;border:none;color:var(--pk);font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;padding:0;text-decoration:underline;}
 @media(max-width:768px){
   header{padding:0 16px;height:60px;}
-  nav{display:none;}
+  
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;transition:all .3s;}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
+.mobile-nav.open{display:block;}
+.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
+.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
+.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;transition:all .2s;}
+.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
+.hamburger{display:flex;}
+nav{display:none;}
   .sbox{display:none;}
   .page-hero{padding:24px 20px;}
   .shop-wrap{padding:24px 16px;}
@@ -164,6 +174,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
     <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
   </div>
+<button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
 </header>
 <div class="page-hero">
   <h1>웰리펫 샵 🛍️</h1>
@@ -391,6 +402,23 @@ function switchTab(tab){const sections=['formSignup','formLogin','formFindId','f
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
 loadProducts();
+</script>
+
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">x</button>
+    <a href="/">홈</a>
+    <a href="shop.html">Products</a>
+    <a href="adoption.html">입양 스토리</a>
+    <a href="donation.html">후원 프로젝트</a>
+    <a href="ai.html">AI 분석</a>
+    <a href="mypage.html">마이페이지</a>
+    <a href="cart.html">장바구니</a>
+  </div>
+</div>
+<script>
+function openMobileNav(){document.getElementById("mobileNav").classList.add("open");}
+function closeMobileNav(e){if(!e||e.target===document.getElementById("mobileNav"))document.getElementById("mobileNav").classList.remove("open");}
 </script>
 </body>
 </html>
