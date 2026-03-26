@@ -111,6 +111,19 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 .dc{display:flex;align-items:center;gap:8px;margin-top:12px;}
 .dc input{width:auto;}
 .dc label{font-size:12px;color:var(--pkm);margin:0;}
+@media(max-width:768px){
+  header{padding:0 16px;height:60px;}
+  nav{display:none;}
+  .sbox{display:none;}
+  .cart-wrap{grid-template-columns:1fr;padding:24px 16px;gap:20px;}
+  .cart-item{grid-template-columns:auto 64px 1fr;gap:10px;}
+  .cart-item-qty{display:none;}
+  .cart-item-del{display:none;}
+  footer{padding:32px 20px;}
+  .ft{grid-template-columns:1fr;gap:24px;}
+  .topbar{padding:6px 16px;}
+  .topbar span{font-size:10px;}
+}
 </style>
 </head>
 <body>
