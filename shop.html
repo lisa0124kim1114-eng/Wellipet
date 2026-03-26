@@ -27,7 +27,7 @@ nav a.active{color:var(--pk);}
 .sbox input::placeholder{color:#ccc;}
 .ibt{font-size:16px;cursor:pointer;color:#bbb;}
 .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
+.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}.btn-login{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;}
 .page-hero{background:var(--pkbg);padding:40px 48px;border-bottom:1px solid var(--bd);}
 .page-hero h1{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#2a1220;margin-bottom:6px;}
@@ -137,7 +137,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 <body>
 <div class="topbar">
   <span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다 — 쇼핑이 곧 후원이에요</span>
-  <a>후원 현황 보기 →</a>
+  <a href="donation.html">후원 현황 보기 →</a>
 </div>
 <header>
   <div class="header-left">
@@ -154,7 +154,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
     <span class="ibt">👤</span>
     <span class="user-name" id="userNameDisplay"></span>
-    <button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
+    <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
   </div>
 </header>
@@ -343,7 +343,7 @@ function sortProducts(type, el) {
   renderProducts(filtered);
 }
 
-function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
+function updateHeader(user){const btnJoin=document.getElementById('btnJoin');const btnLogin=document.getElementById('btnLogin');const btnLogout=document.getElementById('btnLogout');const userNameDisplay=document.getElementById('userNameDisplay');if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';if(btnLogin)btnLogin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}else{btnJoin.style.display='inline-block';if(btnLogin)btnLogin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}}
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
 async function signOut(){await _supabase.auth.signOut();updateHeader(null);}

@@ -153,12 +153,20 @@ function loadCartItems(){
   document.getElementById('donationText').textContent=`이 주문으로 ${Number(totalDonation).toLocaleString()}원이 유기견 보호소에 기부돼요`;
   document.getElementById('btnPay').textContent=`${Number(totalPrice).toLocaleString()}원 결제하기`;
 
-  // 로그인 회원 정보 자동 입력
-  _supabase.auth.getSession().then(({data:{session}})=>{
+  // 로그인 회원 정보 + 기본 주소 자동 입력
+  _supabase.auth.getSession().then(async({data:{session}})=>{
     if(session){
       const user=session.user;
       document.getElementById('customerName').value=user.user_metadata?.name||'';
       document.getElementById('customerEmail').value=user.email||'';
+      // profiles 테이블에서 전화번호·주소 불러오기
+      const{data:profile}=await _supabase.from('profiles').select('*').eq('user_id',user.id).single();
+      if(profile){
+        if(profile.phone)document.getElementById('customerPhone').value=profile.phone;
+        if(profile.zipcode)document.getElementById('zipcode').value=profile.zipcode;
+        if(profile.address)document.getElementById('address').value=profile.address;
+        if(profile.address_detail)document.getElementById('addressDetail').value=profile.address_detail;
+      }
     }
   });
 }

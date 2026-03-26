@@ -12,7 +12,8 @@
       "mcp__claude_ai_Supabase__execute_sql",
       "mcp__claude_ai_Supabase__get_publishable_keys",
       "Bash(grep:*)",
-      "Bash(head -15 grep -n \"grid-template-columns\\\\|@media\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/cart.html)"
+      "Bash(head -15 grep -n \"grid-template-columns\\\\|@media\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/cart.html)",
+      "Bash(head -10 grep -n \"후원 현황\\\\|f-sns\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/shop.html)"
     ]
   }
 }
