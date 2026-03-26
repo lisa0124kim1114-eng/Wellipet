@@ -69,6 +69,12 @@ nav a.active{color:var(--pk);}
 .pbtn-cart:hover{background:var(--pkm);}
 .empty-state{text-align:center;padding:80px;color:var(--muted);}
 .empty-state .icon{font-size:48px;margin-bottom:16px;}
+.pet-tabs{display:flex;gap:10px;padding:24px 48px 0;max-width:1200px;margin:0 auto;}
+.pet-tab{display:flex;align-items:center;gap:8px;padding:10px 24px;border-radius:30px;border:2px solid var(--bd);background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--muted);transition:all .2s;}
+.pet-tab:hover{border-color:var(--pk);color:var(--pk);}
+.pet-tab.on{background:var(--pk);color:#fff;border-color:var(--pk);}
+.pet-tab .tab-icon{font-size:20px;}
+@media(max-width:768px){.pet-tabs{padding:16px 16px 0;}}
 
 /* 장바구니 토스트 */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#2a1220;color:#fff;padding:12px 24px;border-radius:12px;font-size:13px;display:none;z-index:300;}
@@ -161,6 +167,10 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
 <div class="page-hero">
   <h1>웰리펫 샵 🛍️</h1>
   <p>강아지와 지구를 위한 친환경 반려용품을 만나보세요</p>
+</div>
+<div class="pet-tabs">
+  <button class="pet-tab on" onclick="switchPet(this,'dog')"><span class="tab-icon">🐶</span>강아지</button>
+  <button class="pet-tab" onclick="switchPet(this,'cat')"><span class="tab-icon">🐱</span>고양이</button>
 </div>
 <div class="shop-wrap">
   <div class="cat-grid">
@@ -261,6 +271,7 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let allProducts = [];
 let currentCat = '전체';
+let currentPetType = 'dog';
 
 function getBgClass(cat) {
   if(cat==='배변패드') return 'pp';
@@ -293,7 +304,9 @@ function renderProducts(products) {
   const grid = document.getElementById('prodGrid');
   document.getElementById('productCount').textContent = products.length;
   if(products.length===0){
-    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🐾</div><p>상품이 없어요</p></div>';
+    const emptyMsg = currentPetType==='cat' ? '고양이 상품을 준비 중이에요!<br><small style="font-size:12px;">곧 만나요 :)</small>' : '상품이 없어요';
+    const emptyIcon = currentPetType==='cat' ? '🐱' : '🐾';
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1;"><div class="icon">${emptyIcon}</div><p>${emptyMsg}</p></div>`;
     return;
   }
   grid.innerHTML = products.map(p=>`
@@ -322,21 +335,37 @@ function renderProducts(products) {
 async function loadProducts() {
   const {data} = await _supabase.from('products').select('*').order('created_at',{ascending:false});
   allProducts = data||[];
-  filterCat(document.querySelector('.cat-btn.on'), currentCat);
+  applyFilters();
+}
+
+function switchPet(el, petType) {
+  document.querySelectorAll('.pet-tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  currentPetType = petType;
+  currentCat = '전체';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.cat-btn').classList.add('on');
+  applyFilters();
 }
 
 function filterCat(el, cat) {
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   currentCat = cat;
-  const filtered = cat==='전체' ? allProducts : allProducts.filter(p=>p.category===cat);
+  applyFilters();
+}
+
+function applyFilters() {
+  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all');
+  if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
   renderProducts(filtered);
 }
 
 function sortProducts(type, el) {
   document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  const filtered = currentCat==='전체' ? [...allProducts] : allProducts.filter(p=>p.category===currentCat);
+  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all');
+  if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
   if(type==='low') filtered.sort((a,b)=>a.price-b.price);
   else if(type==='high') filtered.sort((a,b)=>b.price-a.price);
   else if(type==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
