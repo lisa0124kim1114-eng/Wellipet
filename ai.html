@@ -279,7 +279,6 @@ let currentMediaType = null;
 
 let currentFile = null;
 let compressedB64 = null;
-let compressPromise = null;
 
 function handleFile(file) {
   if (!file) return;
@@ -288,51 +287,34 @@ function handleFile(file) {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const rawDataUrl = e.target.result;
-    const rawB64 = rawDataUrl.substring(rawDataUrl.indexOf(',') + 1);
+    const dataUrl = e.target.result;
 
-    // 4MB 이하면 압축 불필요, 바로 사용
-    if (file.size <= 4 * 1024 * 1024) {
-      compressedB64 = rawB64;
-      compressPromise = Promise.resolve();
-    } else {
-      // 4MB 초과면 canvas 압축 (await 가능한 Promise로 저장)
-      const previewImg = document.getElementById('previewImg');
-      compressPromise = new Promise((resolve) => {
-        previewImg.onload = async function() {
-          const steps = [[800,0.82],[500,0.75],[300,0.65]];
-          for (const [px, q] of steps) {
-            try {
-              const bitmap = await createImageBitmap(currentFile, { resizeWidth: px, resizeQuality: 'medium' });
-              const canvas = document.createElement('canvas');
-              canvas.width = bitmap.width; canvas.height = bitmap.height;
-              canvas.getContext('2d').drawImage(bitmap, 0, 0);
-              bitmap.close();
-              const du = canvas.toDataURL('image/jpeg', q);
-              const b64 = du.substring(du.indexOf(',') + 1);
-              if (b64 && b64.length > 100) { compressedB64 = b64; resolve(); return; }
-            } catch(err) { continue; }
-          }
-          // 모두 실패 시 img 직접 사용
-          try {
-            const img = document.getElementById('previewImg');
-            const canvas = document.createElement('canvas');
-            canvas.width = 500;
-            canvas.height = Math.round(500 * (img.naturalHeight||500) / (img.naturalWidth||500));
-            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-            const du = canvas.toDataURL('image/jpeg', 0.75);
-            const b64 = du.substring(du.indexOf(',') + 1);
-            if (b64 && b64.length > 100) compressedB64 = b64;
-          } catch(err) {}
-          resolve();
-        };
-        previewImg.src = rawDataUrl;
-      });
-    }
-
-    document.getElementById('previewImg').src = rawDataUrl;
+    // 미리보기 표시
+    document.getElementById('previewImg').src = dataUrl;
     document.getElementById('uploadArea').style.display = 'none';
     document.getElementById('previewWrap').style.display = 'block';
+
+    // 별도 img로 canvas 압축
+    const img = new Image();
+    img.onload = function() {
+      try {
+        const MAX = 900;
+        let w = img.width, h = img.height;
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const out = canvas.toDataURL('image/jpeg', 0.82);
+        compressedB64 = out.substring(out.indexOf(',') + 1);
+      } catch(err) {
+        // canvas 실패 시 원본 (4.5MB 이하만)
+        if (file.size <= 4.5 * 1024 * 1024) {
+          compressedB64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+        }
+      }
+    };
+    img.src = dataUrl;
   };
   reader.readAsDataURL(file);
 }
@@ -359,8 +341,10 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
 
   try {
-    // 압축 완료까지 대기
-    if (compressPromise) await compressPromise;
+    // 압축 완료 대기 (최대 3초 폴링)
+    for (let i = 0; i < 15 && !compressedB64; i++) {
+      await new Promise(r => setTimeout(r, 200));
+    }
     if (!compressedB64) {
       document.getElementById('loading').style.display = 'none';
       alert('사진 용량이 너무 커요. 카메라로 직접 찍거나 더 작은 사진을 선택해주세요.');
@@ -410,7 +394,6 @@ async function analyze() {
 function resetUpload() {
   currentFile = null;
   compressedB64 = null;
-  compressPromise = null;
   currentBase64 = null;
   currentMediaType = null;
   document.getElementById('uploadArea').style.display = 'block';
