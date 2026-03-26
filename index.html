@@ -314,8 +314,29 @@ function updateHeader(user){
   const btnLogin=document.getElementById('btnLogin');
   const btnLogout=document.getElementById('btnLogout');
   const userNameDisplay=document.getElementById('userNameDisplay');
-  if(user){const name=user.user_metadata?.name||user.email.split('@')[0];btnJoin.style.display='none';if(btnLogin)btnLogin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';}
-  else{btnJoin.style.display='inline-block';if(btnLogin)btnLogin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';}
+  const mobileUserInfo=document.getElementById('mobileUserInfo');
+  const mobileUserName=document.getElementById('mobileUserName');
+  const mobileBtnLogin=document.getElementById('mobileBtnLogin');
+  const mobileBtnLogout=document.getElementById('mobileBtnLogout');
+  if(user){
+    const name=user.user_metadata?.name||user.email.split('@')[0];
+    btnJoin.style.display='none';
+    if(btnLogin)btnLogin.style.display='none';
+    userNameDisplay.style.display='inline';
+    userNameDisplay.textContent=name+'님 🐾';
+    btnLogout.style.display='inline-block';
+    if(mobileUserInfo){mobileUserInfo.style.display='block';mobileUserName.textContent=name+'님 🐾';}
+    if(mobileBtnLogin)mobileBtnLogin.style.display='none';
+    if(mobileBtnLogout)mobileBtnLogout.style.display='block';
+  } else {
+    btnJoin.style.display='inline-block';
+    if(btnLogin)btnLogin.style.display='inline-block';
+    userNameDisplay.style.display='none';
+    btnLogout.style.display='none';
+    if(mobileUserInfo)mobileUserInfo.style.display='none';
+    if(mobileBtnLogin)mobileBtnLogin.style.display='block';
+    if(mobileBtnLogout)mobileBtnLogout.style.display='none';
+  }
 }
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
@@ -425,6 +446,10 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
 <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
   <div class="mobile-nav-inner">
     <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
+    <div id="mobileUserInfo" style="padding:12px;background:var(--pkbg);border-radius:12px;margin-bottom:8px;display:none;">
+      <div id="mobileUserName" style="font-size:14px;font-weight:600;color:var(--pk);margin-bottom:4px;"></div>
+      <div style="font-size:11px;color:var(--muted);">웰리펫 회원</div>
+    </div>
     <a href="/">🏠 홈</a>
     <a href="shop.html">🛍️ Products</a>
     <a href="adoption.html">🐾 입양 스토리</a>
@@ -432,6 +457,8 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
     <a href="ai-hub.html">🐾 AI 놀이터</a>
     <a href="mypage.html">👤 마이페이지</a>
     <a href="cart.html">🛒 장바구니</a>
+    <a href="#" id="mobileBtnLogin" onclick="closeMobileNav();openModal('login');" style="color:var(--pk);">🔑 로그인</a>
+    <a href="#" id="mobileBtnLogout" onclick="signOut();" style="display:none;color:#a08090;">🚪 로그아웃</a>
   </div>
 </div>
 <script>
