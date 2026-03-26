@@ -276,57 +276,45 @@ function openCamera() {
 }
 
 let currentFile = null;
-let currentDataUrl = null;
+let compressedB64 = null;
 
 function handleFile(file) {
   if (!file) return;
   currentFile = file;
+  compressedB64 = null;
+
   const reader = new FileReader();
   reader.onload = function(e) {
-    currentDataUrl = e.target.result;
-    document.getElementById('previewImg').src = currentDataUrl;
+    const previewImg = document.getElementById('previewImg');
+    previewImg.onload = function() {
+      // img가 완전히 로드된 시점에 canvas 압축
+      const TARGET = 3.5 * 1024 * 1024;
+      const steps = [[800,0.82],[600,0.75],[400,0.65],[300,0.6]];
+      for (const [px, q] of steps) {
+        const srcW = previewImg.naturalWidth;
+        const srcH = previewImg.naturalHeight;
+        if (!srcW || !srcH) continue;
+        let w = srcW, h = srcH;
+        if (w > h) { h = Math.round(h * px / w); w = px; }
+        else { w = Math.round(w * px / h); h = px; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        try {
+          canvas.getContext('2d').drawImage(previewImg, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', q);
+          const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+          if (b64.length * 0.75 <= TARGET) {
+            compressedB64 = b64;
+            break;
+          }
+        } catch(err) { break; }
+      }
+    };
+    previewImg.src = e.target.result;
     document.getElementById('uploadArea').style.display = 'none';
     document.getElementById('previewWrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
-}
-
-async function compressForUpload() {
-  // 원본 base64 추출
-  const comma = currentDataUrl.indexOf(',');
-  const rawB64 = currentDataUrl.substring(comma + 1);
-  const rawBytes = rawB64.length * 0.75;
-  const LIMIT = 4.5 * 1024 * 1024;
-
-  // 이미 작으면 바로 전송
-  if (rawBytes <= LIMIT) {
-    return { base64: rawB64, mediaType: 'image/jpeg' };
-  }
-
-  // createImageBitmap 시도 (캔버스보다 더 넓은 브라우저 지원)
-  try {
-    const bitmap = await createImageBitmap(currentFile);
-    const TARGET = 3.5 * 1024 * 1024;
-    const steps = [[800,0.8],[600,0.7],[400,0.6]];
-    for (const [px, q] of steps) {
-      let w = bitmap.width, h = bitmap.height;
-      if (w > h) { h = Math.round(h * px / w); w = px; }
-      else { w = Math.round(w * px / h); h = px; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/jpeg', q);
-      const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-      if (b64.length * 0.75 <= TARGET) {
-        return { base64: b64, mediaType: 'image/jpeg' };
-      }
-    }
-  } catch(e) {
-    // createImageBitmap 미지원 또는 실패
-  }
-
-  // 마지막 수단: 원본 그대로 전송 (서버에서 오류나면 사용자에게 알림)
-  return { base64: rawB64, mediaType: 'image/jpeg' };
 }
 
 // 드래그앤드롭
@@ -351,11 +339,16 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
 
   try {
-    const compressed = await compressForUpload();
+    if (!compressedB64) {
+      document.getElementById('loading').style.display = 'none';
+      alert('사진 용량이 너무 커요 📷\n카메라로 직접 찍거나 용량이 작은 사진을 선택해주세요.');
+      resetUpload();
+      return;
+    }
     const res = await fetch(FUNCTION_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: compressed.base64, mediaType: compressed.mediaType })
+      body: JSON.stringify({ image: compressedB64, mediaType: 'image/jpeg' })
     });
     const data = await res.json();
     document.getElementById('loading').style.display = 'none';
@@ -387,7 +380,7 @@ async function analyze() {
 
 function resetUpload() {
   currentFile = null;
-  currentDataUrl = null;
+  compressedB64 = null;
   currentBase64 = null;
   currentMediaType = null;
   document.getElementById('uploadArea').style.display = 'block';
