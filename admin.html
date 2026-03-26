@@ -207,6 +207,16 @@ tr:hover td{background:#fafafa;}
           <option value="장난감·용품">장난감·용품</option>
         </select>
       </div>
+      <div class="form-group"><label>🐾 반려동물 종류</label>
+        <select id="pPetType">
+          <option value="dog">🐶 강아지</option>
+          <option value="cat">🐱 고양이</option>
+          <option value="all">🐾 공통</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="display:none;"></div>
       <div class="form-group"><label>뱃지 (선택)</label>
         <select id="pBadge">
           <option value="">없음</option>
@@ -369,7 +379,7 @@ async function loadProducts(){
           ${p.size_options?(JSON.parse(p.size_options||'[]')).map(s=>`<span style="font-size:10px;background:#e8f0fe;color:#3b6fd4;padding:2px 7px;border-radius:10px;">📏${s}</span>`).join(''):''}
         </div>
       </td>
-      <td>${p.category}</td>
+      <td>${p.category}<br><span style="font-size:10px;color:#a08090;">${p.pet_type==='dog'?'🐶 강아지':p.pet_type==='cat'?'🐱 고양이':'🐾 공통'}</span></td>
       <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
       <td>${Number(p.donation_amount||0).toLocaleString()}원</td>
       <td style="display:flex;gap:6px;">
@@ -414,6 +424,7 @@ async function editProduct(id){
   document.getElementById('pPrice').value=data.price||'';
   document.getElementById('pOriginalPrice').value=data.original_price||'';
   document.getElementById('pCategory').value=data.category||'배변패드';
+  document.getElementById('pPetType').value=data.pet_type||'dog';
   document.getElementById('pBadge').value=data.badge||'';
   document.getElementById('pDonation').value=data.donation_amount||'';
   document.getElementById('pDescription').value=data.description||'';
@@ -454,6 +465,7 @@ async function saveProduct(){
     price:parseInt(document.getElementById('pPrice').value)||0,
     original_price:parseInt(document.getElementById('pOriginalPrice').value)||null,
     category:document.getElementById('pCategory').value,
+    pet_type:document.getElementById('pPetType').value,
     badge:document.getElementById('pBadge').value||null,
     donation_amount:parseInt(document.getElementById('pDonation').value)||0,
     description:document.getElementById('pDescription').value,
