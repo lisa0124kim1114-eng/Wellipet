@@ -195,6 +195,9 @@ nav{display:none;}
         <div class="info-label">케어 팁 💡</div>
         <div class="info-text" id="rTip">-</div>
       </div>
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.6;background:var(--pkbg);padding:10px 14px;border-radius:10px;">
+        🤖 AI 분석 결과는 참고용이에요. 품종·감정은 실제와 다를 수 있으니 전문가 의견을 함께 참고해주세요.
+      </div>
       <div class="result-actions">
         <button class="btn-share" onclick="shareResult()">📤 결과 공유하기</button>
         <button class="btn-retry" onclick="resetUpload()">🔄 다시 분석하기</button>
@@ -284,31 +287,36 @@ function handleFile(file) {
   reader.onload = function(e) {
     const previewImg = document.getElementById('previewImg');
     previewImg.onload = function() {
-      const TARGET = 3.5 * 1024 * 1024;
-      const steps = [[800,0.82],[600,0.75],[400,0.65],[300,0.6],[200,0.6]];
-      for (const [px, q] of steps) {
-        const srcW = previewImg.naturalWidth || 1000;
-        const srcH = previewImg.naturalHeight || 1000;
-        let w = srcW, h = srcH;
-        if (w > h) { h = Math.round(h * px / w); w = px; }
-        else { w = Math.round(w * px / h); h = px; }
+      // createImageBitmap으로 리사이즈 후 canvas 압축
+      const doCompress = async () => {
+        const steps = [[800,0.82],[500,0.75],[300,0.65]];
+        for (const [px, q] of steps) {
+          try {
+            const bitmap = await createImageBitmap(currentFile, { resizeWidth: px, resizeQuality: 'medium' });
+            const canvas = document.createElement('canvas');
+            canvas.width = bitmap.width; canvas.height = bitmap.height;
+            canvas.getContext('2d').drawImage(bitmap, 0, 0);
+            bitmap.close();
+            const dataUrl = canvas.toDataURL('image/jpeg', q);
+            const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+            if (b64 && b64.length > 100) { compressedB64 = b64; return; }
+          } catch(e) { continue; }
+        }
+        // createImageBitmap 전부 실패 시 img 직접 사용
         try {
           const canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) continue;
-          ctx.drawImage(previewImg, 0, 0, w, h);
-          const dataUrl = canvas.toDataURL('image/jpeg', q);
-          if (!dataUrl || dataUrl === 'data:,') continue;
+          const maxPx = 500;
+          const srcW = previewImg.naturalWidth || maxPx;
+          const srcH = previewImg.naturalHeight || maxPx;
+          canvas.width = maxPx;
+          canvas.height = Math.round(srcH * maxPx / srcW);
+          canvas.getContext('2d').drawImage(previewImg, 0, 0, canvas.width, canvas.height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
           const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-          if (b64.length * 0.75 <= TARGET) {
-            compressedB64 = b64;
-            return;
-          }
-          // 마지막 단계면 크기 무시하고 그냥 사용
-          if (px === 200) compressedB64 = b64;
-        } catch(err) { continue; }
-      }
+          if (b64 && b64.length > 100) compressedB64 = b64;
+        } catch(e) {}
+      };
+      doCompress();
     };
     previewImg.src = e.target.result;
     document.getElementById('uploadArea').style.display = 'none';
