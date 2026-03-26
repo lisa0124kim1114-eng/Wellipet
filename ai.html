@@ -294,25 +294,30 @@ function handleFile(file) {
     document.getElementById('uploadArea').style.display = 'none';
     document.getElementById('previewWrap').style.display = 'block';
 
-    // 별도 img로 canvas 압축
+    // canvas 압축 시도, 실패 시 원본 전송
+    const rawB64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
     const img = new Image();
     img.onload = function() {
+      let done = false;
       try {
         const MAX = 900;
-        let w = img.width, h = img.height;
+        let w = img.width || 900, h = img.height || 900;
         if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
         else { w = Math.round(w * MAX / h); h = MAX; }
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const out = canvas.toDataURL('image/jpeg', 0.82);
-        compressedB64 = out.substring(out.indexOf(',') + 1);
-      } catch(err) {
-        // canvas 실패 시 원본 (4.5MB 이하만)
-        if (file.size <= 4.5 * 1024 * 1024) {
-          compressedB64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-        }
+        const b64 = out.substring(out.indexOf(',') + 1);
+        if (b64 && b64.length > 2000) { compressedB64 = b64; done = true; }
+      } catch(err) {}
+      // canvas 실패 or 결과 이상 → 원본 사용 (5MB 이하)
+      if (!done) {
+        if (file.size <= 4.9 * 1024 * 1024) compressedB64 = rawB64;
       }
+    };
+    img.onerror = function() {
+      if (file.size <= 4.9 * 1024 * 1024) compressedB64 = rawB64;
     };
     img.src = dataUrl;
   };
