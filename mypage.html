@@ -146,6 +146,7 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
       <div class="side-item active" onclick="showTab('orders',this)"><span class="side-icon">🛍️</span> 주문 내역</div>
       <div class="side-item" onclick="showTab('address',this)"><span class="side-icon">📍</span> 배송지 관리</div>
       <div class="side-item" onclick="showTab('profile',this)"><span class="side-icon">👤</span> 회원 정보</div>
+      <div class="side-item" onclick="showTab('withdraw',this)" style="color:#ff6b6b;margin-top:8px;"><span class="side-icon">🚪</span> 회원 탈퇴</div>
     </div>
   </div>
   <div class="main-content">
@@ -170,6 +171,25 @@ footer{background:#2a1220;padding:48px;margin-top:80px;}
         <div class="form-group"><label>상세 주소</label><input type="text" id="addrDetail" placeholder="상세 주소 (동/호수)"/></div>
         <button class="btn-primary" onclick="saveAddress()">배송지 저장</button>
         <div class="save-msg" id="addrSaveMsg">✅ 저장됐어요!</div>
+      </div>
+    </div>
+    <!-- 회원 탈퇴 -->
+    <div class="tab" id="tab-withdraw">
+      <div class="card">
+        <div class="card-title" style="color:#ff6b6b;">🚪 회원 탈퇴</div>
+        <div style="background:#fff5f5;border:1px solid #ffd0d0;border-radius:12px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.8;color:#a05050;">
+          ⚠️ 탈퇴 시 아래 정보가 모두 삭제돼요.<br>
+          · 주문 내역 및 배송지 정보<br>
+          · 산책 기록<br>
+          · 회원 정보<br><br>
+          <strong>삭제된 계정은 복구할 수 없어요.</strong>
+        </div>
+        <div class="form-group">
+          <label>확인을 위해 <strong>탈퇴합니다</strong> 를 입력해주세요</label>
+          <input type="text" id="withdrawConfirm" placeholder="탈퇴합니다" style="margin-top:6px;"/>
+        </div>
+        <button onclick="deleteAccount()" style="width:100%;background:#ff6b6b;color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">회원 탈퇴</button>
+        <div id="withdrawMsg" style="display:none;margin-top:10px;font-size:13px;color:#ff6b6b;"></div>
       </div>
     </div>
     <!-- 회원 정보 -->
@@ -272,6 +292,25 @@ _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?.user||n
 
 async function doSignOut(){
   await _supabase.auth.signOut();
+  location.href='/';
+}
+
+async function deleteAccount(){
+  const confirm = document.getElementById('withdrawConfirm').value.trim();
+  const msgEl = document.getElementById('withdrawMsg');
+  if(confirm !== '탈퇴합니다'){
+    msgEl.style.display='block';
+    msgEl.textContent='⚠️ "탈퇴합니다" 를 정확히 입력해주세요.';
+    return;
+  }
+  const { error } = await _supabase.rpc('delete_user');
+  if(error){
+    msgEl.style.display='block';
+    msgEl.textContent='오류가 발생했어요. 다시 시도해주세요.';
+    return;
+  }
+  await _supabase.auth.signOut();
+  alert('탈퇴가 완료됐어요. 그동안 웰리펫을 이용해주셔서 감사해요 🐾');
   location.href='/';
 }
 
