@@ -340,7 +340,7 @@ function updateHeader(user){
 }
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
 _supabase.auth.onAuthStateChange((event,session)=>{updateHeader(session?session.user:null);});
-async function signOut(){await _supabase.auth.signOut();updateHeader(null);}
+async function signOut(){await _supabase.auth.signOut();localStorage.removeItem('cart');updateHeader(null);}
 
 // 최신 상품 4개 불러오기
 async function loadBestProducts(){
