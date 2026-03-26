@@ -276,47 +276,45 @@ function openCamera() {
 }
 
 let currentFile = null;
+let currentDataUrl = null;
 
 function handleFile(file) {
   if (!file) return;
   currentFile = file;
   const reader = new FileReader();
   reader.onload = function(e) {
-    document.getElementById('previewImg').src = e.target.result;
+    currentDataUrl = e.target.result;
+    document.getElementById('previewImg').src = currentDataUrl;
     document.getElementById('uploadArea').style.display = 'none';
     document.getElementById('previewWrap').style.display = 'block';
   };
   reader.readAsDataURL(file);
 }
 
-function compressForUpload(file) {
+function compressForUpload() {
   return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onerror = function() { resolve(null); };
-      img.onload = function() {
-        const TARGET = 3.5 * 1024 * 1024;
-        const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5]];
-        for (const [px, q] of steps) {
-          let w = img.width, h = img.height;
-          if (w > h) { h = Math.round(h * px / w); w = px; }
-          else { w = Math.round(w * px / h); h = px; }
-          const canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
-          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-          const dataUrl = canvas.toDataURL('image/jpeg', q);
-          const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-          if (b64.length * 0.75 <= TARGET) {
-            resolve({ base64: b64, mediaType: 'image/jpeg' });
-            return;
-          }
+    const img = new Image();
+    img.onerror = function() { resolve(null); };
+    img.onload = function() {
+      const TARGET = 3.5 * 1024 * 1024;
+      const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5]];
+      for (const [px, q] of steps) {
+        let w = img.width, h = img.height;
+        if (w > h) { h = Math.round(h * px / w); w = px; }
+        else { w = Math.round(w * px / h); h = px; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', q);
+        const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+        if (b64.length * 0.75 <= TARGET) {
+          resolve({ base64: b64, mediaType: 'image/jpeg' });
+          return;
         }
-        resolve(null);
-      };
-      img.src = e.target.result;
+      }
+      resolve(null);
     };
-    reader.readAsDataURL(file);
+    img.src = currentDataUrl;
   });
 }
 
@@ -342,7 +340,7 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
 
   try {
-    const compressed = await compressForUpload(currentFile);
+    const compressed = await compressForUpload();
     if (!compressed) {
       document.getElementById('loading').style.display = 'none';
       alert('이미지 처리에 실패했어요. 다른 사진을 선택해주세요.');
@@ -384,6 +382,7 @@ async function analyze() {
 
 function resetUpload() {
   currentFile = null;
+  currentDataUrl = null;
   currentBase64 = null;
   currentMediaType = null;
   document.getElementById('uploadArea').style.display = 'block';
