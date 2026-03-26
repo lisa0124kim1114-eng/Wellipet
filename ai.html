@@ -293,32 +293,42 @@ function handleFile(file) {
 
 function compressForUpload() {
   return new Promise((resolve) => {
-    const previewImg = document.getElementById('previewImg');
-    const srcW = previewImg.naturalWidth || previewImg.width;
-    const srcH = previewImg.naturalHeight || previewImg.height;
-
-    if (!srcW || !srcH) {
-      resolve(null);
-      return;
-    }
-
-    const TARGET = 3.5 * 1024 * 1024;
-    const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5],[400,0.3]];
-    for (const [px, q] of steps) {
-      let w = srcW, h = srcH;
-      if (w > h) { h = Math.round(h * px / w); w = px; }
-      else { w = Math.round(w * px / h); h = px; }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(previewImg, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL('image/jpeg', q);
-      const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
-      if (b64.length * 0.75 <= TARGET) {
+    const objectUrl = URL.createObjectURL(currentFile);
+    const img = new Image();
+    img.onerror = function() {
+      URL.revokeObjectURL(objectUrl);
+      // canvas 불가 시 원본 base64 크기 체크 후 그대로 전송
+      const b64 = currentDataUrl.substring(currentDataUrl.indexOf(',') + 1);
+      if (b64.length * 0.75 <= 4.5 * 1024 * 1024) {
         resolve({ base64: b64, mediaType: 'image/jpeg' });
-        return;
+      } else {
+        resolve(null);
       }
-    }
-    resolve(null);
+    };
+    img.onload = function() {
+      URL.revokeObjectURL(objectUrl);
+      const TARGET = 3.5 * 1024 * 1024;
+      const steps = [[800,0.8],[800,0.65],[600,0.65],[600,0.5],[400,0.5],[400,0.3]];
+      for (const [px, q] of steps) {
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h) continue;
+        if (w > h) { h = Math.round(h * px / w); w = px; }
+        else { w = Math.round(w * px / h); h = px; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', q);
+        const b64 = dataUrl.substring(dataUrl.indexOf(',') + 1);
+        if (b64.length * 0.75 <= TARGET) {
+          resolve({ base64: b64, mediaType: 'image/jpeg' });
+          return;
+        }
+      }
+      // 모든 단계 실패 시 원본 전송 시도
+      const rawB64 = currentDataUrl.substring(currentDataUrl.indexOf(',') + 1);
+      resolve({ base64: rawB64, mediaType: 'image/jpeg' });
+    };
+    img.src = objectUrl;
   });
 }
 
