@@ -13,7 +13,19 @@
       "mcp__claude_ai_Supabase__get_publishable_keys",
       "Bash(grep:*)",
       "Bash(head -15 grep -n \"grid-template-columns\\\\|@media\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/cart.html)",
-      "Bash(head -10 grep -n \"후원 현황\\\\|f-sns\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/shop.html)"
+      "Bash(head -10 grep -n \"후원 현황\\\\|f-sns\" /c/Users/lisa0/claude/Userslisa0claudeWellipet/shop.html)",
+      "WebFetch(domain:developers.portone.io)",
+      "mcp__claude_ai_Gmail__gmail_search_messages",
+      "mcp__claude_ai_Gmail__gmail_read_message",
+      "WebFetch(domain:developer.kcp.co.kr)",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__deploy_edge_function",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(done)",
+      "Bash(python3 -c \":*)",
+      "Bash(python -c \":*)",
+      "mcp__claude_ai_Supabase__get_logs"
     ]
   }
 }
