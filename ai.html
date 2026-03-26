@@ -28,7 +28,7 @@ nav a:hover,nav a.active{color:var(--pk);}
 .upload-area{border:2.5px dashed var(--bd);border-radius:24px;padding:48px 24px;text-align:center;cursor:pointer;transition:all .3s;background:#fff;position:relative;overflow:hidden;}
 .upload-area:hover{border-color:var(--pk);background:var(--pkbg);}
 .upload-area.drag{border-color:var(--pk);background:var(--pkbg);}
-.upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-area input{display:none;}
 .upload-icon{font-size:56px;margin-bottom:16px;}
 .upload-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:8px;}
 .upload-sub{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;}
@@ -151,8 +151,8 @@ nav{display:none;}
     <div class="upload-title">강아지 사진을 올려주세요</div>
     <div class="upload-sub">클릭하거나 사진을 끌어다 놓으세요<br>JPG, PNG · 최대 10MB</div>
     <div class="upload-btns">
-      <button class="btn-upload" onclick="document.getElementById('fileInput').click();event.stopPropagation();">📁 사진 선택</button>
-      <label class="btn-camera" for="cameraInput" onclick="event.stopPropagation();">📷 카메라로 찍기</label>
+      <label class="btn-upload" for="fileInput">📁 사진 선택</label>
+      <label class="btn-camera" for="cameraInput">📷 카메라로 찍기</label>
     </div>
   </div>
   <input type="file" id="cameraInput" capture="environment" style="display:none;" onchange="handleFile(this.files[0])"/>
