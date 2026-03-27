@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>강아지 일기 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);text-decoration:none;}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;transition:color .2s;}
+nav a:hover,nav a.active{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
+.mobile-nav.open{display:block;}
+.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
+.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
+.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;}
+.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
+@media(max-width:768px){.hamburger{display:flex;}nav{display:none;}}
+
+.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:48px 32px;text-align:center;border-bottom:1px solid var(--bd);}
+.hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:14px;}
+.hero h1{font-family:'Nunito',sans-serif;font-size:32px;font-weight:800;color:#2a1220;margin-bottom:8px;}
+.hero p{font-size:14px;color:var(--muted);line-height:1.8;}
+
+.wrap{max-width:720px;margin:0 auto;padding:40px 24px;}
+
+/* 로그인 필요 */
+.login-required{text-align:center;padding:60px 20px;display:none;}
+.login-required p{color:var(--muted);margin-bottom:20px;font-size:15px;}
+.btn-login-go{display:inline-block;background:var(--pk);color:#fff;padding:12px 28px;border-radius:20px;font-weight:600;text-decoration:none;font-size:14px;}
+
+/* 탭 */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--bd);margin-bottom:32px;}
+.tab-btn{padding:12px 24px;font-size:14px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:'Noto Sans KR',sans-serif;}
+.tab-btn.active{color:var(--pk);border-bottom-color:var(--pk);}
+
+/* 쓰기 탭 */
+.upload-area{border:2.5px dashed var(--bd);border-radius:20px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .3s;position:relative;background:#fff;}
+.upload-area:hover,.upload-area.drag{border-color:var(--pk);background:var(--pkbg);}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-icon{font-size:48px;margin-bottom:12px;}
+.upload-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+.upload-sub{font-size:13px;color:var(--muted);}
+
+.preview-area{display:none;margin-bottom:20px;text-align:center;}
+.preview-area img{max-width:100%;max-height:280px;border-radius:16px;border:2px solid var(--bd);object-fit:cover;}
+.preview-change{display:inline-block;margin-top:8px;font-size:12px;color:var(--pk);cursor:pointer;text-decoration:underline;}
+
+.note-area{margin-top:16px;}
+.note-label{font-size:13px;font-weight:600;color:#2a1220;margin-bottom:8px;display:block;}
+.note-input{width:100%;padding:12px 14px;border:1.5px solid var(--bd);border-radius:14px;font-size:13px;font-family:'Noto Sans KR',sans-serif;resize:none;outline:none;color:var(--tx);}
+.note-input:focus{border-color:var(--pk);}
+.note-input::placeholder{color:var(--muted);}
+
+.btn-generate{display:block;width:100%;padding:14px;background:linear-gradient(90deg,var(--pk),var(--pkm));color:#fff;border:none;border-radius:20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:16px;transition:opacity .2s;}
+.btn-generate:hover{opacity:.9;}
+.btn-generate:disabled{opacity:.4;cursor:default;}
+
+/* 로딩 */
+.loading{display:none;text-align:center;padding:32px 0;}
+.loading-ring{width:48px;height:48px;border:3px solid var(--bd);border-top-color:var(--pk);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{color:var(--muted);font-size:13px;}
+
+/* 생성 결과 미리보기 */
+.diary-preview{display:none;background:linear-gradient(135deg,var(--pkbg),#fff0f7);border:1.5px solid var(--bd);border-radius:20px;padding:24px;margin-top:20px;}
+.preview-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.preview-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--pk);}
+.preview-meta{flex:1;}
+.preview-date{font-size:12px;color:var(--muted);}
+.preview-emotion{display:inline-flex;align-items:center;gap:4px;background:var(--pk);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-top:4px;}
+.preview-text{font-size:14px;line-height:1.9;color:#2a1220;white-space:pre-line;}
+
+.btn-save{display:block;width:100%;padding:13px;background:var(--pk);color:#fff;border:none;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:16px;}
+.btn-save:hover{background:var(--pkm);}
+.btn-regenerate{display:block;width:100%;padding:11px;background:#fff;color:var(--muted);border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;}
+.btn-regenerate:hover{border-color:var(--pk);color:var(--pk);}
+
+/* 목록 탭 */
+.diary-list{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.diary-card{background:#fff;border:1.5px solid var(--bd);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.diary-card:hover{border-color:var(--pk);transform:translateY(-2px);box-shadow:0 8px 24px rgba(196,92,138,.1);}
+.card-photo{width:100%;aspect-ratio:1;object-fit:cover;}
+.card-photo-placeholder{width:100%;aspect-ratio:1;background:var(--pkbg);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.card-body{padding:14px;}
+.card-date{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.card-emotion{display:inline-flex;align-items:center;gap:3px;background:var(--pkbg);color:var(--pk);font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-bottom:8px;}
+.card-excerpt{font-size:12px;color:#5a3a48;line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+
+.empty-diary{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-diary .empty-icon{font-size:48px;margin-bottom:12px;}
+.empty-diary p{font-size:14px;line-height:1.8;}
+
+/* 모달 */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:28px;}
+.modal-close{display:flex;justify-content:flex-end;margin-bottom:16px;}
+.modal-close button{background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;}
+.modal-photo{width:100%;max-height:260px;object-fit:cover;border-radius:16px;margin-bottom:20px;}
+.modal-photo-placeholder{width:100%;height:160px;background:var(--pkbg);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:20px;}
+.modal-date{font-size:13px;color:var(--muted);margin-bottom:6px;}
+.modal-emotion{display:inline-flex;align-items:center;gap:4px;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:3px 12px;border-radius:20px;margin-bottom:16px;}
+.modal-text{font-size:15px;line-height:1.9;color:#2a1220;white-space:pre-line;}
+.modal-delete{display:block;width:100%;padding:11px;background:#fff;color:#cc4444;border:1.5px solid #ffcccc;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:20px;}
+.modal-delete:hover{background:#fff0f0;}
+
+footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
+.fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.f-links{display:flex;gap:20px;}
+.f-links a{font-size:12px;color:#a08090;text-decoration:none;}
+.f-copy{font-size:12px;color:#6a4a5a;}
+
+@media(max-width:600px){
+  header{padding:0 16px;height:60px;}
+  .hero{padding:32px 16px;}
+  .hero h1{font-size:26px;}
+  .wrap{padding:28px 16px;}
+  .diary-list{grid-template-columns:1fr 1fr;gap:10px;}
+  footer{padding:24px 20px;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <a class="logo" href="/">Welli<em>pet</em> 🐾</a>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+      <a href="ai-hub.html" class="active">🐾 AI 놀이터</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <span style="font-size:16px;cursor:pointer;" onclick="location.href='cart.html'">🛒</span>
+    <button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">📔 강아지 일기</div>
+  <h1>우리 아이의 하루를<br>AI가 일기로 써줘요 🐾</h1>
+  <p>사진 한 장으로 오늘의 일기 완성!<br>매일 기록하고 추억을 쌓아봐요</p>
+</div>
+
+<div class="wrap" id="mainWrap">
+
+  <!-- 로그인 필요 -->
+  <div class="login-required" id="loginRequired">
+    <div style="font-size:48px;margin-bottom:12px;">🔒</div>
+    <p>일기는 로그인 후 이용할 수 있어요</p>
+    <a class="btn-login-go" href="mypage.html">로그인하러 가기</a>
+  </div>
+
+  <!-- 탭 -->
+  <div id="tabArea" style="display:none;">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('write')">✏️ 오늘 일기 쓰기</button>
+      <button class="tab-btn" onclick="switchTab('list')">📚 일기 목록</button>
+    </div>
+
+    <!-- 쓰기 탭 -->
+    <div id="tabWrite">
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="fileInput" accept="image/*" onchange="onFileSelected(event)"/>
+        <div class="upload-icon">📷</div>
+        <div class="upload-title">오늘 사진을 올려주세요</div>
+        <div class="upload-sub">강아지, 고양이 모두 가능해요</div>
+      </div>
+
+      <div class="preview-area" id="previewArea">
+        <img id="previewImg" src="" alt="미리보기"/>
+        <div class="preview-change" onclick="resetPhoto()">📁 다른 사진 선택</div>
+      </div>
+
+      <div class="note-area">
+        <label class="note-label">오늘 메모 (선택)</label>
+        <textarea class="note-input" id="noteInput" rows="2" placeholder="오늘 있었던 일을 간단히 적어주세요 (예: 오늘 공원 산책 다녀왔어)"></textarea>
+      </div>
+
+      <button class="btn-generate" id="btnGenerate" disabled onclick="generateDiary()">
+        ✨ AI 일기 작성하기
+      </button>
+
+      <div class="loading" id="loading">
+        <div class="loading-ring"></div>
+        <p>우리 아이의 하루를 일기로 쓰고 있어요...</p>
+      </div>
+
+      <div class="diary-preview" id="diaryPreview">
+        <div class="preview-header">
+          <img class="preview-photo" id="previewThumb" src="" alt=""/>
+          <div class="preview-meta">
+            <div class="preview-date" id="previewDate"></div>
+            <div class="preview-emotion" id="previewEmotion"></div>
+          </div>
+        </div>
+        <div class="preview-text" id="previewText"></div>
+        <button class="btn-save" onclick="saveDiary()">💾 일기 저장하기</button>
+        <button class="btn-regenerate" onclick="generateDiary()">🔄 다시 써보기</button>
+      </div>
+    </div>
+
+    <!-- 목록 탭 -->
+    <div id="tabList" style="display:none;">
+      <div class="diary-list" id="diaryList"></div>
+      <div class="empty-diary" id="emptyDiary" style="display:none;">
+        <div class="empty-icon">📔</div>
+        <p>아직 일기가 없어요<br>오늘 첫 일기를 써봐요!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 일기 상세 모달 -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-close"><button onclick="closeModal()">×</button></div>
+    <div id="modalPhotoWrap"></div>
+    <div class="modal-date" id="modalDate"></div>
+    <div class="modal-emotion" id="modalEmotion"></div>
+    <div class="modal-text" id="modalText"></div>
+    <button class="modal-delete" onclick="deleteEntry()">🗑️ 이 일기 삭제하기</button>
+  </div>
+</div>
+
+<footer>
+  <div class="fb">
+    <div class="f-links">
+      <a href="terms.html">이용약관</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="refund.html">환불정책</a>
+    </div>
+    <div class="f-copy">© 2025 Wellipet. All rights reserved.</div>
+  </div>
+</footer>
+
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">×</button>
+    <a href="/">🏠 홈</a>
+    <a href="shop.html">🛍️ Products</a>
+    <a href="adoption.html">🐾 입양 스토리</a>
+    <a href="donation.html">🏠 후원 프로젝트</a>
+    <a href="ai-hub.html">🤖 AI 놀이터</a>
+    <a href="mypage.html">👤 마이페이지</a>
+    <a href="cart.html">🛒 장바구니</a>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2NDk1OTYsImV4cCI6MjA1ODIyNTU5Nn0.3FXMH3HBsHEtbWqXHkrYGnzTUkgwuI6c4K5q1Ps_Tp0';
+const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/diary-write';
+
+const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let photoDataUrl = null;
+let generatedDiary = null;
+let selectedEntryId = null;
+
+function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
+function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
+
+// 초기화
+(async () => {
+  const { data: { session } } = await _supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    document.getElementById('loginRequired').style.display = 'none';
+    document.getElementById('tabArea').style.display = 'block';
+    loadDiaryList();
+  } else {
+    document.getElementById('loginRequired').style.display = 'block';
+  }
+})();
+
+// 탭 전환
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0 && tab === 'write') || (i === 1 && tab === 'list')));
+  document.getElementById('tabWrite').style.display = tab === 'write' ? 'block' : 'none';
+  document.getElementById('tabList').style.display = tab === 'list' ? 'block' : 'none';
+  if (tab === 'list') loadDiaryList();
+}
+
+// 파일 선택
+function onFileSelected(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      let w = img.width, h = img.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      photoDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('previewImg').src = photoDataUrl;
+      document.getElementById('uploadArea').style.display = 'none';
+      document.getElementById('previewArea').style.display = 'block';
+      document.getElementById('btnGenerate').disabled = false;
+      document.getElementById('diaryPreview').style.display = 'none';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// 드래그앤드롭
+const ua = document.getElementById('uploadArea');
+ua.addEventListener('dragover', e => { e.preventDefault(); ua.classList.add('drag'); });
+ua.addEventListener('dragleave', () => ua.classList.remove('drag'));
+ua.addEventListener('drop', e => {
+  e.preventDefault(); ua.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) onFileSelected({ target: { files: [file] } });
+});
+
+function resetPhoto() {
+  photoDataUrl = null;
+  document.getElementById('uploadArea').style.display = 'block';
+  document.getElementById('previewArea').style.display = 'none';
+  document.getElementById('btnGenerate').disabled = true;
+  document.getElementById('diaryPreview').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+}
+
+// AI 일기 생성
+async function generateDiary() {
+  if (!photoDataUrl) return;
+  const note = document.getElementById('noteInput').value.trim();
+  const [header, base64] = photoDataUrl.split(',');
+  const mediaType = header.match(/data:([^;]+);/)[1];
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('diaryPreview').style.display = 'none';
+  document.getElementById('btnGenerate').disabled = true;
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_base64: base64, media_type: mediaType, user_note: note || null }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error);
+
+    generatedDiary = data;
+
+    const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+    document.getElementById('previewThumb').src = photoDataUrl;
+    document.getElementById('previewDate').textContent = today;
+    document.getElementById('previewEmotion').textContent = `${data.emoji} ${data.emotion}`;
+    document.getElementById('previewText').textContent = data.diary_text;
+    document.getElementById('diaryPreview').style.display = 'block';
+  } catch (err) {
+    alert('일기 작성 중 오류가 났어요 😢 다시 시도해주세요.');
+    console.error(err);
+  } finally {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('btnGenerate').disabled = false;
+  }
+}
+
+// 일기 저장
+async function saveDiary() {
+  if (!generatedDiary || !currentUser) return;
+  try {
+    const { error } = await _supabase.from('diary_entries').insert({
+      user_id: currentUser.id,
+      photo_data: photoDataUrl,
+      diary_text: generatedDiary.diary_text,
+      emotion: generatedDiary.emotion,
+      emoji: generatedDiary.emoji,
+    });
+    if (error) throw error;
+
+    alert('일기가 저장됐어요! 📔');
+    document.getElementById('noteInput').value = '';
+    resetPhoto();
+    generatedDiary = null;
+    switchTab('list');
+  } catch (err) {
+    alert('저장 중 오류가 났어요.');
+    console.error(err);
+  }
+}
+
+// 일기 목록 로드
+async function loadDiaryList() {
+  if (!currentUser) return;
+  const listEl = document.getElementById('diaryList');
+  const emptyEl = document.getElementById('emptyDiary');
+  listEl.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px;">불러오는 중...</div>';
+
+  const { data, error } = await _supabase
+    .from('diary_entries')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error || !data?.length) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  listEl.innerHTML = data.map(entry => {
+    const date = new Date(entry.created_at).toLocaleDateString('ko-KR', { month:'long', day:'numeric' });
+    const photoHtml = entry.photo_data
+      ? `<img class="card-photo" src="${entry.photo_data}" alt=""/>`
+      : `<div class="card-photo-placeholder">🐾</div>`;
+    return `<div class="diary-card" onclick="openEntry('${entry.id}')">
+      ${photoHtml}
+      <div class="card-body">
+        <div class="card-date">${date}</div>
+        <div class="card-emotion">${entry.emoji || '🐾'} ${entry.emotion || ''}</div>
+        <div class="card-excerpt">${entry.diary_text}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// 일기 상세
+async function openEntry(id) {
+  const { data } = await _supabase.from('diary_entries').select('*').eq('id', id).single();
+  if (!data) return;
+  selectedEntryId = id;
+
+  const date = new Date(data.created_at).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+  document.getElementById('modalPhotoWrap').innerHTML = data.photo_data
+    ? `<img class="modal-photo" src="${data.photo_data}" alt=""/>`
+    : `<div class="modal-photo-placeholder">🐾</div>`;
+  document.getElementById('modalDate').textContent = date;
+  document.getElementById('modalEmotion').textContent = `${data.emoji || '🐾'} ${data.emotion || ''}`;
+  document.getElementById('modalText').textContent = data.diary_text;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+    selectedEntryId = null;
+  }
+}
+
+async function deleteEntry() {
+  if (!selectedEntryId) return;
+  if (!confirm('이 일기를 삭제할까요?')) return;
+  await _supabase.from('diary_entries').delete().eq('id', selectedEntryId);
+  closeModal();
+  loadDiaryList();
+}
+</script>
+</body>
+</html>
