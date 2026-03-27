@@ -319,21 +319,26 @@ function updateHeader(user){
   const mobileUserName=document.getElementById('mobileUserName');
   const mobileBtnLogin=document.getElementById('mobileBtnLogin');
   const mobileBtnLogout=document.getElementById('mobileBtnLogout');
+  const isMobile=window.innerWidth<=768;
   if(user){
     const name=user.user_metadata?.name||user.email.split('@')[0];
-    btnJoin.style.display='none';
-    if(btnLogin)btnLogin.style.display='none';
-    userNameDisplay.style.display='inline';
-    userNameDisplay.textContent=name+'님 🐾';
-    btnLogout.style.display='inline-block';
+    if(!isMobile){
+      btnJoin.style.display='none';
+      if(btnLogin)btnLogin.style.display='none';
+      userNameDisplay.style.display='inline';
+      userNameDisplay.textContent=name+'님 🐾';
+      btnLogout.style.display='inline-block';
+    }
     if(mobileUserInfo){mobileUserInfo.style.display='block';mobileUserName.textContent=name+'님 🐾';}
     if(mobileBtnLogin)mobileBtnLogin.style.display='none';
     if(mobileBtnLogout)mobileBtnLogout.style.display='block';
   } else {
-    btnJoin.style.display='inline-block';
-    if(btnLogin)btnLogin.style.display='inline-block';
-    userNameDisplay.style.display='none';
-    btnLogout.style.display='none';
+    if(!isMobile){
+      btnJoin.style.display='inline-block';
+      if(btnLogin)btnLogin.style.display='inline-block';
+      userNameDisplay.style.display='none';
+      btnLogout.style.display='none';
+    }
     if(mobileUserInfo)mobileUserInfo.style.display='none';
     if(mobileBtnLogin)mobileBtnLogin.style.display='block';
     if(mobileBtnLogout)mobileBtnLogout.style.display='none';
