@@ -390,6 +390,7 @@ async function transform() {
 
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || '변환 실패');
+    if (!data.image_base64) throw new Error('이미지 데이터 없음: ' + JSON.stringify(data).substring(0, 100));
 
     resultDataUrl = `data:${data.image_mime || 'image/png'};base64,${data.image_base64}`;
     document.getElementById('beforeImg').src = originalDataUrl;
@@ -398,7 +399,7 @@ async function transform() {
     setStep(3);
     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
   } catch (err) {
-    showError('앗, 변환 중 오류가 생겼어요. 다시 시도해주세요 🙏');
+    showError('오류: ' + String(err));
     document.getElementById('promptSection').style.display = 'block';
     console.error(err);
   } finally {
