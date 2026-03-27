@@ -275,7 +275,7 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
 const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/pet-transform';
 
 let originalDataUrl = null;
-let resultImageUrl = null;
+let resultDataUrl = null;
 
 function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
 function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
@@ -340,7 +340,7 @@ function resetAll() {
   resetUpload();
   document.getElementById('result').style.display = 'none';
   document.getElementById('promptInput').value = '';
-  resultImageUrl = null;
+  resultDataUrl = null;
   hideError();
 }
 
@@ -391,9 +391,9 @@ async function transform() {
     const data = await res.json();
     if (!res.ok || data.error) throw new Error(data.error || '변환 실패');
 
-    resultImageUrl = data.image_url;
+    resultDataUrl = `data:${data.image_mime || 'image/png'};base64,${data.image_base64}`;
     document.getElementById('beforeImg').src = originalDataUrl;
-    document.getElementById('afterImg').src = resultImageUrl;
+    document.getElementById('afterImg').src = resultDataUrl;
     document.getElementById('result').style.display = 'block';
     setStep(3);
     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
@@ -406,20 +406,12 @@ async function transform() {
   }
 }
 
-async function downloadResult() {
-  if (!resultImageUrl) return;
-  try {
-    const res = await fetch(resultImageUrl);
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'wellipet-ai.jpg';
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch {
-    window.open(resultImageUrl, '_blank');
-  }
+function downloadResult() {
+  if (!resultDataUrl) return;
+  const a = document.createElement('a');
+  a.href = resultDataUrl;
+  a.download = 'wellipet-ai.png';
+  a.click();
 }
 </script>
 </body>
