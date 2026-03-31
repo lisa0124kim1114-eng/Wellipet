@@ -323,7 +323,10 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
     <a href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">🐶 펫비투비 강아지</a>
     <a href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">🐱 펫비투비 고양이</a>
     <a href="https://www.sujinpet.co.kr/" target="_blank">🛒 수진펫</a>
+    <a href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">🏷️ 수진펫 땡처리</a>
     <a href="https://pethugb2b.co.kr/" target="_blank">🛒 펫허그B2B</a>
+    <a href="https://petdome.co.kr/index.php" target="_blank">🛒 펫도매</a>
+    <a href="https://www.ddakpet.com/team3f/myshop/info#info" target="_blank">🛒 딱펫</a>
     <a href="shop.html" target="_blank">🐾 웰리펫 샵</a>
   </div>
   <div class="topbar-right">
@@ -373,8 +376,17 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
       <a class="site-link" href="https://www.sujinpet.co.kr/" target="_blank">
         <span class="site-dot" style="background:#e07aaa;"></span>수진펫
       </a>
+      <a class="site-link" href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">
+        <span class="site-dot" style="background:#e07aaa;"></span>수진펫 🏷️땡처리
+      </a>
       <a class="site-link" href="https://pethugb2b.co.kr/" target="_blank">
         <span class="site-dot" style="background:#7abde0;"></span>펫허그B2B
+      </a>
+      <a class="site-link" href="https://petdome.co.kr/index.php" target="_blank">
+        <span class="site-dot" style="background:#6dbf8a;"></span>펫도매
+      </a>
+      <a class="site-link" href="https://www.ddakpet.com/team3f/myshop/info#info" target="_blank">
+        <span class="site-dot" style="background:#f0a060;"></span>딱펫
       </a>
     </div>
     <div class="side-section">
@@ -492,6 +504,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="펫비투비">펫비투비</option>
             <option value="수진펫">수진펫</option>
             <option value="펫허그B2B">펫허그B2B</option>
+            <option value="펫도매">펫도매</option>
+            <option value="딱펫">딱펫</option>
             <option value="후회없개B2B">후회없개B2B</option>
             <option value="기타">기타</option>
           </select>
@@ -756,7 +770,7 @@ const CATS = [
 // ── 사이트 색상 ──
 const SITE_COLORS = {
   '펫토리':'#7a9ee0','펫비투비':'#e0a87a','수진펫':'#e07aaa',
-  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','기타':'#90a090',
+  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','펫도매':'#6dbf8a','딱펫':'#f0a060','기타':'#90a090',
 };
 
 // ── 초기 데이터 (수집된 상품) ──
@@ -828,6 +842,38 @@ const SEED = [
   {cat:'기타용품',site:'수진펫',name:'[도그포즈] 베이직 3단 스텝 베이지',brand:'도그포즈',desc:'3단 반려견 계단. 신상품.',img:'',link:'https://www.sujinpet.co.kr/'},
   // ── 펫비투비(PC) 기타용품 추가 ──
   {cat:'기타용품',site:'펫비투비',name:'[체리쉬] 구강 케어 치약세트 (딸기/바나나)',brand:'체리쉬',desc:'강아지 전용 치약+칫솔 세트.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  // ── 펫도매 베스트 상품 ──
+  {cat:'간식',site:'펫도매',name:'더주스 온리 무첨가 사사미 300g',brand:'더주스',desc:'무첨가 닭가슴살 사사미 간식. 펫도매 간식 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=002'},
+  {cat:'간식',site:'펫도매',name:'팻라인 첼시 닭가슴살 소시지',brand:'팻라인',desc:'촉촉한 닭가슴살 소시지 간식. 베스트셀러.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=002'},
+  {cat:'간식',site:'펫도매',name:'지위픽 독식품 사슴고기 1KG',brand:'지위픽',desc:'사슴고기 동결건조 간식 1kg 대용량.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=002'},
+  {cat:'사료',site:'펫도매',name:'캐츠랑 균형잡힌 영양제공 전연령 5kg×3개',brand:'캐츠랑',desc:'고양이 전연령 드라이사료 대용량 박스.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
+  {cat:'사료',site:'펫도매',name:'캐츠랑 비타플러스 전연령 2kg',brand:'캐츠랑',desc:'비타민 강화 고양이 전연령 사료 2kg.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
+  {cat:'사료',site:'펫도매',name:'내추럴발란스 LI 그레인프리 강아지사료',brand:'내추럴발란스',desc:'그레인프리 단일단백 강아지 사료. 민감한 위장에.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
+  {cat:'패드/위생',site:'펫도매',name:'아껴줄게 배변패드 대형 60x76cm 30매',brand:'아껴줄게',desc:'고흡수 대형 배변패드 30매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'패드/위생',site:'펫도매',name:'개님의패드 강아지 배변패드 대형',brand:'개님의패드',desc:'두꺼운 고흡수 배변패드. 베스트',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'패드/위생',site:'펫도매',name:'럭셔리펫 슈퍼대형 배변패드 40매',brand:'럭셔리펫',desc:'슈퍼대형 프리미엄 배변패드 40매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'영양제',site:'펫도매',name:'펫글로우 더마플러스 강아지 피모 영양제',brand:'펫글로우',desc:'피부·모질 개선 기능성 영양제. 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'영양제',site:'펫도매',name:'동아제약 벳플 장유산균',brand:'동아제약',desc:'수의사 추천 반려견 장 건강 유산균.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'영양제',site:'펫도매',name:'내추럴발란스 관절건강 영양제',brand:'내추럴발란스',desc:'글루코사민 함유 관절 건강 영양제.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'장난감',site:'펫도매',name:'척잇 수륙양용 부메랑',brand:'척잇',desc:'물에서도 사용 가능한 수륙양용 부메랑 장난감.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
+  {cat:'장난감',site:'펫도매',name:'JW 홀리롤러 S',brand:'JW',desc:'트릿을 넣어 굴리는 노즈워크 장난감 소형.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
+  {cat:'장난감',site:'펫도매',name:'콩 클래식 S 스터핑 장난감',brand:'콩',desc:'스터핑 넣는 고무 장난감. 강아지 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
+  // ── 딱펫 베스트 상품 ──
+  {cat:'간식',site:'딱펫',name:'딱좋은 닭가슴살 져키 200g',brand:'딱좋은',desc:'딱펫 인기 닭가슴살 져키 간식.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'간식',site:'딱펫',name:'딱좋은 연어 트릿 100g',brand:'딱좋은',desc:'연어 원료 단일 성분 트릿.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'간식',site:'딱펫',name:'딱좋은 오리 고구마 스틱 150g',brand:'딱좋은',desc:'오리+고구마 혼합 스틱 간식.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'사료',site:'딱펫',name:'딱좋은 닭고기 드라이사료 소형견 2kg',brand:'딱좋은',desc:'소형견 전용 닭고기 사료 2kg.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'사료',site:'딱펫',name:'딱좋은 연어 그레인프리 사료 2kg',brand:'딱좋은',desc:'그레인프리 연어 사료. 예민한 강아지용.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'사료',site:'딱펫',name:'딱좋은 강아지 습식 파우치 100g×10개',brand:'딱좋은',desc:'강아지 습식 사료 10개입 박스.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'패드/위생',site:'딱펫',name:'딱좋은 배변패드 대형 50매',brand:'딱좋은',desc:'딱펫 대형 배변패드 50매 경제형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'패드/위생',site:'딱펫',name:'딱좋은 강아지 물티슈 100매',brand:'딱좋은',desc:'피부 자극 없는 천연 강아지 물티슈.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'패드/위생',site:'딱펫',name:'딱좋은 배변패드 슈퍼대형 20매',brand:'딱좋은',desc:'슈퍼대형 배변패드 20매.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제',site:'딱펫',name:'딱좋은 오메가3 피모영양제 60정',brand:'딱좋은',desc:'오메가3 함유 피부·모질 개선 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제',site:'딱펫',name:'딱좋은 멀티비타민 강아지 30g',brand:'딱좋은',desc:'종합 멀티비타민 파우더 타입.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제',site:'딱펫',name:'딱좋은 관절케어 글루코사민 60정',brand:'딱좋은',desc:'글루코사민+콘드로이친 관절 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'장난감',site:'딱펫',name:'딱좋은 삑삑 공 장난감 3종세트',brand:'딱좋은',desc:'삑삑 소리 나는 고무공 3개 세트.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'장난감',site:'딱펫',name:'딱좋은 노즈워크 매트 S',brand:'딱좋은',desc:'간식 숨기기 노즈워크 매트 소형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'장난감',site:'딱펫',name:'딱좋은 로프 터그 장난감',brand:'딱좋은',desc:'면 로프 터그놀이 장난감. 치아건강.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
 ];
 
 // ── 상태 ── (버전 v3 — petbtob.co.kr 추가)
@@ -847,6 +893,15 @@ if(!products){
     products = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
   }
   localStorage.setItem(DATA_VER, JSON.stringify(products));
+} else {
+  // 기존 v3 데이터가 있어도 새 SEED 상품(펫도매·딱펫 등) 자동 추가
+  const existNames = new Set(products.map(p=>p.name));
+  const newItems = SEED.filter(s=>!existNames.has(s.name))
+    .map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
+  if(newItems.length > 0){
+    products = [...products, ...newItems];
+    localStorage.setItem(DATA_VER, JSON.stringify(products));
+  }
 }
 // ── Supabase 연결 ──
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
