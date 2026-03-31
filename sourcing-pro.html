@@ -517,7 +517,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="">선택</option>
             <option value="간식">🍖 간식</option>
             <option value="사료">🍽 사료</option>
-            <option value="패드/위생">🧻 패드/위생</option>
+            <option value="배변/위생">🧻 배변/위생</option>
             <option value="장난감">🎮 장난감</option>
             <option value="영양제">💊 영양제</option>
             <option value="옷/패션">👕 옷/패션</option>
@@ -761,7 +761,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 const CATS = [
   {id:'간식',    emoji:'🍖', name:'간식',    desc:'강아지·고양이 간식, 츄르, 져키, 껌', max:30},
   {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:30},
-  {id:'패드/위생',emoji:'🧻', name:'패드/위생',desc:'배변패드, 배변봉투, 위생용품', max:30},
+  {id:'배변/위생',emoji:'🧻', name:'배변/위생',desc:'배변패드, 배변봉투, 위생용품', max:30},
   {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:30},
   {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민', max:30},
   {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:30},
@@ -796,14 +796,14 @@ const SEED = [
   {cat:'사료',site:'펫비투비',name:'애견비책 햇밥 치킨 120g 주식캔',brand:'애견비책',desc:'주간 추천 강아지 주식캔.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
   {cat:'사료',site:'펫비투비',name:'[세라피드] 헤어볼 2kg',brand:'세라피드',desc:'고양이 헤어볼 케어 사료. 주간 추천.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
   {cat:'사료',site:'수진펫',name:'[테비] 테비 슈프림 치킨 100g',brand:'테비',desc:'고양이용 슈프림 치킨 습식 사료.',img:'',link:'https://www.sujinpet.co.kr/'},
-  // 패드/위생
-  {cat:'패드/위생',site:'펫토리',name:'모모 배변패드 대형 무향 30매×6개(1박스)',brand:'모모',desc:'무향 대형 패드. 매장납품용 베스트.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫토리',name:'모모 배변패드 실속형 무향 100매',brand:'모모',desc:'실속형 무향 100매.',img:'https://pettory.com/web/product/medium/202208/af2830de98b35b3a6bfb0a02d666e038.png',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫토리',name:'모모 365 배변패드 레몬향 365매',brand:'모모',desc:'가성비 최고. 365매 대용량.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향×6개',brand:'모모',desc:'레몬향 절약형 박스. 장당15g 미국산 천연펄프.',img:'https://pettory.com/web/product/medium/202311/796f0abdb058729c5e6b5df32ef7a27d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향',brand:'모모',desc:'레몬향 절약형 단품.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫토리',name:'엑셀런트 초대형 패드 20매',brand:'엑셀런트',desc:'초대형 패드 20매.',img:'https://pettory.com/web/product/medium/20191128/e1fcd097f651a18c50a317685b77801d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
-  {cat:'패드/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'주간 추천. 산책 필수품.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  // 배변/위생
+  {cat:'배변/위생',site:'펫토리',name:'모모 배변패드 대형 무향 30매×6개(1박스)',brand:'모모',desc:'무향 대형 패드. 매장납품용 베스트.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫토리',name:'모모 배변패드 실속형 무향 100매',brand:'모모',desc:'실속형 무향 100매.',img:'https://pettory.com/web/product/medium/202208/af2830de98b35b3a6bfb0a02d666e038.png',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫토리',name:'모모 365 배변패드 레몬향 365매',brand:'모모',desc:'가성비 최고. 365매 대용량.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향×6개',brand:'모모',desc:'레몬향 절약형 박스. 장당15g 미국산 천연펄프.',img:'https://pettory.com/web/product/medium/202311/796f0abdb058729c5e6b5df32ef7a27d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향',brand:'모모',desc:'레몬향 절약형 단품.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫토리',name:'엑셀런트 초대형 패드 20매',brand:'엑셀런트',desc:'초대형 패드 20매.',img:'https://pettory.com/web/product/medium/20191128/e1fcd097f651a18c50a317685b77801d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'배변/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'주간 추천. 산책 필수품.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
   // 장난감
   {cat:'장난감',site:'펫토리',name:'[로위드] 체커보드 스크래쳐 평판 60cm 대형',brand:'로위드',desc:'가격인하 베스트. 대형 평판 스크래쳐.',img:'',link:'https://pettory.com/'},
   {cat:'장난감',site:'펫토리',name:'[로위드] 체커보드 스크래쳐 2단박스 숨숨집',brand:'로위드',desc:'가격인하 베스트. 2단 숨숨집형.',img:'',link:'https://pettory.com/'},
@@ -832,9 +832,9 @@ const SEED = [
   // ── 사료 펫비투비(PC) 추가 ──
   {cat:'사료',site:'펫비투비',name:'[캐츠랑] 전연령 비타플러스 5kg',brand:'캐츠랑',desc:'전연령 고양이 사료. 비타민 강화.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
   {cat:'사료',site:'펫비투비',name:'강아지 주식캔 사료 애견비책 햇밥 치킨 120g',brand:'애견비책',desc:'주식캔 베스트. 치킨 단일 재료.',img:'https://petbtob.co.kr/web/product/medium/202507/8953a8cde725584bf6e4e62eefddac0d.jpg',link:'https://petbtob.co.kr/product/강아지-주식캔-사료-애견비책-햇밥-치킨-120g/39462/'},
-  // ── 패드/위생 펫비투비(PC) 추가 ──
-  {cat:'패드/위생',site:'펫비투비',name:'[베푸] 덴탈 물티슈 강아지 귀 세정 30매',brand:'베푸',desc:'귀 청결 전용 물티슈.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
-  {cat:'패드/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'산책 필수품. 주간추천.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  // ── 배변/위생 펫비투비(PC) 추가 ──
+  {cat:'배변/위생',site:'펫비투비',name:'[베푸] 덴탈 물티슈 강아지 귀 세정 30매',brand:'베푸',desc:'귀 청결 전용 물티슈.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'배변/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'산책 필수품. 주간추천.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
   // 미용
   {cat:'미용',site:'펫비투비',name:'스테판플라스트 걸리버1 플라스틱문 아틱블루/스틸블루',brand:'스테판플라스트',desc:'베스트 1위 이동장. 플라스틱 문.',img:'https://petbtob.co.kr/web/product/medium/202309/13f879b128e301027690b388532b8d88.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
   {cat:'미용',site:'펫비투비',name:'스테판플라스트 걸리버2 철문 아틱블루/스틸블루',brand:'스테판플라스트',desc:'걸리버2 철문형 이동장.',img:'https://petbtob.co.kr/web/product/medium/202309/f45fdb16ca1a32cae190c2c5873554b0.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
@@ -851,9 +851,9 @@ const SEED = [
   {cat:'사료',site:'펫도매',name:'캐츠랑 균형잡힌 영양제공 전연령 5kg×3개',brand:'캐츠랑',desc:'고양이 전연령 드라이사료 대용량 박스.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
   {cat:'사료',site:'펫도매',name:'캐츠랑 비타플러스 전연령 2kg',brand:'캐츠랑',desc:'비타민 강화 고양이 전연령 사료 2kg.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
   {cat:'사료',site:'펫도매',name:'내추럴발란스 LI 그레인프리 강아지사료',brand:'내추럴발란스',desc:'그레인프리 단일단백 강아지 사료. 민감한 위장에.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=001'},
-  {cat:'패드/위생',site:'펫도매',name:'아껴줄게 배변패드 대형 60x76cm 30매',brand:'아껴줄게',desc:'고흡수 대형 배변패드 30매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
-  {cat:'패드/위생',site:'펫도매',name:'개님의패드 강아지 배변패드 대형',brand:'개님의패드',desc:'두꺼운 고흡수 배변패드. 베스트',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
-  {cat:'패드/위생',site:'펫도매',name:'럭셔리펫 슈퍼대형 배변패드 40매',brand:'럭셔리펫',desc:'슈퍼대형 프리미엄 배변패드 40매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'배변/위생',site:'펫도매',name:'아껴줄게 배변패드 대형 60x76cm 30매',brand:'아껴줄게',desc:'고흡수 대형 배변패드 30매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'배변/위생',site:'펫도매',name:'개님의패드 강아지 배변패드 대형',brand:'개님의패드',desc:'두꺼운 고흡수 배변패드. 베스트',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
+  {cat:'배변/위생',site:'펫도매',name:'럭셔리펫 슈퍼대형 배변패드 40매',brand:'럭셔리펫',desc:'슈퍼대형 프리미엄 배변패드 40매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
   {cat:'영양제',site:'펫도매',name:'펫글로우 더마플러스 강아지 피모 영양제',brand:'펫글로우',desc:'피부·모질 개선 기능성 영양제. 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
   {cat:'영양제',site:'펫도매',name:'동아제약 벳플 장유산균',brand:'동아제약',desc:'수의사 추천 반려견 장 건강 유산균.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
   {cat:'영양제',site:'펫도매',name:'내추럴발란스 관절건강 영양제',brand:'내추럴발란스',desc:'글루코사민 함유 관절 건강 영양제.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
@@ -867,9 +867,9 @@ const SEED = [
   {cat:'사료',site:'딱펫',name:'딱좋은 닭고기 드라이사료 소형견 2kg',brand:'딱좋은',desc:'소형견 전용 닭고기 사료 2kg.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'사료',site:'딱펫',name:'딱좋은 연어 그레인프리 사료 2kg',brand:'딱좋은',desc:'그레인프리 연어 사료. 예민한 강아지용.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'사료',site:'딱펫',name:'딱좋은 강아지 습식 파우치 100g×10개',brand:'딱좋은',desc:'강아지 습식 사료 10개입 박스.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'패드/위생',site:'딱펫',name:'딱좋은 배변패드 대형 50매',brand:'딱좋은',desc:'딱펫 대형 배변패드 50매 경제형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'패드/위생',site:'딱펫',name:'딱좋은 강아지 물티슈 100매',brand:'딱좋은',desc:'피부 자극 없는 천연 강아지 물티슈.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'패드/위생',site:'딱펫',name:'딱좋은 배변패드 슈퍼대형 20매',brand:'딱좋은',desc:'슈퍼대형 배변패드 20매.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'배변/위생',site:'딱펫',name:'딱좋은 배변패드 대형 50매',brand:'딱좋은',desc:'딱펫 대형 배변패드 50매 경제형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'배변/위생',site:'딱펫',name:'딱좋은 강아지 물티슈 100매',brand:'딱좋은',desc:'피부 자극 없는 천연 강아지 물티슈.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'배변/위생',site:'딱펫',name:'딱좋은 배변패드 슈퍼대형 20매',brand:'딱좋은',desc:'슈퍼대형 배변패드 20매.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'영양제',site:'딱펫',name:'딱좋은 오메가3 피모영양제 60정',brand:'딱좋은',desc:'오메가3 함유 피부·모질 개선 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'영양제',site:'딱펫',name:'딱좋은 멀티비타민 강아지 30g',brand:'딱좋은',desc:'종합 멀티비타민 파우더 타입.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'영양제',site:'딱펫',name:'딱좋은 관절케어 글루코사민 60정',brand:'딱좋은',desc:'글루코사민+콘드로이친 관절 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
