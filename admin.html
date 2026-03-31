@@ -36,6 +36,9 @@ header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:ce
 .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.cat-tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--bd);background:#fff;color:#888;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s;}
+.cat-tab:hover{border-color:var(--pk);color:var(--pk);}
+.cat-tab.on{background:var(--pk);color:#fff;border-color:var(--pk);}
 .table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;}
 table{width:100%;border-collapse:collapse;}
 th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);}
@@ -123,6 +126,18 @@ tr:hover td{background:#fafafa;}
       <div class="toolbar">
         <div style="font-size:13px;color:var(--muted);">등록된 상품을 관리해요</div>
         <button class="btn-primary" onclick="openProductModal()">+ 상품 추가</button>
+      </div>
+      <!-- 카테고리 탭 -->
+      <div id="catTabs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+        <button class="cat-tab on" onclick="filterAdminCat('전체',this)">🐾 전체</button>
+        <button class="cat-tab" onclick="filterAdminCat('간식',this)">🍖 간식</button>
+        <button class="cat-tab" onclick="filterAdminCat('사료',this)">🍽 사료</button>
+        <button class="cat-tab" onclick="filterAdminCat('배변/위생',this)">🧻 배변/위생</button>
+        <button class="cat-tab" onclick="filterAdminCat('장난감',this)">🎮 장난감</button>
+        <button class="cat-tab" onclick="filterAdminCat('영양제',this)">💊 영양제</button>
+        <button class="cat-tab" onclick="filterAdminCat('옷/패션',this)">👕 옷/패션</button>
+        <button class="cat-tab" onclick="filterAdminCat('미용',this)">✂️ 미용</button>
+        <button class="cat-tab" onclick="filterAdminCat('홈&침대',this)">🛏️ 홈&침대</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -366,6 +381,14 @@ async function uploadImage(file,prefix='product'){
 }
 
 let _productList = [];
+let _adminCat = '전체';
+
+function filterAdminCat(cat, el){
+  _adminCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderProductTable();
+}
 
 async function loadProducts(){
   const {data}=await _supabase.from('products').select('*').order('sort_order',{ascending:true});
@@ -380,12 +403,17 @@ async function loadProducts(){
 
 function renderProductTable(){
   const tbody=document.getElementById('productTable');
-  tbody.innerHTML=_productList.map((p,i)=>`
+  const list = _adminCat==='전체' ? _productList : _productList.filter(p=>p.category===_adminCat);
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>이 카테고리에 상품이 없어요</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML=list.map((p,i)=>`
     <tr id="prow-${p.id}">
       <td>
         <div style="display:flex;flex-direction:column;gap:3px;margin-right:6px;display:inline-flex;">
           <button onclick="moveProduct(${i},-1)" title="위로" style="padding:2px 6px;border:1px solid var(--bd);border-radius:5px;background:#fff;cursor:pointer;font-size:11px;line-height:1;" ${i===0?'disabled style="opacity:.3;cursor:default;"':''}>▲</button>
-          <button onclick="moveProduct(${i},1)" title="아래로" style="padding:2px 6px;border:1px solid var(--bd);border-radius:5px;background:#fff;cursor:pointer;font-size:11px;line-height:1;" ${i===_productList.length-1?'disabled style="opacity:.3;cursor:default;"':''}>▼</button>
+          <button onclick="moveProduct(${i},1)" title="아래로" style="padding:2px 6px;border:1px solid var(--bd);border-radius:5px;background:#fff;cursor:pointer;font-size:11px;line-height:1;" ${i===list.length-1?'disabled style="opacity:.3;cursor:default;"':''}>▼</button>
         </div>
         ${p.image_url?`<img src="${p.image_url}" class="prod-thumb" style="vertical-align:middle;"/>`:`<div class="prod-thumb-placeholder" style="display:inline-block;vertical-align:middle;">📦</div>`}
       </td>
@@ -408,16 +436,20 @@ function renderProductTable(){
 }
 
 async function moveProduct(idx, dir){
+  // 현재 필터된 리스트 기준으로 실제 _productList 인덱스 찾기
+  const list = _adminCat==='전체' ? _productList : _productList.filter(p=>p.category===_adminCat);
   const swapIdx = idx + dir;
-  if(swapIdx < 0 || swapIdx >= _productList.length) return;
+  if(swapIdx < 0 || swapIdx >= list.length) return;
 
-  // 배열에서 순서 교체
-  const tmp = _productList[idx];
-  _productList[idx] = _productList[swapIdx];
-  _productList[swapIdx] = tmp;
+  const aId = list[idx].id, bId = list[swapIdx].id;
+  const ai = _productList.findIndex(p=>p.id===aId);
+  const bi = _productList.findIndex(p=>p.id===bId);
 
-  // sort_order 값 재할당 후 DB 저장
-  const updates = _productList.map((p, i) => _supabase.from('products').update({sort_order: i+1}).eq('id', p.id));
+  const tmp = _productList[ai];
+  _productList[ai] = _productList[bi];
+  _productList[bi] = tmp;
+
+  const updates = _productList.map((p,i) => _supabase.from('products').update({sort_order:i+1}).eq('id',p.id));
   await Promise.all(updates);
 
   renderProductTable();
