@@ -915,12 +915,20 @@ function savePublished(){localStorage.setItem('welliPublished',JSON.stringify(pu
 
 // 모바일 URL → PC URL 마이그레이션
 let _migrated = false;
+// 카테고리명 + 모바일URL 마이그레이션
+const CAT_RENAME = {'패드/위생':'배변/위생', '기타용품':'미용'};
+let _migrated = false;
 products = products.map(p => {
+  let updated = {...p};
   if(p.link && p.link.includes('m.petbtob.co.kr')){
+    updated.link = p.link.replace('https://m.petbtob.co.kr/', 'https://petbtob.co.kr/');
     _migrated = true;
-    return {...p, link: p.link.replace('https://m.petbtob.co.kr/', 'https://petbtob.co.kr/')};
   }
-  return p;
+  if(CAT_RENAME[p.cat]){
+    updated.cat = CAT_RENAME[p.cat];
+    _migrated = true;
+  }
+  return updated;
 });
 if(_migrated) localStorage.setItem(DATA_VER, JSON.stringify(products));
 function saveAll(){localStorage.setItem(DATA_VER, JSON.stringify(products));}
