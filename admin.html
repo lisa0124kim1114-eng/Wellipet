@@ -547,8 +547,6 @@ async function adminLogin(){
   document.getElementById('adminLoginOverlay').style.display='none';
   loadDashboard();
 }
-document.getElementById('adminLoginPw').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
-
 // 시작 시 로그인 체크
 (async()=>{
   const {data:{session}}=await _supabase.auth.getSession();
@@ -564,7 +562,7 @@ document.getElementById('adminLoginPw').addEventListener('keydown',e=>{if(e.key=
     <div style="font-size:18px;font-weight:800;color:#c45c8a;margin-bottom:4px;">관리자 로그인</div>
     <div style="font-size:12px;color:#a08090;margin-bottom:24px;">웰리펫 계정으로 로그인하세요</div>
     <input id="adminLoginEmail" type="email" placeholder="이메일" style="width:100%;padding:10px 14px;border:1px solid #f0d8e6;border-radius:10px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"/>
-    <input id="adminLoginPw" type="password" placeholder="비밀번호" style="width:100%;padding:10px 14px;border:1px solid #f0d8e6;border-radius:10px;font-size:14px;margin-bottom:16px;box-sizing:border-box;"/>
+    <input id="adminLoginPw" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')adminLogin()" style="width:100%;padding:10px 14px;border:1px solid #f0d8e6;border-radius:10px;font-size:14px;margin-bottom:16px;box-sizing:border-box;"/>
     <button onclick="adminLogin()" style="width:100%;padding:12px;background:#c45c8a;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">로그인</button>
   </div>
 </div>
