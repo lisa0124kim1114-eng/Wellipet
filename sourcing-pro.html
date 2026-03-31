@@ -913,9 +913,7 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let publishedMap = JSON.parse(localStorage.getItem('welliPublished')||'{}');
 function savePublished(){localStorage.setItem('welliPublished',JSON.stringify(publishedMap));}
 
-// 모바일 URL → PC URL 마이그레이션
-let _migrated = false;
-// 카테고리명 + 모바일URL 마이그레이션
+// 모바일 URL + 카테고리명 마이그레이션
 const CAT_RENAME = {'패드/위생':'배변/위생', '기타용품':'미용'};
 let _migrated = false;
 products = products.map(p => {
