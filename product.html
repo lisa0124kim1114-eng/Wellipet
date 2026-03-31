@@ -235,6 +235,11 @@ nav{display:none;}
     <div class="detail-images-wrap" id="detailImagesWrap"></div>
   </div>
 
+  <div id="detailContentSection" style="display:none;max-width:860px;margin:0 auto 40px;padding:0 16px;">
+    <div style="font-size:16px;font-weight:700;color:#2a1a22;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #f0d8e6;">상품 상세정보</div>
+    <div id="detailContentWrap" style="width:100%;line-height:1.6;"></div>
+  </div>
+
   <div class="reviews-section">
     <div class="reviews-header">
       <div class="reviews-title">고객 후기 ⭐</div>
@@ -383,12 +388,15 @@ async function loadProduct(){
     imgWrap.innerHTML=`<div class="product-img-placeholder">🐾</div>`;
   }
 
-  if(p.detail_images){
+  if(p.detail_content){
+    document.getElementById('detailContentSection').style.display='block';
+    document.getElementById('detailContentWrap').innerHTML=p.detail_content;
+  } else if(p.detail_images){
     try{
       const imgs=JSON.parse(p.detail_images);
       if(imgs&&imgs.length>0){
         document.getElementById('detailImagesSection').style.display='block';
-        document.getElementById('detailImagesWrap').innerHTML=imgs.map(url=>`<img src="${url}" alt="상세이미지"/>`).join('');
+        document.getElementById('detailImagesWrap').innerHTML=imgs.map(url=>`<img src="${url}" alt="상세이미지" style="width:100%;display:block;"/>`).join('');
       }
     }catch(e){}
   }

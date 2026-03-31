@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>소싱 관리 Pro · 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;
+  --tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;
+  --green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;
+}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:var(--pkbg);min-height:100vh;}
+
+/* ── 헤더 ── */
+.topbar{background:var(--pk);padding:6px 32px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;gap:16px;align-items:center;}
+.topbar-left a{font-size:11px;color:var(--pkl);text-decoration:none;display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:8px;transition:background .2s;}
+.topbar-left a:hover{background:rgba(255,255,255,.15);}
+.topbar-right{display:flex;gap:8px;}
+header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;}
+.logo{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pk);}
+.logo em{font-style:normal;color:var(--pkm);}
+.logo-sub{font-size:12px;color:var(--muted);margin-left:8px;font-weight:400;font-family:'Noto Sans KR',sans-serif;}
+.hbtns{display:flex;gap:8px;align-items:center;}
+
+/* ── 공통 버튼 ── */
+.btn{padding:8px 16px;border-radius:10px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all .2s;font-weight:500;}
+.btn-pk{background:var(--pk);color:#fff;} .btn-pk:hover{background:var(--pkm);}
+.btn-out{background:#fff;color:var(--pk);border:1.5px solid var(--pk);} .btn-out:hover{background:var(--pkp);}
+.btn-gray{background:#f5f5f5;color:#555;border:1px solid #e0e0e0;} .btn-gray:hover{background:#ececec;}
+.btn-green{background:#27ae60;color:#fff;} .btn-green:hover{background:#2ecc71;}
+.btn-sm{padding:5px 10px;font-size:11px;border-radius:7px;}
+.btn-xs{padding:3px 8px;font-size:10px;border-radius:6px;}
+.btn-danger{background:#fff0f3;color:#e04040;border:1px solid #f0c0c0;}
+.btn-publish{background:#e8f8ee;color:#1a9e4a;border:1px solid #a8dbb8;font-weight:700;}
+.btn-publish:hover{background:#1a9e4a;color:#fff;}
+.btn-published{background:#1a9e4a;color:#fff;border:1px solid #1a9e4a;font-weight:700;}
+.btn-published:hover{background:#c0392b;color:#fff;border-color:#c0392b;}
+.btn-published:hover::after{content:' 내리기';}
+/* 발행 모달 */
+#publishModal .modal-body{display:flex;flex-direction:column;gap:14px;}
+#publishModal label{font-size:12px;font-weight:700;color:var(--tx);display:block;margin-bottom:4px;}
+#publishModal input,#publishModal select{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:13px;font-family:inherit;}
+#publishModal .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#publishModal .pub-preview{background:var(--pkp);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--muted);}
+#publishModal .pub-preview strong{color:var(--pk);font-size:13px;}
+
+/* ── 진행 요약 바 ── */
+.progress-bar-wrap{background:#fff;border-bottom:1px solid var(--bd);padding:12px 32px;display:flex;gap:12px;align-items:center;overflow-x:auto;}
+.prog-item{display:flex;align-items:center;gap:6px;white-space:nowrap;padding:5px 12px;border-radius:20px;cursor:pointer;border:1.5px solid var(--bd);transition:all .2s;flex-shrink:0;}
+.prog-item:hover{border-color:var(--pkl);}
+.prog-item.active{background:var(--pkp);border-color:var(--pk);}
+.prog-emoji{font-size:14px;}
+.prog-name{font-size:12px;font-weight:600;color:var(--tx);}
+.prog-count{font-size:11px;color:var(--muted);}
+.prog-bar{width:40px;height:4px;background:#f0e0e8;border-radius:2px;overflow:hidden;}
+.prog-bar-fill{height:100%;background:var(--pk);border-radius:2px;transition:width .4s;}
+.prog-bar-fill.full{background:var(--green);}
+
+/* ── 메인 레이아웃 ── */
+.layout{display:flex;min-height:calc(100vh - 120px);}
+
+/* ── 사이드 패널 ── */
+.side{width:220px;flex-shrink:0;background:#fff;border-right:1px solid var(--bd);padding:16px;display:flex;flex-direction:column;gap:12px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.side-section{margin-bottom:4px;}
+.side-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;}
+.site-link{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd);font-size:12px;cursor:pointer;text-decoration:none;color:var(--tx);transition:all .2s;margin-bottom:6px;}
+.site-link:hover{border-color:var(--pk);background:var(--pkbg);}
+.site-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.side-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid var(--pkbg);}
+.side-stat .val{font-family:'Nunito',sans-serif;font-weight:700;color:var(--pk);}
+
+/* ── 콘텐츠 ── */
+.content{flex:1;padding:24px;min-width:0;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.section-title{display:flex;align-items:center;gap:10px;}
+.section-emoji{font-size:24px;}
+.section-name{font-size:20px;font-weight:700;}
+.section-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.slot-count{background:var(--pkp);color:var(--pk);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;}
+
+/* ── 상품 슬롯 그리드 ── */
+.slots-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;}
+
+/* ── 슬롯 카드 ── */
+.slot-card{border-radius:14px;overflow:hidden;border:1.5px solid var(--bd);background:#fff;transition:all .2s;position:relative;}
+.slot-card:hover{box-shadow:0 4px 20px rgba(196,92,138,.12);transform:translateY(-2px);}
+.slot-card.empty{border:2px dashed var(--bd);background:var(--pkbg);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;gap:8px;}
+.slot-card.empty:hover{border-color:var(--pkl);background:var(--pkp);}
+.slot-card.empty .add-icon{font-size:32px;color:var(--pkl);}
+.slot-card.empty .add-text{font-size:12px;color:var(--muted);}
+.slot-num{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.9);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:var(--muted);border:1px solid var(--bd);}
+
+/* 채워진 카드 */
+.card-img{width:100%;aspect-ratio:1;background:var(--pkbg);overflow:hidden;position:relative;}
+.card-img img{width:100%;height:100%;object-fit:cover;}
+.card-img .no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.site-badge{position:absolute;top:6px;left:6px;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;color:#fff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.card-body{padding:10px;}
+.card-name{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px;}
+.card-prices{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;}
+.price-row{display:flex;align-items:center;gap:6px;}
+.price-label{font-size:9px;color:var(--muted);width:26px;flex-shrink:0;}
+.price-val{font-size:12px;font-weight:700;}
+.price-val.wholesale{color:var(--pk);}
+.price-val.retail{color:#333;}
+.price-val.empty-price{color:#ccc;font-weight:400;font-size:11px;}
+.margin-chip{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;margin-bottom:8px;}
+.margin-chip.good{background:#e8f8f0;color:#27ae60;}
+.margin-chip.ok{background:#fef9e7;color:#f39c12;}
+.margin-chip.low{background:#fef0f0;color:#e74c3c;}
+.margin-chip.none{background:#f5f5f5;color:#aaa;}
+.card-actions{display:flex;gap:4px;}
+
+/* ── 가격 계산기 카드 ── */
+.price-calc-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
+.pcc{border-radius:12px;padding:12px;border:2px solid var(--bd);transition:border-color .2s;cursor:pointer;}
+.pcc:hover{border-color:var(--pkl);}
+.pcc.selected{border-color:var(--pk);background:var(--pkp);}
+.pcc-header{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.pcc-icon{font-size:16px;}
+.pcc-name{font-size:11px;font-weight:700;color:var(--tx);}
+.pcc-breakdown{display:flex;flex-direction:column;gap:2px;margin-bottom:8px;}
+.pcc-row{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);}
+.pcc-row span:last-child{font-weight:600;}
+.pcc-divider{height:1px;background:var(--bd);margin:5px 0;}
+.pcc-price{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:var(--pk);}
+.pcc-margin{font-size:10px;color:var(--green);font-weight:600;}
+.pcc-nodata{font-size:11px;color:#ccc;text-align:center;padding:10px 0;}
+
+/* ── 빠른 이미지 오버레이 ── */
+.card-img{position:relative;}
+.img-quick-overlay{
+  position:absolute;inset:0;background:rgba(20,10,16,.72);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;opacity:0;transition:opacity .18s;border-radius:0;padding:8px;
+}
+.slot-card:hover .img-quick-overlay{opacity:1;}
+.img-quick-overlay .qo-label{font-size:10px;color:rgba(255,255,255,.8);font-weight:600;}
+.img-quick-input{
+  width:100%;border:none;border-radius:7px;padding:7px 9px;font-size:11px;
+  font-family:'Noto Sans KR',sans-serif;background:rgba(255,255,255,.95);color:var(--tx);
+  outline:2px solid var(--pkl);
+}
+.img-quick-btns{display:flex;gap:5px;width:100%;}
+.qo-btn{flex:1;padding:5px;font-size:10px;border-radius:6px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:600;}
+.qo-btn-save{background:var(--pk);color:#fff;}
+.qo-btn-paste{background:rgba(255,255,255,.9);color:var(--pk);}
+.qo-btn-file{background:rgba(255,255,255,.7);color:var(--tx);}
+
+/* ── 빠른편집 패널 ── */
+.qpanel{
+  position:fixed;right:-360px;top:0;width:340px;height:100vh;
+  background:#fff;border-left:1px solid var(--bd);z-index:400;
+  transition:right .3s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  box-shadow:-6px 0 32px rgba(42,26,34,.12);
+}
+.qpanel.open{right:0;}
+.qpanel-header{
+  padding:14px 16px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--pk);color:#fff;flex-shrink:0;
+}
+.qpanel-header h4{font-size:13px;font-weight:700;}
+.qpanel-header .qp-nav{display:flex;gap:6px;align-items:center;}
+.qp-navbtn{width:28px;height:28px;border:none;border-radius:7px;background:rgba(255,255,255,.2);color:#fff;cursor:pointer;font-size:13px;transition:background .2s;}
+.qp-navbtn:hover{background:rgba(255,255,255,.35);}
+.qpanel-body{flex:1;overflow-y:auto;padding:16px;}
+.qp-img-zone{
+  width:100%;aspect-ratio:1.5;background:var(--pkbg);border-radius:12px;
+  overflow:hidden;position:relative;margin-bottom:14px;cursor:pointer;
+  border:2px dashed var(--bd);display:flex;align-items:center;justify-content:center;
+}
+.qp-img-zone img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.qp-img-zone .qp-img-placeholder{text-align:center;color:var(--muted);}
+.qp-img-zone .qp-img-placeholder .icon{font-size:32px;margin-bottom:6px;}
+.qp-img-zone .qp-img-placeholder p{font-size:11px;line-height:1.6;}
+.qp-img-overlay{
+  position:absolute;inset:0;background:rgba(20,10,16,.6);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:12px;
+}
+.qp-img-zone:hover .qp-img-overlay{display:flex;}
+.qp-url-input{
+  width:100%;border:1.5px solid var(--bd);border-radius:8px;padding:8px 10px;
+  font-size:11px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);outline:none;
+}
+.qp-url-input:focus{border-color:var(--pkl);}
+.qp-section{margin-bottom:16px;}
+.qp-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:6px;display:block;}
+.qp-price-input{
+  width:100%;border:1.5px solid var(--bd);border-radius:9px;padding:10px 12px;
+  font-size:16px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--pk);outline:none;
+}
+.qp-price-input:focus{border-color:var(--pk);}
+.qp-channels{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.qp-ch{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-radius:10px;}
+.qp-ch.wellipet{background:#e8f8f0;}
+.qp-ch.coupang{background:#fef3e8;}
+.qp-ch.smart{background:#eaf0fe;}
+.qp-ch-name{font-size:11px;font-weight:600;}
+.qp-ch-price{font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;}
+.qp-ch-margin{font-size:9px;color:var(--muted);}
+.qp-ch.wellipet .qp-ch-price{color:#27ae60;}
+.qp-ch.coupang .qp-ch-price{color:#e67e22;}
+.qp-ch.smart .qp-ch-price{color:#2980b9;}
+.qp-name{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:4px;color:var(--tx);}
+.qp-meta{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.qp-tip{background:var(--pkbg);border-radius:10px;padding:10px 12px;font-size:11px;color:var(--muted);line-height:1.7;}
+.qpanel-footer{padding:12px 16px;border-top:1px solid var(--bd);display:flex;gap:8px;flex-shrink:0;}
+.qp-backdrop{position:fixed;inset:0;z-index:399;display:none;}
+.qp-backdrop.open{display:block;}
+
+/* ── 채널 가격 (카드 내) ── */
+.channel-prices{display:flex;flex-direction:column;gap:3px;margin:6px 0 8px;}
+.ch-row{display:flex;align-items:center;gap:6px;font-size:10px;}
+.ch-icon{font-size:11px;width:14px;text-align:center;}
+.ch-name{color:var(--muted);width:60px;flex-shrink:0;}
+.ch-price{font-weight:700;color:var(--tx);}
+.ch-price.empty{color:#ddd;font-weight:400;}
+
+/* ── 마진표 ── */
+.margin-table-wrap{background:#fff;border-radius:16px;border:1px solid var(--bd);overflow:hidden;}
+.margin-table{width:100%;border-collapse:collapse;}
+.margin-table th{background:var(--pkbg);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--bd);}
+.margin-table td{padding:10px 14px;font-size:12px;border-bottom:1px solid #faf0f5;vertical-align:middle;}
+.margin-table tr:last-child td{border-bottom:none;}
+.margin-table tr:hover td{background:var(--pkbg);}
+.mt-img{width:40px;height:40px;border-radius:8px;object-fit:cover;background:var(--pkbg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.mt-name{font-weight:500;line-height:1.4;}
+.mt-site{font-size:10px;color:var(--muted);margin-top:2px;}
+.margin-bar-wrap{display:flex;align-items:center;gap:8px;}
+.margin-bar{height:6px;border-radius:3px;min-width:4px;transition:width .3s;}
+
+/* ── 탭 (마진표/그리드) ── */
+.view-tabs{display:flex;gap:0;background:var(--pkbg);border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;}
+.view-tab{padding:7px 16px;font-size:12px;border:none;background:transparent;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--muted);transition:all .2s;font-weight:500;}
+.view-tab.active{background:var(--pk);color:#fff;}
+
+/* ── 모달 ── */
+.overlay{position:fixed;inset:0;background:rgba(42,26,34,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(42,26,34,.2);}
+.modal-lg{max-width:900px;}
+.modal-header{padding:20px 24px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);position:sticky;top:0;background:#fff;z-index:10;}
+.modal-header h3{font-size:16px;font-weight:700;}
+.modal-close{width:30px;height:30px;border:none;background:var(--pkbg);border-radius:8px;cursor:pointer;font-size:14px;color:var(--muted);}
+.modal-close:hover{background:var(--pkl);color:var(--tx);}
+.modal-body{padding:20px 24px;}
+.modal-footer{padding:14px 24px 20px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--bd);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-full{grid-column:1/-1;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:700;color:var(--muted);}
+.fg input,.fg select,.fg textarea{border:1.5px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);outline:none;transition:border-color .2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pkl);}
+.fg textarea{resize:vertical;min-height:60px;}
+.img-method-tabs{display:flex;border:1.5px solid var(--bd);border-radius:9px;overflow:hidden;margin-bottom:8px;}
+.imt{flex:1;padding:8px;font-size:11px;border:none;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--muted);}
+.imt.active{background:var(--pk);color:#fff;}
+.drop-zone{border:2px dashed var(--bd);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;}
+.drop-zone:hover{border-color:var(--pkl);background:var(--pkbg);}
+.drop-zone .dz-icon{font-size:24px;margin-bottom:6px;}
+.drop-zone .dz-text{font-size:11px;color:var(--muted);}
+.img-preview-row{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center;margin-top:10px;}
+.img-preview-sm{width:80px;height:80px;border-radius:10px;object-fit:cover;border:1px solid var(--bd);}
+.price-calc{background:var(--pkbg);border-radius:10px;padding:12px;margin-top:8px;}
+.price-calc-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;}
+.price-calc-row .val{font-weight:700;}
+.price-calc-row.highlight{color:var(--pk);}
+.price-calc-row .val.good{color:var(--green);}
+.price-calc-row .val.low{color:var(--red);}
+
+/* ── 사이트 색 ── */
+.c-pettory{background:#7a9ee0;}
+.c-petbtob{background:#e0a87a;}
+.c-sujin{background:#e07aaa;}
+.c-pethug{background:#7abde0;}
+.c-nr{background:#a07ae0;}
+.c-other{background:#90a090;}
+
+/* ── 토스트 ── */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;border-radius:12px;font-size:13px;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none;font-weight:500;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--pk);color:#fff;}
+.toast.info{background:var(--tx);color:#fff;}
+.toast.warn{background:var(--orange);color:#fff;}
+
+/* ── 빈상태 ── */
+.empty-section{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-section .big-icon{font-size:56px;margin-bottom:12px;}
+
+/* ── 스크롤바 ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--pkl);border-radius:3px;}
+
+/* ── 반응형 ── */
+@media(max-width:1200px){.slots-grid{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:900px){
+  .side{display:none;}
+  .slots-grid{grid-template-columns:repeat(3,1fr);}
+  .progress-bar-wrap{padding:10px 16px;}
+}
+@media(max-width:600px){
+  header{padding:0 16px;}
+  .content{padding:16px;}
+  .slots-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- 탑바 -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="https://pettory.com/product/list.html?cate_no=213&page=2" target="_blank">🛒 펫토리</a>
+    <a href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">🛒 펫비투비 베스트</a>
+    <a href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">🐶 펫비투비 강아지</a>
+    <a href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">🐱 펫비투비 고양이</a>
+    <a href="https://www.sujinpet.co.kr/" target="_blank">🛒 수진펫</a>
+    <a href="https://pethugb2b.co.kr/" target="_blank">🛒 펫허그B2B</a>
+    <a href="shop.html" target="_blank">🐾 웰리펫 샵</a>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:none;" onclick="openMarginModal()">📊 전체 마진표</button>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:none;" onclick="exportWellipet()">📤 웰리펫 내보내기</button>
+  </div>
+</div>
+
+<!-- 헤더 -->
+<header>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <span class="logo">Welli<em>pet</em></span>
+    <span class="logo-sub">소싱 관리 Pro</span>
+  </div>
+  <div class="hbtns">
+    <button class="btn btn-gray" onclick="clearAll()" style="font-size:11px;">초기화</button>
+    <button class="btn btn-out" onclick="openMarginModal()">📊 마진표</button>
+    <button class="btn btn-pk" onclick="openAddModal(null)">+ 상품 추가</button>
+  </div>
+</header>
+
+<!-- 카테고리 진행 바 -->
+<div class="progress-bar-wrap" id="progressBar"></div>
+
+<!-- 레이아웃 -->
+<div class="layout">
+
+  <!-- 사이드 패널 -->
+  <aside class="side">
+    <div class="side-section">
+      <div class="side-label">도매사이트 바로가기</div>
+      <a class="site-link" href="https://pettory.com/product/list.html?cate_no=213&page=2" target="_blank">
+        <span class="site-dot" style="background:#7a9ee0;"></span>펫토리 (배변패드)
+      </a>
+      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">
+        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🏆베스트
+      </a>
+      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">
+        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🐶강아지
+      </a>
+      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">
+        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🐱고양이
+      </a>
+      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=472" target="_blank">
+        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🎖️입점사BEST
+      </a>
+      <a class="site-link" href="https://www.sujinpet.co.kr/" target="_blank">
+        <span class="site-dot" style="background:#e07aaa;"></span>수진펫
+      </a>
+      <a class="site-link" href="https://pethugb2b.co.kr/" target="_blank">
+        <span class="site-dot" style="background:#7abde0;"></span>펫허그B2B
+      </a>
+    </div>
+    <div class="side-section">
+      <div class="side-label">현황 요약</div>
+      <div id="sideStats"></div>
+    </div>
+    <div class="side-section" style="margin-top:auto;">
+      <div class="side-label">도움말</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.7;">
+        ① 사이트 열기로 도매몰 접속<br>
+        ② 상품 클릭 → 정보 복사<br>
+        ③ + 버튼으로 슬롯에 추가<br>
+        ④ 도매가·판매가 입력 시 마진 자동계산<br>
+        ⑤ 📤 내보내기로 웰리펫에 등록
+      </div>
+    </div>
+  </aside>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="content">
+
+    <!-- 뷰 탭 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div class="view-tabs">
+        <button class="view-tab active" id="tab-grid" onclick="setViewTab('grid')">🗂 슬롯 보기</button>
+        <button class="view-tab" id="tab-margin" onclick="setViewTab('margin')">📊 마진표</button>
+      </div>
+      <span style="font-size:11px;color:var(--muted);" id="viewDesc"></span>
+    </div>
+
+    <!-- 슬롯 뷰 -->
+    <div id="gridView">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-emoji" id="secEmoji"></span>
+          <div>
+            <div class="section-name" id="secName"></div>
+            <div class="section-desc" id="secDesc"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="slot-count" id="slotCount"></span>
+          <button class="btn btn-pk btn-sm" onclick="openAddModal(currentCat)">+ 추가</button>
+        </div>
+      </div>
+      <div class="slots-grid" id="slotsGrid"></div>
+    </div>
+
+    <!-- 마진표 뷰 -->
+    <div id="marginView" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">
+          <span class="section-emoji">📊</span>
+          <div>
+            <div class="section-name">전체 마진표</div>
+            <div class="section-desc">도매가·판매가 입력된 상품의 마진율을 분석합니다</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select id="marginFilter" onchange="renderMarginTable()" class="btn btn-gray" style="padding:6px 10px;font-size:11px;">
+            <option value="all">전체 카테고리</option>
+          </select>
+          <select id="marginSort" onchange="renderMarginTable()" class="btn btn-gray" style="padding:6px 10px;font-size:11px;">
+            <option value="margin_desc">마진율 높은순</option>
+            <option value="margin_asc">마진율 낮은순</option>
+            <option value="profit_desc">마진액 높은순</option>
+            <option value="cat">카테고리순</option>
+          </select>
+        </div>
+      </div>
+      <div class="margin-table-wrap">
+        <table class="margin-table">
+          <thead>
+            <tr>
+              <th style="width:44px;">#</th>
+              <th>상품명</th>
+              <th>카테고리</th>
+              <th>사이트</th>
+              <th>도매가</th>
+              <th>판매가</th>
+              <th>마진액</th>
+              <th>마진율</th>
+              <th style="width:100px;">시각화</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="marginTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── 상품 추가/수정 모달 ── -->
+<div class="overlay" id="addModal" onclick="closeOnOverlay(event,'addModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="addModalTitle">상품 추가</h3>
+      <button class="modal-close" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <div class="fg form-full">
+          <label>상품명 *</label>
+          <input id="f-name" type="text" placeholder="예) [캣츄미] 고양이 맛있는 입맞춤 닭고기 12g×20p"/>
+        </div>
+
+        <div class="fg">
+          <label>도매사이트 *</label>
+          <select id="f-site">
+            <option value="">선택</option>
+            <option value="펫토리">펫토리</option>
+            <option value="펫비투비">펫비투비</option>
+            <option value="수진펫">수진펫</option>
+            <option value="펫허그B2B">펫허그B2B</option>
+            <option value="후회없개B2B">후회없개B2B</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <div class="fg">
+          <label>카테고리 *</label>
+          <select id="f-cat">
+            <option value="">선택</option>
+            <option value="간식">🍖 간식</option>
+            <option value="사료">🍽 사료</option>
+            <option value="패드/위생">🧻 패드/위생</option>
+            <option value="장난감">🎮 장난감</option>
+            <option value="영양제">💊 영양제</option>
+            <option value="옷/패션">👕 옷/패션</option>
+            <option value="기타용품">🏠 기타용품</option>
+          </select>
+        </div>
+
+        <div class="fg form-full">
+          <label>도매가 (원) — 부가세 포함</label>
+          <input id="f-wholesale" type="number" min="0" placeholder="도매가를 입력하면 판매가가 자동 계산됩니다" oninput="calcAllPrices()"/>
+        </div>
+
+        <!-- 3채널 자동 가격 계산 -->
+        <div class="fg form-full" id="priceCalcArea" style="display:none;">
+          <label>📊 채널별 자동 판매가 계산 <span style="font-weight:400;color:var(--muted);">— 클릭해서 판매가 선택</span></label>
+          <div class="price-calc-cards">
+            <!-- 웰리펫 -->
+            <div class="pcc selected" id="pcc-wellipet" onclick="selectChannel('wellipet')">
+              <div class="pcc-header"><span class="pcc-icon">🐾</span><span class="pcc-name">웰리펫</span></div>
+              <div class="pcc-breakdown">
+                <div class="pcc-row"><span>카드수수료</span><span id="pcc-w-card">-</span></div>
+                <div class="pcc-row"><span>유기견기부</span><span id="pcc-w-donate">-</span></div>
+                <div class="pcc-row"><span>마진 25%</span><span id="pcc-w-margin">-</span></div>
+              </div>
+              <div class="pcc-divider"></div>
+              <div class="pcc-price" id="pcc-w-price">-</div>
+              <div class="pcc-margin" id="pcc-w-profit">-</div>
+            </div>
+            <!-- 쿠팡 -->
+            <div class="pcc" id="pcc-coupang" onclick="selectChannel('coupang')">
+              <div class="pcc-header"><span class="pcc-icon">📦</span><span class="pcc-name">쿠팡</span></div>
+              <div class="pcc-breakdown">
+                <div class="pcc-row"><span>플랫폼수수료</span><span id="pcc-c-fee">-</span></div>
+                <div class="pcc-row"><span>마진 20%</span><span id="pcc-c-margin">-</span></div>
+                <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
+              </div>
+              <div class="pcc-divider"></div>
+              <div class="pcc-price" id="pcc-c-price">-</div>
+              <div class="pcc-margin" id="pcc-c-profit">-</div>
+            </div>
+            <!-- 스마트스토어 -->
+            <div class="pcc" id="pcc-smart" onclick="selectChannel('smart')">
+              <div class="pcc-header"><span class="pcc-icon">🏪</span><span class="pcc-name">스마트스토어</span></div>
+              <div class="pcc-breakdown">
+                <div class="pcc-row"><span>플랫폼수수료</span><span id="pcc-s-fee">-</span></div>
+                <div class="pcc-row"><span>마진 20%</span><span id="pcc-s-margin">-</span></div>
+                <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
+              </div>
+              <div class="pcc-divider"></div>
+              <div class="pcc-price" id="pcc-s-price">-</div>
+              <div class="pcc-margin" id="pcc-s-profit">-</div>
+            </div>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--muted);">
+            ✅ 선택된 채널의 판매가가 저장됩니다 · 모든 채널 가격은 마진표에서 확인 가능
+          </div>
+        </div>
+
+        <!-- 직접 입력 옵션 -->
+        <div class="fg form-full" id="retailManualWrap" style="display:none;">
+          <label>판매가 직접 조정 <span style="font-weight:400;color:var(--muted);">— 계산값 그대로 쓰면 비워두세요</span></label>
+          <input id="f-retail" type="number" min="0" placeholder="직접 입력 시 이 값이 우선 적용됩니다" oninput="onRetailManual()"/>
+        </div>
+
+        <!-- 이미지 -->
+        <div class="fg form-full">
+          <label>이미지</label>
+          <div class="img-method-tabs">
+            <button class="imt active" id="imt-url" onclick="switchImgTab('url')">🔗 URL 붙여넣기</button>
+            <button class="imt" id="imt-file" onclick="switchImgTab('file')">📁 파일 업로드</button>
+          </div>
+          <div id="img-url-wrap">
+            <input id="f-img-url" type="text" placeholder="이미지 URL을 붙여넣으세요" oninput="previewUrl()"/>
+          </div>
+          <div id="img-file-wrap" style="display:none;">
+            <div class="drop-zone" id="dropZone" onclick="document.getElementById('f-img-file').click()" ondragover="dzOver(event)" ondrop="dzDrop(event)" ondragleave="dzLeave()">
+              <div class="dz-icon">🖼</div>
+              <div class="dz-text">클릭 또는 드래그&드롭</div>
+            </div>
+            <input type="file" id="f-img-file" accept="image/*" style="display:none;" onchange="handleFile(event)"/>
+          </div>
+          <div id="img-preview-area" style="display:none;margin-top:8px;">
+            <div class="img-preview-row">
+              <img id="img-preview-sm" src="" class="img-preview-sm" onerror="this.src=''"/>
+              <div style="font-size:11px;color:var(--muted);">이미지 미리보기<br><button class="btn btn-gray btn-xs" onclick="clearImg()" style="margin-top:4px;">제거</button></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fg form-full">
+          <label>상품 설명 / 특징</label>
+          <textarea id="f-desc" placeholder="예) 부드러운 퓨레 타입, 사은품으로도 인기. 당일 오전11시 주문마감."></textarea>
+        </div>
+
+        <div class="fg">
+          <label>브랜드</label>
+          <input id="f-brand" type="text" placeholder="예) 캣츄미, 테라카니스"/>
+        </div>
+
+        <div class="fg">
+          <label>상품 링크 (도매몰)</label>
+          <input id="f-link" type="text" placeholder="https://..."/>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-gray" onclick="closeModal('addModal')">취소</button>
+      <button class="btn btn-pk" onclick="saveProduct()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 전체 마진표 모달 ── -->
+<div class="overlay" id="marginModal" onclick="closeOnOverlay(event,'marginModal')">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3>📊 전체 마진표</h3>
+      <button class="modal-close" onclick="closeModal('marginModal')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px 20px;">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        <div id="marginSummary" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+      </div>
+      <div class="margin-table-wrap">
+        <table class="margin-table">
+          <thead>
+            <tr>
+              <th style="width:36px;">#</th>
+              <th>상품명 · 브랜드 · 사이트</th>
+              <th>카테고리</th>
+              <th>도매가</th>
+              <th style="color:#27ae60;">🐾 웰리펫<br><span style="font-weight:400;font-size:9px;">카드3%+기부3%+마진25%</span></th>
+              <th style="color:#e67e22;">📦 쿠팡<br><span style="font-weight:400;font-size:9px;">수수료25%+마진20%</span></th>
+              <th style="color:#2980b9;">🏪 스마트스토어<br><span style="font-weight:400;font-size:9px;">수수료20%+마진20%</span></th>
+              <th>웰리펫 마진율</th>
+            </tr>
+          </thead>
+          <tbody id="marginModalBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 빠른편집 패널 배경 ── -->
+<div class="qp-backdrop" id="qpBackdrop" onclick="closeQuickPanel()"></div>
+
+<!-- ── 빠른편집 패널 ── -->
+<div class="qpanel" id="quickPanel">
+  <div class="qpanel-header">
+    <h4 id="qpTitle">빠른 편집</h4>
+    <div class="qp-nav">
+      <button class="qp-navbtn" onclick="qpNav(-1)" title="이전 상품 (←)">◀</button>
+      <span id="qpNavInfo" style="font-size:11px;color:rgba(255,255,255,.8);min-width:36px;text-align:center;"></span>
+      <button class="qp-navbtn" onclick="qpNav(1)" title="다음 상품 (→)">▶</button>
+      <button class="qp-navbtn" onclick="closeQuickPanel()" style="margin-left:4px;">✕</button>
+    </div>
+  </div>
+
+  <div class="qpanel-body">
+    <!-- 상품 정보 -->
+    <div class="qp-name" id="qpName"></div>
+    <div class="qp-meta" id="qpMeta"></div>
+
+    <!-- 이미지 영역 -->
+    <div class="qp-section">
+      <span class="qp-label">🖼 이미지 — 클릭해서 변경</span>
+      <div class="qp-img-zone" id="qpImgZone" onclick="qpImgZoneClick()">
+        <img id="qpImg" src="" style="display:none;" onerror="this.style.display='none';document.getElementById('qpImgPlaceholder').style.display='flex'"/>
+        <div class="qp-img-placeholder" id="qpImgPlaceholder">
+          <div class="icon">🖼</div>
+          <p>클릭해서 이미지 추가<br>또는 URL 붙여넣기</p>
+        </div>
+        <div class="qp-img-overlay">
+          <span style="color:#fff;font-size:11px;font-weight:600;">이미지 변경</span>
+          <span style="color:rgba(255,255,255,.7);font-size:10px;">URL 입력 또는 파일 업로드</span>
+        </div>
+      </div>
+
+      <!-- URL 입력 -->
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <input class="qp-url-input" id="qpImgUrl" type="text" placeholder="이미지 URL 붙여넣기 (Ctrl+V)"
+          onfocus="qpAutoFillClipboard()" oninput="qpUrlPreview()" onkeydown="if(event.key==='Enter')qpSaveImg()"/>
+        <button class="btn btn-pk btn-sm" onclick="qpSaveImg()" style="white-space:nowrap;flex-shrink:0;">저장</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button class="btn btn-gray btn-sm" onclick="qpPasteClipboard()" style="flex:1;">📋 클립보드 자동입력</button>
+        <button class="btn btn-gray btn-sm" onclick="document.getElementById('qpFileInput').click()" style="flex:1;">📁 파일 업로드</button>
+      </div>
+      <input type="file" id="qpFileInput" accept="image/*" style="display:none;" onchange="qpHandleFile(event)"/>
+    </div>
+
+    <!-- 도매가 입력 -->
+    <div class="qp-section">
+      <span class="qp-label">💰 도매가 입력 → 3채널 자동계산</span>
+      <input class="qp-price-input" id="qpWholesale" type="number" min="0" placeholder="0"
+        oninput="qpCalcChannels()" onkeydown="if(event.key==='Enter'){qpSaveWholesale();qpNav(1);}"/>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px;">Enter 누르면 저장 후 다음 상품으로 이동</div>
+
+      <!-- 3채널 자동 계산 결과 -->
+      <div class="qp-channels" id="qpChannels" style="display:none;">
+        <div class="qp-ch wellipet">
+          <div><div class="qp-ch-name">🐾 웰리펫</div><div class="qp-ch-margin">카드3%+기부3%+마진25%</div></div>
+          <div class="qp-ch-price" id="qpPriceW">-</div>
+        </div>
+        <div class="qp-ch coupang">
+          <div><div class="qp-ch-name">📦 쿠팡</div><div class="qp-ch-margin">수수료25%+마진20%</div></div>
+          <div class="qp-ch-price" id="qpPriceC">-</div>
+        </div>
+        <div class="qp-ch smart">
+          <div><div class="qp-ch-name">🏪 스마트스토어</div><div class="qp-ch-margin">수수료20%+마진20%</div></div>
+          <div class="qp-ch-price" id="qpPriceS">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 도움말 -->
+    <div class="qp-tip">
+      <strong>⚡ 빠른 파이프라인</strong><br>
+      ① 상단 도매사이트 링크 클릭<br>
+      ② 상품 이미지 <strong>우클릭 → 이미지 주소 복사</strong><br>
+      ③ 소싱툴로 돌아와 카드 클릭<br>
+      ④ <strong>📋 클립보드 자동입력</strong> 버튼 클릭<br>
+      ⑤ 도매가 입력 → Enter → 다음 상품 자동이동
+    </div>
+  </div>
+
+  <div class="qpanel-footer">
+    <button class="btn btn-gray" style="flex:1;" onclick="openEditModal(currentQpId)">✏️ 상세편집</button>
+    <button class="btn btn-pk" style="flex:1;" onclick="qpSaveAll()">💾 저장</button>
+  </div>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── 카테고리 정의 ──
+const CATS = [
+  {id:'간식',    emoji:'🍖', name:'간식',    desc:'강아지·고양이 간식, 츄르, 져키, 껌', max:10},
+  {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:10},
+  {id:'패드/위생',emoji:'🧻', name:'패드/위생',desc:'배변패드, 배변봉투, 위생용품', max:10},
+  {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:10},
+  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민', max:10},
+  {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:10},
+  {id:'기타용품',emoji:'🏠', name:'기타용품',desc:'이동장, 하우스, 미용, 식기', max:10},
+];
+
+// ── 사이트 색상 ──
+const SITE_COLORS = {
+  '펫토리':'#7a9ee0','펫비투비':'#e0a87a','수진펫':'#e07aaa',
+  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','기타':'#90a090',
+};
+
+// ── 초기 데이터 (수집된 상품) ──
+const SEED = [
+  // 간식
+  {cat:'간식',site:'펫비투비',name:'[캣츄미] 고양이 맛있는 입맞춤 닭고기 12g×20p',brand:'캣츄미',desc:'당일 오전11시 주문마감. 사은품으로도 인기 높은 스낵형 닭고기 간식.',img:'https://m.petbtob.co.kr/web/product/medium/202009/f89c5b9a4c2d7e3f1a0b6c8d5e2f4a1b.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'간식',site:'펫비투비',name:'[캣츄미] 고양이 맛있는 입맞춤 참치 12g×20p',brand:'캣츄미',desc:'참치 맛 소프트 스낵. 당일 오전11시 마감.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'간식',site:'펫비투비',name:'[프리미요] 미니롤롤 참치 1P (10g)',brand:'프리미요',desc:'부드러운 퓨레 타입. 사은품·증정용으로 베스트.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'간식',site:'펫비투비',name:'[완피캣] 미트브로스 치킨&호박&당근 50g',brand:'완피캣',desc:'자연재료 혼합 고양이 간식.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'간식',site:'펫비투비',name:'[베게브랜드] 스마트 치킨 밀크 꽈배기 4P',brand:'베게브랜드',desc:'신상품. 치킨+밀크 꽈배기 형태 간식.',img:'https://m.petbtob.co.kr/web/product/medium/202603/a15f10473c17e76cb82c2dedecdc3e6e.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'간식',site:'펫비투비',name:'[참좋은간식] 헬로도기 멍방울 댕징어 100g-북어',brand:'참좋은간식',desc:'북어 맛 멍방울 스낵.',img:'https://m.petbtob.co.kr/web/product/medium/202603/095604deab0596a8ae7c37e55e9c48d7.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'간식',site:'펫비투비',name:'[참좋은간식] 헬로도기 멍방울 댕징어 100g-소고기',brand:'참좋은간식',desc:'소고기 맛 멍방울 스낵.',img:'https://m.petbtob.co.kr/web/product/medium/202603/39dd8d512a750f5b28f85b715c151b3c.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'간식',site:'펫허그B2B',name:'테라카니스 그레인프리 치킨과 파스닙 200g',brand:'테라카니스',desc:'그레인프리 고단백 강아지 간식. 베스트1위.',img:'',link:'https://pethugb2b.co.kr/'},
+  {cat:'간식',site:'수진펫',name:'[대주바이오] 너를위한디저트 강아지 꽈배기껌 120g 오리',brand:'대주바이오',desc:'오리 원료 천연 꽈배기 덴탈껌.',img:'',link:'https://www.sujinpet.co.kr/'},
+  {cat:'간식',site:'수진펫',name:'[피에스] 롱롱 고기스틱 24g 연어',brand:'피에스',desc:'연어 고기스틱. 베스트+신상.',img:'',link:'https://www.sujinpet.co.kr/'},
+  // 사료
+  {cat:'사료',site:'펫허그B2B',name:'벅스펫 벅스독 비건포뮬러 5kg',brand:'벅스펫',desc:'대용량 비건 강아지 사료. 베스트.',img:'',link:'https://pethugb2b.co.kr/'},
+  {cat:'사료',site:'펫허그B2B',name:'벅스펫 벅스독 비건포뮬러 사료 30g',brand:'벅스펫',desc:'비건포뮬러 샘플 사이즈.',img:'',link:'https://pethugb2b.co.kr/'},
+  {cat:'사료',site:'펫허그B2B',name:'벅스펫 벅스독 오리지널 사료 30g',brand:'벅스펫',desc:'오리지널 포뮬러 샘플.',img:'',link:'https://pethugb2b.co.kr/'},
+  {cat:'사료',site:'펫허그B2B',name:'테라카니스 퍼피 치킨과 호박 200g',brand:'테라카니스',desc:'퍼피 전용 습식 사료.',img:'',link:'https://pethugb2b.co.kr/'},
+  {cat:'사료',site:'펫비투비',name:'애견비책 햇밥 치킨 120g 주식캔',brand:'애견비책',desc:'주간 추천 강아지 주식캔.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'사료',site:'펫비투비',name:'[세라피드] 헤어볼 2kg',brand:'세라피드',desc:'고양이 헤어볼 케어 사료. 주간 추천.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'사료',site:'수진펫',name:'[테비] 테비 슈프림 치킨 100g',brand:'테비',desc:'고양이용 슈프림 치킨 습식 사료.',img:'',link:'https://www.sujinpet.co.kr/'},
+  // 패드/위생
+  {cat:'패드/위생',site:'펫토리',name:'모모 배변패드 대형 무향 30매×6개(1박스)',brand:'모모',desc:'무향 대형 패드. 매장납품용 베스트.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫토리',name:'모모 배변패드 실속형 무향 100매',brand:'모모',desc:'실속형 무향 100매.',img:'https://pettory.com/web/product/medium/202208/af2830de98b35b3a6bfb0a02d666e038.png',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫토리',name:'모모 365 배변패드 레몬향 365매',brand:'모모',desc:'가성비 최고. 365매 대용량.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향×6개',brand:'모모',desc:'레몬향 절약형 박스. 장당15g 미국산 천연펄프.',img:'https://pettory.com/web/product/medium/202311/796f0abdb058729c5e6b5df32ef7a27d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫토리',name:'모모 절약형 패드 100매 레몬향',brand:'모모',desc:'레몬향 절약형 단품.',img:'',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫토리',name:'엑셀런트 초대형 패드 20매',brand:'엑셀런트',desc:'초대형 패드 20매.',img:'https://pettory.com/web/product/medium/20191128/e1fcd097f651a18c50a317685b77801d.jpg',link:'https://pettory.com/product/list.html?cate_no=213'},
+  {cat:'패드/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'주간 추천. 산책 필수품.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  // 장난감
+  {cat:'장난감',site:'펫토리',name:'[로위드] 체커보드 스크래쳐 평판 60cm 대형',brand:'로위드',desc:'가격인하 베스트. 대형 평판 스크래쳐.',img:'',link:'https://pettory.com/'},
+  {cat:'장난감',site:'펫토리',name:'[로위드] 체커보드 스크래쳐 2단박스 숨숨집',brand:'로위드',desc:'가격인하 베스트. 2단 숨숨집형.',img:'',link:'https://pettory.com/'},
+  {cat:'장난감',site:'펫토리',name:'[로위드] 체커보드 스크래쳐 밀크박스 숨숨집',brand:'로위드',desc:'밀크박스 디자인 숨숨집.',img:'',link:'https://pettory.com/'},
+  {cat:'장난감',site:'펫토리',name:'샤샤 1M 통판 레더 B골 스크래쳐 초대형',brand:'샤샤',desc:'1M 초대형 레더 스크래쳐.',img:'',link:'https://pettory.com/'},
+  // ── 펫비투비(PC) 장난감 추가 ──
+  {cat:'장난감',site:'펫비투비',name:'[캣츄미] 고양이 자동 레이저 장난감',brand:'캣츄미',desc:'자동 회전 레이저. 혼자 놀기 가능.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'장난감',site:'펫비투비',name:'[비유펫] 아이스 쿨 베게 (냉감 쿠션)',brand:'비유펫',desc:'여름용 냉감 쿠션. 고양이·강아지 겸용.',img:'https://petbtob.co.kr/web/product/medium/202308/a59cc4a3f45712faf5f79fb23cf22406.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  // 영양제
+  {cat:'영양제',site:'펫토리',name:'메타멍스 관절건강 15g×5P',brand:'메타멍스',desc:'관절건강 기능성 영양제.',img:'',link:'https://pettory.com/'},
+  // ── 펫비투비(PC) 영양제 추가 ──
+  {cat:'영양제',site:'펫비투비',name:'[요세라] 요시독 센서티브 어덜트 15kg',brand:'요세라',desc:'민감한 피부·장 전용 사료. 베스트 추천.',img:'https://petbtob.co.kr/web/product/medium/202507/f37494f477792906eee350082656b144.png',link:'https://petbtob.co.kr/product/요세라-요시독-센서티브-어덜트-15kg/39390/'},
+  // 옷/패션
+  {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 쿨 야광 크롭 여름 기능성 민소매 S-3XL',brand:'비유펫',desc:'야광 여름 기능성. 익일출고.',img:'https://petbtob.co.kr/web/product/medium/202603/470dbaa82015dd22f199b3c6c937b785.png',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 메이즈 크롭나시 모자별도 S-3XL',brand:'비유펫',desc:'메이즈 패턴 크롭 나시.',img:'https://petbtob.co.kr/web/product/medium/202405/8c003cdcd95dcbd30bda4ae18be9ce9b.png',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 체크 크롭 뷔스티에 XS-3XL',brand:'비유펫',desc:'체크 패턴 크롭 뷔스티에.',img:'https://petbtob.co.kr/web/product/medium/202403/220972ae9ef18ef73b50cc61d55f844f.png',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 날라리 쁘띠 가디건 XS-3XL',brand:'비유펫',desc:'경량 쁘띠 가디건.',img:'https://petbtob.co.kr/web/product/medium/202402/7d6bfee15b335f367f604ab9057b3904.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫비투비',name:'[언믹스] 리드줄 강아지 고양이 겸용 M 9mm×130cm',brand:'언믹스',desc:'강아지·고양이 겸용 리드줄 M사이즈.',img:'https://petbtob.co.kr/web/product/medium/202603/2b0f95ee7a0e432257326325c11c1087.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫비투비',name:'[언믹스] 리드줄 강아지 고양이 겸용 L 13mm×130cm',brand:'언믹스',desc:'강아지·고양이 겸용 리드줄 L사이즈.',img:'https://petbtob.co.kr/web/product/medium/202603/2b0f95ee7a0e432257326325c11c1087.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'옷/패션',site:'펫토리',name:'[까사벨로] 프리미엄 하네스 쿨에버NO1 세미블루',brand:'까사벨로',desc:'추천상품. 쿨소재 하네스.',img:'',link:'https://pettory.com/'},
+  // ── 간식 펫비투비(PC) 추가 ──
+  {cat:'간식',site:'펫비투비',name:'[벨버드] 일품 치킨 고구마사사미 300g',brand:'벨버드',desc:'치킨+고구마 사사미 간식. 인기 베스트.',img:'',link:'https://petbtob.co.kr/product/벨버드일품-치킨-고구마사사미-300g/34233/'},
+  {cat:'간식',site:'펫비투비',name:'[도기프랜드] 치킨츄 딩고껌 6p',brand:'도기프랜드',desc:'치킨맛 딩고껌. 덴탈케어 효과.',img:'',link:'https://petbtob.co.kr/product/도기프랜드-치킨츄-딩고껌-6p/47393/'},
+  {cat:'간식',site:'펫비투비',name:'[베푸] 덴탈츄 프레쉬 딸기 12g×20개',brand:'베푸',desc:'딸기향 덴탈츄. 구강케어+맛있음.',img:'',link:'https://petbtob.co.kr/product/베푸-덴탈츄-프레쉬-딸기-12g-x-20개/51663/'},
+  {cat:'간식',site:'펫비투비',name:'[베푸] 덴탈츄 프레쉬 블루베리 12g×20개',brand:'베푸',desc:'블루베리향 덴탈츄. 구강케어.',img:'',link:'https://petbtob.co.kr/product/베푸-덴탈츄-프레쉬-블루베리-12g-x-20개/51662/'},
+  // ── 사료 펫비투비(PC) 추가 ──
+  {cat:'사료',site:'펫비투비',name:'[캐츠랑] 전연령 비타플러스 5kg',brand:'캐츠랑',desc:'전연령 고양이 사료. 비타민 강화.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
+  {cat:'사료',site:'펫비투비',name:'강아지 주식캔 사료 애견비책 햇밥 치킨 120g',brand:'애견비책',desc:'주식캔 베스트. 치킨 단일 재료.',img:'https://petbtob.co.kr/web/product/medium/202507/8953a8cde725584bf6e4e62eefddac0d.jpg',link:'https://petbtob.co.kr/product/강아지-주식캔-사료-애견비책-햇밥-치킨-120g/39462/'},
+  // ── 패드/위생 펫비투비(PC) 추가 ──
+  {cat:'패드/위생',site:'펫비투비',name:'[베푸] 덴탈 물티슈 강아지 귀 세정 30매',brand:'베푸',desc:'귀 청결 전용 물티슈.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  {cat:'패드/위생',site:'펫비투비',name:'[개인싸] 강아지 배변봉투 똥츄 풉백',brand:'개인싸',desc:'산책 필수품. 주간추천.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+  // 기타용품
+  {cat:'기타용품',site:'펫비투비',name:'스테판플라스트 걸리버1 플라스틱문 아틱블루/스틸블루',brand:'스테판플라스트',desc:'베스트 1위 이동장. 플라스틱 문.',img:'https://petbtob.co.kr/web/product/medium/202309/13f879b128e301027690b388532b8d88.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'기타용품',site:'펫비투비',name:'스테판플라스트 걸리버2 철문 아틱블루/스틸블루',brand:'스테판플라스트',desc:'걸리버2 철문형 이동장.',img:'https://petbtob.co.kr/web/product/medium/202309/f45fdb16ca1a32cae190c2c5873554b0.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'기타용품',site:'펫비투비',name:'스테판플라스트 걸리버3 플라스틱문 아틱블루/스틸블루',brand:'스테판플라스트',desc:'걸리버3 대형 이동장.',img:'https://petbtob.co.kr/web/product/medium/202309/64586a40b31e5e5cbc16ee9c10bb44fe.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'기타용품',site:'펫비투비',name:'스테판플라스트 걸리버시크 네이비블루/화이트',brand:'스테판플라스트',desc:'시크 디자인 이동장.',img:'https://petbtob.co.kr/web/product/medium/20200113/cbd4ddfafc38747c480322a9859ccc8d.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=25'},
+  {cat:'기타용품',site:'수진펫',name:'[체리쉬] 샴푸 500ml 전견용',brand:'체리쉬',desc:'전견용 샴푸 베스트.',img:'',link:'https://www.sujinpet.co.kr/'},
+  {cat:'기타용품',site:'수진펫',name:'[도그포즈] 베이직 3단 스텝 베이지',brand:'도그포즈',desc:'3단 반려견 계단. 신상품.',img:'',link:'https://www.sujinpet.co.kr/'},
+  // ── 펫비투비(PC) 기타용품 추가 ──
+  {cat:'기타용품',site:'펫비투비',name:'[체리쉬] 구강 케어 치약세트 (딸기/바나나)',brand:'체리쉬',desc:'강아지 전용 치약+칫솔 세트.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=285'},
+];
+
+// ── 상태 ── (버전 v3 — petbtob.co.kr 추가)
+const DATA_VER = 'welliSourcingPro_v3';
+let products = JSON.parse(localStorage.getItem(DATA_VER) || 'null');
+if(!products){
+  // 구버전 데이터가 있으면 마이그레이션, 없으면 SEED로 시작
+  const old = localStorage.getItem('welliSourcingPro') || localStorage.getItem('welliSourcingPro_v2');
+  if(old){
+    products = JSON.parse(old);
+    // 기존 데이터 유지 + 새 SEED 중 없는 상품만 추가
+    const existNames = new Set(products.map(p=>p.name));
+    const newItems = SEED.filter(s=>!existNames.has(s.name))
+      .map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
+    products = [...products, ...newItems];
+  } else {
+    products = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
+  }
+  localStorage.setItem(DATA_VER, JSON.stringify(products));
+}
+// ── Supabase 연결 ──
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+// 발행된 상품 추적: { sourcingId → supabaseProductId }
+let publishedMap = JSON.parse(localStorage.getItem('welliPublished')||'{}');
+function savePublished(){localStorage.setItem('welliPublished',JSON.stringify(publishedMap));}
+
+// 모바일 URL → PC URL 마이그레이션
+let _migrated = false;
+products = products.map(p => {
+  if(p.link && p.link.includes('m.petbtob.co.kr')){
+    _migrated = true;
+    return {...p, link: p.link.replace('https://m.petbtob.co.kr/', 'https://petbtob.co.kr/')};
+  }
+  return p;
+});
+if(_migrated) localStorage.setItem(DATA_VER, JSON.stringify(products));
+function saveAll(){localStorage.setItem(DATA_VER, JSON.stringify(products));}
+let currentCat = '간식';
+let editingId = null;
+let currentImgData = null;
+let viewTab = 'grid';
+
+function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);}
+
+// ── 진행 바 렌더 ──
+function renderProgress(){
+  const pb = document.getElementById('progressBar');
+  pb.innerHTML = CATS.map(c=>{
+    const items = products.filter(p=>p.cat===c.id);
+    const pct = Math.min(100, Math.round(items.length/c.max*100));
+    const full = items.length>=c.max;
+    return `<div class="prog-item${currentCat===c.id?' active':''}" onclick="selectCat('${c.id}')">
+      <span class="prog-emoji">${c.emoji}</span>
+      <span class="prog-name">${c.name}</span>
+      <span class="prog-count">${items.length}/${c.max}</span>
+      <div class="prog-bar"><div class="prog-bar-fill${full?' full':''}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── 사이드 스탯 ──
+function renderSideStats(){
+  const total = products.length;
+  const withPrice = products.filter(p=>p.wholesale&&p.retail).length;
+  const avgMargin = (() => {
+    const priced = products.filter(p=>Number(p.wholesale)>0&&Number(p.retail)>0);
+    if(!priced.length) return 0;
+    return Math.round(priced.reduce((s,p)=>(s+(Number(p.retail)-Number(p.wholesale))/Number(p.retail)*100),0)/priced.length);
+  })();
+  document.getElementById('sideStats').innerHTML = `
+    <div class="side-stat"><span>총 상품</span><span class="val">${total}개</span></div>
+    <div class="side-stat"><span>가격 입력</span><span class="val">${withPrice}개</span></div>
+    <div class="side-stat"><span>평균 마진율</span><span class="val">${avgMargin?avgMargin+'%':'미입력'}</span></div>
+    <div class="side-stat"><span>카테고리</span><span class="val">${CATS.length}개</span></div>
+  `;
+}
+
+// ── 카테고리 선택 ──
+function selectCat(catId){
+  currentCat = catId;
+  if(viewTab==='grid') renderSlots();
+  renderProgress();
+}
+
+// ── 슬롯 렌더 ──
+function renderSlots(){
+  const cat = CATS.find(c=>c.id===currentCat);
+  if(!cat) return;
+  document.getElementById('secEmoji').textContent = cat.emoji;
+  document.getElementById('secName').textContent = cat.name;
+  document.getElementById('secDesc').textContent = cat.desc;
+  const items = products.filter(p=>p.cat===currentCat);
+  document.getElementById('slotCount').textContent = `${items.length} / ${cat.max}개`;
+
+  const grid = document.getElementById('slotsGrid');
+  let html = '';
+
+  // 채워진 슬롯
+  items.forEach((p, i)=>{
+    const w = Number(p.wholesale)||0;
+    const cp = calcPrices(w);
+    const wPrice = cp ? cp.wellipet : 0;
+    const margin = w&&wPrice ? Math.round((wPrice-w)/wPrice*100) : null;
+    const profit = w&&wPrice ? wPrice-w : null;
+    const mc = margin===null?'none':margin>=35?'good':margin>=20?'ok':'low';
+    const imgHtml = p.img
+      ? `<img src="${esc(p.img)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
+      : `<div class="no-img">🐾</div>`;
+    const siteColor = SITE_COLORS[p.site]||'#999';
+    html += `<div class="slot-card" data-id="${p.id}">
+      <div class="slot-num">${i+1}</div>
+      <div class="card-img" onclick="openQuickPanel('${p.id}')" style="cursor:pointer;">
+        ${imgHtml}
+        <div class="site-badge" style="background:${siteColor};">${esc(p.site)}</div>
+        <div class="img-quick-overlay">
+          ${p.link?`<button class="qo-btn" style="background:var(--pk);color:#fff;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;width:100%;margin-bottom:4px;" onclick="event.stopPropagation();window.open('${esc(p.link)}','_blank')">🔗 도매처 바로가기</button>`:''}
+          <span class="qo-label" style="font-size:9px;">${p.img?'🖼 이미지 변경':'📷 이미지 추가'} · 빠른편집</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${p.link?`<a href="${esc(p.link)}" target="_blank" style="color:inherit;text-decoration:none;" onclick="event.stopPropagation();" title="도매처 상품 페이지 열기">${esc(p.name)}</a>`:esc(p.name)}</div>
+        <div class="price-row" style="margin-bottom:6px;">
+          <span class="price-label" style="font-size:9px;color:var(--muted);width:28px;">도매</span>
+          <span class="price-val wholesale">${w?w.toLocaleString()+'원':'<span class="empty-price">미입력</span>'}</span>
+        </div>
+        ${w&&cp?`<div class="channel-prices">
+          <div class="ch-row"><span class="ch-icon">🐾</span><span class="ch-name">웰리펫</span><span class="ch-price">${cp.wellipet.toLocaleString()}원</span></div>
+          <div class="ch-row"><span class="ch-icon">📦</span><span class="ch-name">쿠팡</span><span class="ch-price">${cp.coupang.toLocaleString()}원</span></div>
+          <div class="ch-row"><span class="ch-icon">🏪</span><span class="ch-name">스마트스토어</span><span class="ch-price">${cp.smart.toLocaleString()}원</span></div>
+        </div>`:`<div style="font-size:10px;color:#ccc;padding:8px 0 6px;">도매가 입력 시 자동계산</div>`}
+        <div class="margin-chip ${mc}" style="font-size:9px;margin-bottom:8px;">
+          ${margin!==null?`📈 웰리펫 마진 ${margin}% (+${profit.toLocaleString()}원)`:'가격 미입력'}
+        </div>
+        <div class="card-actions">
+          ${p.link?`<button class="btn btn-gray btn-xs" onclick="window.open('${esc(p.link)}','_blank')" title="도매처 상품 페이지 열기">🔗 도매처</button>`:''}
+          <button class="btn btn-out btn-xs" onclick="openEditModal('${p.id}')">수정</button>
+          <button class="btn btn-danger btn-xs" onclick="delProduct('${p.id}')">삭제</button>
+        </div>
+        <div style="margin-top:6px;">
+          ${publishedMap[p.id]
+            ? `<div style="display:flex;gap:4px;">
+                <button class="btn btn-published btn-xs" style="flex:1;font-size:10px;" onclick="unpublishProduct('${p.id}')">✓ 올림</button>
+                <button class="btn btn-publish btn-xs" style="flex:1;font-size:10px;" onclick="openPublishModal('${p.id}', true)">상세수정</button>
+               </div>`
+            : `<button class="btn btn-publish btn-xs" style="width:100%;font-size:11px;" onclick="openPublishModal('${p.id}', false)">🛒 쇼핑몰에 올리기</button>`}
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // 빈 슬롯
+  const empty = Math.max(0, cat.max - items.length);
+  for(let i=0;i<empty;i++){
+    const num = items.length+i+1;
+    html += `<div class="slot-card empty" onclick="openAddModal('${currentCat}')">
+      <div class="slot-num">${num}</div>
+      <div class="add-icon">+</div>
+      <div class="add-text">상품 추가</div>
+    </div>`;
+  }
+  grid.innerHTML = html;
+  renderSideStats();
+}
+
+// ── 마진표 렌더 ──
+function renderMarginTable(){
+  const catFilter = document.getElementById('marginFilter')?.value||'all';
+  const sort = document.getElementById('marginSort')?.value||'margin_desc';
+
+  let items = [...products];
+  if(catFilter!=='all') items = items.filter(p=>p.cat===catFilter);
+
+  items = items.map(p=>({
+    ...p,
+    w: Number(p.wholesale)||0,
+    r: Number(p.retail)||0,
+    margin: (Number(p.wholesale)>0&&Number(p.retail)>0) ? Math.round((Number(p.retail)-Number(p.wholesale))/Number(p.retail)*100) : null,
+    profit: (Number(p.wholesale)>0&&Number(p.retail)>0) ? Number(p.retail)-Number(p.wholesale) : null,
+  }));
+
+  if(sort==='margin_desc') items.sort((a,b)=>(b.margin??-999)-(a.margin??-999));
+  else if(sort==='margin_asc') items.sort((a,b)=>(a.margin??999)-(b.margin??999));
+  else if(sort==='profit_desc') items.sort((a,b)=>(b.profit??-999)-(a.profit??-999));
+  else items.sort((a,b)=>(a.cat>b.cat?1:-1));
+
+  const tbody = document.getElementById('marginTableBody');
+  if(!tbody) return;
+
+  const maxMargin = Math.max(...items.map(p=>p.margin||0), 1);
+
+  tbody.innerHTML = items.map((p,i)=>{
+    const mc = p.margin===null?'none':p.margin>=40?'good':p.margin>=20?'ok':'low';
+    const barColor = p.margin===null?'#e0e0e0':p.margin>=40?'var(--green)':p.margin>=20?'var(--orange)':'var(--red)';
+    const barW = p.margin?Math.round(p.margin/maxMargin*80):0;
+    const cat = CATS.find(c=>c.id===p.cat);
+    const imgHtml = p.img
+      ? `<img src="${esc(p.img)}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;" onerror="this.outerHTML='<div class=mt-img>🐾</div>'/>`
+      : `<div class="mt-img">🐾</div>`;
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px;">${i+1}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${imgHtml}
+          <div>
+            <div class="mt-name">${esc(p.name)}</div>
+            ${p.brand?`<div class="mt-site">${esc(p.brand)}</div>`:''}
+          </div>
+        </div>
+      </td>
+      <td><span style="font-size:11px;">${cat?cat.emoji:''} ${esc(p.cat)}</span></td>
+      <td><span class="site-badge" style="background:${SITE_COLORS[p.site]||'#999'};position:relative;top:0;left:0;font-size:10px;padding:2px 7px;border-radius:8px;">${esc(p.site)}</span></td>
+      <td style="font-weight:600;">${p.w?p.w.toLocaleString()+'원':'<span style="color:#ccc">미입력</span>'}</td>
+      <td style="font-weight:600;">${p.r?p.r.toLocaleString()+'원':'<span style="color:#ccc">미입력</span>'}</td>
+      <td style="font-weight:700;color:var(--pk);">${p.profit!==null?'+'+p.profit.toLocaleString()+'원':'<span style="color:#ccc">-</span>'}</td>
+      <td><span class="margin-chip ${mc}" style="white-space:nowrap;">${p.margin!==null?p.margin+'%':'미입력'}</span></td>
+      <td>
+        <div class="margin-bar-wrap">
+          <div class="margin-bar" style="width:${barW}px;background:${barColor};"></div>
+          <span style="font-size:10px;color:var(--muted);">${p.margin!==null?p.margin+'%':''}</span>
+        </div>
+      </td>
+      <td><button class="btn btn-out btn-xs" onclick="openEditModal('${p.id}')">수정</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── 뷰 탭 전환 ──
+function setViewTab(tab){
+  viewTab = tab;
+  document.getElementById('tab-grid').classList.toggle('active', tab==='grid');
+  document.getElementById('tab-margin').classList.toggle('active', tab==='margin');
+  document.getElementById('gridView').style.display = tab==='grid'?'block':'none';
+  document.getElementById('marginView').style.display = tab==='margin'?'block':'none';
+  if(tab==='grid') renderSlots();
+  if(tab==='margin'){
+    // 카테고리 필터 옵션 채우기
+    const sel = document.getElementById('marginFilter');
+    if(sel){
+      sel.innerHTML = '<option value="all">전체</option>'+CATS.map(c=>`<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+    }
+    renderMarginTable();
+  }
+}
+
+// ── 모달 ──
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeOnOverlay(e,id){if(e.target===e.currentTarget)closeModal(id);}
+
+function resetForm(){
+  ['f-name','f-site','f-cat','f-wholesale','f-retail','f-img-url','f-desc','f-brand','f-link'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('priceCalcArea').style.display='none';
+  document.getElementById('retailManualWrap').style.display='none';
+  document.getElementById('img-preview-area').style.display='none';
+  document.getElementById('dropZone').innerHTML='<div class="dz-icon">🖼</div><div class="dz-text">클릭 또는 드래그&드롭</div>';
+  selectedChannel='wellipet';
+  ['wellipet','coupang','smart'].forEach(c=>{
+    document.getElementById('pcc-'+c)?.classList.toggle('selected',c==='wellipet');
+  });
+  currentImgData=null; editingId=null;
+  switchImgTab('url');
+}
+
+function openAddModal(cat){
+  resetForm();
+  if(cat) document.getElementById('f-cat').value=cat;
+  document.getElementById('addModalTitle').textContent='상품 추가';
+  openModal('addModal');
+}
+
+function openEditModal(id){
+  const p=products.find(x=>x.id===id);
+  if(!p) return;
+  editingId=id;
+  resetForm();
+  document.getElementById('addModalTitle').textContent='상품 수정';
+  document.getElementById('f-name').value=p.name||'';
+  document.getElementById('f-site').value=p.site||'';
+  document.getElementById('f-cat').value=p.cat||'';
+  document.getElementById('f-wholesale').value=p.wholesale||'';
+  document.getElementById('f-retail').value=p.retail||'';
+  document.getElementById('f-desc').value=p.desc||'';
+  document.getElementById('f-brand').value=p.brand||'';
+  document.getElementById('f-link').value=p.link||'';
+  if(p.img){
+    if(p.img.startsWith('data:')){
+      switchImgTab('file');
+      currentImgData=p.img;
+      document.getElementById('dropZone').innerHTML=`<img src="${p.img}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;"/>`;
+    } else {
+      switchImgTab('url');
+      document.getElementById('f-img-url').value=p.img;
+    }
+    document.getElementById('img-preview-sm').src=p.img;
+    document.getElementById('img-preview-area').style.display='block';
+  }
+  calcAllPrices();
+  openModal('addModal');
+}
+
+function saveProduct(){
+  const name=document.getElementById('f-name').value.trim();
+  const site=document.getElementById('f-site').value;
+  const cat=document.getElementById('f-cat').value;
+  if(!name){showToast('상품명을 입력해주세요','warn');return;}
+  if(!site){showToast('사이트를 선택해주세요','warn');return;}
+  if(!cat){showToast('카테고리를 선택해주세요','warn');return;}
+
+  // 슬롯 초과 체크
+  if(!editingId){
+    const catCfg=CATS.find(c=>c.id===cat);
+    const cnt=products.filter(p=>p.cat===cat).length;
+    if(catCfg&&cnt>=catCfg.max){
+      if(!confirm(`${cat} 카테고리가 이미 ${catCfg.max}개입니다. 그래도 추가할까요?`)) return;
+    }
+  }
+
+  const imgUrl=document.getElementById('f-img-url').value.trim();
+  const img=currentImgData||(imgUrl||'');
+  const w = document.getElementById('f-wholesale').value;
+  const manualRetail = document.getElementById('f-retail').value;
+  const cp = calcPrices(Number(w));
+  // 판매가: 직접 입력 > 선택된 채널 자동계산
+  const retail = manualRetail || (cp ? String(selectedChannel==='coupang'?cp.coupang:selectedChannel==='smart'?cp.smart:cp.wellipet) : '');
+  const data={
+    id:editingId||uid(), name, site, cat,
+    wholesale: w,
+    retail,
+    price_wellipet: cp?String(cp.wellipet):'',
+    price_coupang:  cp?String(cp.coupang):'',
+    price_smart:    cp?String(cp.smart):'',
+    selectedChannel,
+    img, desc:document.getElementById('f-desc').value.trim(),
+    brand:document.getElementById('f-brand').value.trim(),
+    link:document.getElementById('f-link').value.trim(),
+    updatedAt:new Date().toISOString(),
+  };
+  if(editingId){
+    const idx=products.findIndex(p=>p.id===editingId);
+    if(idx!==-1) products[idx]={...products[idx],...data};
+    showToast('수정되었습니다','success');
+  } else {
+    data.createdAt=data.updatedAt;
+    products.push(data);
+    showToast('상품이 추가되었습니다!','success');
+  }
+  saveAll(); closeModal('addModal');
+  renderProgress(); renderSlots(); renderSideStats();
+}
+
+function delProduct(id){
+  if(!confirm('이 상품을 삭제할까요?')) return;
+  products=products.filter(p=>p.id!==id);
+  saveAll(); renderProgress(); renderSlots(); renderSideStats();
+  showToast('삭제되었습니다','info');
+}
+
+// ── 가격 자동 계산 공식 ──
+// 웰리펫: 카드수수료3% + 유기견기부3% + 마진25% = 31% → 판매가 = 도매가 ÷ 0.69
+// 쿠팡:   플랫폼수수료25% + 마진20% = 45% → 판매가 = 도매가 ÷ 0.55
+// 스마트: 플랫폼수수료20% + 마진20% = 40% → 판매가 = 도매가 ÷ 0.60
+function calcPrices(wholesale){
+  const w = Number(wholesale)||0;
+  if(!w) return null;
+  const round100 = v => Math.ceil(v/100)*100; // 100원 단위 올림
+  const wellipet = round100(w/0.69);
+  const coupang  = round100(w/0.55);
+  const smart    = round100(w/0.60);
+  return {wellipet, coupang, smart};
+}
+
+// 선택된 채널 저장
+let selectedChannel = 'wellipet';
+function selectChannel(ch){
+  selectedChannel = ch;
+  ['wellipet','coupang','smart'].forEach(c=>{
+    document.getElementById('pcc-'+c)?.classList.toggle('selected', c===ch);
+  });
+}
+
+// 도매가 입력 시 3채널 가격 자동 계산
+function calcAllPrices(){
+  const w = Number(document.getElementById('f-wholesale').value)||0;
+  const area = document.getElementById('priceCalcArea');
+  const retailWrap = document.getElementById('retailManualWrap');
+  if(!w){ area.style.display='none'; retailWrap.style.display='none'; return; }
+  area.style.display='block';
+  retailWrap.style.display='block';
+  const cp = calcPrices(w);
+
+  // 웰리펫
+  const wProfit = cp.wellipet-w;
+  document.getElementById('pcc-w-card').textContent    = Math.round(cp.wellipet*0.03).toLocaleString()+'원';
+  document.getElementById('pcc-w-donate').textContent  = Math.round(cp.wellipet*0.03).toLocaleString()+'원';
+  document.getElementById('pcc-w-margin').textContent  = Math.round(cp.wellipet*0.25).toLocaleString()+'원';
+  document.getElementById('pcc-w-price').textContent   = cp.wellipet.toLocaleString()+'원';
+  document.getElementById('pcc-w-profit').textContent  = `마진 +${wProfit.toLocaleString()}원 (${Math.round(wProfit/cp.wellipet*100)}%)`;
+
+  // 쿠팡
+  const cProfit = cp.coupang-w;
+  document.getElementById('pcc-c-fee').textContent     = Math.round(cp.coupang*0.25).toLocaleString()+'원';
+  document.getElementById('pcc-c-margin').textContent  = Math.round(cp.coupang*0.20).toLocaleString()+'원';
+  document.getElementById('pcc-c-price').textContent   = cp.coupang.toLocaleString()+'원';
+  document.getElementById('pcc-c-profit').textContent  = `마진 +${cProfit.toLocaleString()}원 (${Math.round(cProfit/cp.coupang*100)}%)`;
+
+  // 스마트스토어
+  const sProfit = cp.smart-w;
+  document.getElementById('pcc-s-fee').textContent     = Math.round(cp.smart*0.20).toLocaleString()+'원';
+  document.getElementById('pcc-s-margin').textContent  = Math.round(cp.smart*0.20).toLocaleString()+'원';
+  document.getElementById('pcc-s-price').textContent   = cp.smart.toLocaleString()+'원';
+  document.getElementById('pcc-s-profit').textContent  = `마진 +${sProfit.toLocaleString()}원 (${Math.round(sProfit/cp.smart*100)}%)`;
+}
+
+function onRetailManual(){
+  // 직접 입력값 있으면 채널 선택 비활성화 표시
+  const v = document.getElementById('f-retail').value;
+  ['wellipet','coupang','smart'].forEach(c=>{
+    document.getElementById('pcc-'+c)?.classList.toggle('selected', !v && c===selectedChannel);
+  });
+}
+
+// ── 이미지 ──
+function switchImgTab(t){
+  document.getElementById('imt-url').classList.toggle('active',t==='url');
+  document.getElementById('imt-file').classList.toggle('active',t==='file');
+  document.getElementById('img-url-wrap').style.display=t==='url'?'block':'none';
+  document.getElementById('img-file-wrap').style.display=t==='file'?'block':'none';
+}
+function previewUrl(){
+  const url=document.getElementById('f-img-url').value.trim();
+  if(url){
+    document.getElementById('img-preview-sm').src=url;
+    document.getElementById('img-preview-area').style.display='block';
+    currentImgData=null;
+  } else {
+    document.getElementById('img-preview-area').style.display='none';
+  }
+}
+function clearImg(){
+  document.getElementById('f-img-url').value='';
+  document.getElementById('img-preview-area').style.display='none';
+  currentImgData=null;
+}
+function handleFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    currentImgData=ev.target.result;
+    document.getElementById('dropZone').innerHTML=`<img src="${currentImgData}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;"/>`;
+    document.getElementById('img-preview-sm').src=currentImgData;
+    document.getElementById('img-preview-area').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+function dzOver(e){e.preventDefault();document.getElementById('dropZone').style.borderColor='var(--pk)';}
+function dzLeave(){document.getElementById('dropZone').style.borderColor='';}
+function dzDrop(e){
+  e.preventDefault();dzLeave();
+  const file=e.dataTransfer.files[0];
+  if(file&&file.type.startsWith('image/')){
+    document.getElementById('f-img-file').files;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      currentImgData=ev.target.result;
+      document.getElementById('dropZone').innerHTML=`<img src="${currentImgData}" style="width:100%;height:80px;object-fit:cover;border-radius:8px;"/>`;
+      document.getElementById('img-preview-sm').src=currentImgData;
+      document.getElementById('img-preview-area').style.display='block';
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// ── 전체 마진표 모달 ──
+function openMarginModal(){
+  const withW = products.filter(p=>Number(p.wholesale)>0);
+  const allCp = withW.map(p=>calcPrices(Number(p.wholesale)));
+  const avgWM = withW.length ? Math.round(withW.reduce((s,p,i)=>{
+    const cp=allCp[i]; const w=Number(p.wholesale);
+    return s+(cp?(cp.wellipet-w)/cp.wellipet*100:0);
+  },0)/withW.length) : 0;
+  const avgCM = withW.length ? Math.round(withW.reduce((s,p,i)=>{
+    const cp=allCp[i]; const w=Number(p.wholesale);
+    return s+(cp?(cp.coupang-w)/cp.coupang*100:0);
+  },0)/withW.length) : 0;
+  const avgSM = withW.length ? Math.round(withW.reduce((s,p,i)=>{
+    const cp=allCp[i]; const w=Number(p.wholesale);
+    return s+(cp?(cp.smart-w)/cp.smart*100:0);
+  },0)/withW.length) : 0;
+
+  document.getElementById('marginSummary').innerHTML=`
+    <div style="background:var(--pkp);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
+      <div style="font-size:10px;color:var(--muted);">도매가 입력 상품</div>
+      <div style="font-family:Nunito;font-size:22px;font-weight:800;color:var(--pk);">${withW.length}개</div>
+    </div>
+    <div style="background:#e8f8f0;border-radius:10px;padding:10px 16px;text-align:center;min-width:110px;">
+      <div style="font-size:10px;color:var(--muted);">🐾 웰리펫 평균마진</div>
+      <div style="font-family:Nunito;font-size:22px;font-weight:800;color:#27ae60;">${avgWM}%</div>
+      <div style="font-size:9px;color:var(--muted);">카드3%+기부3%+마진25%</div>
+    </div>
+    <div style="background:#fef3e8;border-radius:10px;padding:10px 16px;text-align:center;min-width:110px;">
+      <div style="font-size:10px;color:var(--muted);">📦 쿠팡 평균마진</div>
+      <div style="font-family:Nunito;font-size:22px;font-weight:800;color:#e67e22;">${avgCM}%</div>
+      <div style="font-size:9px;color:var(--muted);">수수료25%+마진20%</div>
+    </div>
+    <div style="background:#eaf0fe;border-radius:10px;padding:10px 16px;text-align:center;min-width:110px;">
+      <div style="font-size:10px;color:var(--muted);">🏪 스마트스토어 평균마진</div>
+      <div style="font-family:Nunito;font-size:22px;font-weight:800;color:#2980b9;">${avgSM}%</div>
+      <div style="font-size:9px;color:var(--muted);">수수료20%+마진20%</div>
+    </div>
+  `;
+
+  const sorted=[...products].map(p=>{
+    const w=Number(p.wholesale)||0;
+    const cp=calcPrices(w);
+    return {...p, w, cp};
+  }).sort((a,b)=>{
+    const am=a.cp?(a.cp.wellipet-a.w)/a.cp.wellipet*100:-999;
+    const bm=b.cp?(b.cp.wellipet-b.w)/b.cp.wellipet*100:-999;
+    return bm-am;
+  });
+
+  document.getElementById('marginModalBody').innerHTML=sorted.map((p,i)=>{
+    const cat=CATS.find(c=>c.id===p.cat);
+    const wM=p.cp?Math.round((p.cp.wellipet-p.w)/p.cp.wellipet*100):null;
+    const cM=p.cp?Math.round((p.cp.coupang-p.w)/p.cp.coupang*100):null;
+    const sM=p.cp?Math.round((p.cp.smart-p.w)/p.cp.smart*100):null;
+    const mcW=wM===null?'none':wM>=35?'good':wM>=20?'ok':'low';
+    return `<tr>
+      <td style="color:var(--muted);font-size:11px;">${i+1}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${p.img?`<img src="${esc(p.img)}" style="width:32px;height:32px;border-radius:6px;object-fit:cover;" onerror="this.style.display='none'"/>`:'<span style="font-size:18px;">🐾</span>'}
+          <div>
+            <div style="font-size:12px;font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(p.name)}</div>
+            <div style="font-size:10px;color:var(--muted);">${esc(p.brand||'')} · <span style="background:${SITE_COLORS[p.site]||'#999'};color:#fff;padding:1px 5px;border-radius:5px;">${esc(p.site)}</span></div>
+          </div>
+        </div>
+      </td>
+      <td style="font-size:11px;">${cat?cat.emoji:''} ${esc(p.cat)}</td>
+      <td style="font-size:12px;font-weight:600;">${p.w?p.w.toLocaleString()+'원':'<span style="color:#ccc">미입력</span>'}</td>
+      <td>
+        ${p.cp?`<div style="font-size:12px;font-weight:700;color:#27ae60;">🐾 ${p.cp.wellipet.toLocaleString()}원</div>
+        <div style="font-size:10px;color:var(--muted);">+${(p.cp.wellipet-p.w).toLocaleString()}원</div>`:'<span style="color:#ccc">-</span>'}
+      </td>
+      <td>
+        ${p.cp?`<div style="font-size:12px;font-weight:700;color:#e67e22;">📦 ${p.cp.coupang.toLocaleString()}원</div>
+        <div style="font-size:10px;color:var(--muted);">+${(p.cp.coupang-p.w).toLocaleString()}원</div>`:'<span style="color:#ccc">-</span>'}
+      </td>
+      <td>
+        ${p.cp?`<div style="font-size:12px;font-weight:700;color:#2980b9;">🏪 ${p.cp.smart.toLocaleString()}원</div>
+        <div style="font-size:10px;color:var(--muted);">+${(p.cp.smart-p.w).toLocaleString()}원</div>`:'<span style="color:#ccc">-</span>'}
+      </td>
+      <td><span class="margin-chip ${mcW}">${wM!==null?wM+'%':'미입력'}</span></td>
+    </tr>`;
+  }).join('');
+  openModal('marginModal');
+}
+
+// ── 웰리펫 내보내기 ──
+function exportWellipet(){
+  const data=products.map((p,i)=>{
+    const cp=calcPrices(Number(p.wholesale));
+    return {
+      id:i+1,
+      name:p.name, brand:p.brand||'',
+      category:p.cat, source:p.site,
+      wholesalePrice:Number(p.wholesale)||0,
+      price:cp?cp.wellipet:Number(p.retail)||0,          // 웰리펫 판매가만 노출
+      price_coupang:cp?cp.coupang:0,
+      price_smartstore:cp?cp.smart:0,
+      image:p.img||'', description:p.desc||'',
+      sourceLink:p.link||'',
+    };
+  });
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`wellipet_products_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('웰리펫용 JSON이 다운로드됐어요!','success');
+}
+
+// ── 초기화 ──
+function clearAll(){
+  if(!confirm('모든 상품을 초기 데이터로 되돌릴까요?')) return;
+  ['welliSourcingPro','welliSourcingPro_v2','welliSourcingPro_v3'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+// ── 유틸 ──
+function esc(s){
+  if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+(type||'info');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ════════════════════════════════════════
+// ── 빠른편집 패널 ──
+// ════════════════════════════════════════
+let currentQpId = null;
+let qpCatItems = []; // 현재 카테고리 상품 순서
+
+function openQuickPanel(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  currentQpId = id;
+  qpCatItems = products.filter(x=>x.cat===currentCat).map(x=>x.id);
+
+  // 패널 데이터 채우기
+  document.getElementById('qpName').textContent = p.name;
+  document.getElementById('qpMeta').innerHTML =
+    `<span style="background:${SITE_COLORS[p.site]||'#999'};color:#fff;padding:2px 7px;border-radius:6px;font-size:10px;">${esc(p.site)}</span>` +
+    (p.brand ? ` · ${esc(p.brand)}` : '') +
+    (p.link ? ` · <a href="${esc(p.link)}" target="_blank" style="color:var(--pk);font-size:10px;font-weight:700;">🔗 도매처 상품 바로가기 ↗</a>` : '');
+
+  const navIdx = qpCatItems.indexOf(id);
+  document.getElementById('qpNavInfo').textContent = `${navIdx+1}/${qpCatItems.length}`;
+  document.getElementById('qpTitle').textContent = `빠른 편집 · ${currentCat}`;
+
+  // 이미지
+  qpSetImg(p.img||'');
+
+  // 도매가
+  const inp = document.getElementById('qpWholesale');
+  inp.value = p.wholesale||'';
+  qpCalcChannels();
+
+  // URL 입력 초기화
+  document.getElementById('qpImgUrl').value = p.img&&!p.img.startsWith('data:') ? p.img : '';
+
+  // 패널 열기
+  document.getElementById('quickPanel').classList.add('open');
+  document.getElementById('qpBackdrop').classList.add('open');
+
+  // 도매가 없으면 도매가 포커스, 있으면 URL 포커스
+  setTimeout(()=>{
+    if(!p.wholesale) inp.focus();
+    else document.getElementById('qpImgUrl').focus();
+  }, 320);
+}
+
+function closeQuickPanel(){
+  document.getElementById('quickPanel').classList.remove('open');
+  document.getElementById('qpBackdrop').classList.remove('open');
+  currentQpId = null;
+}
+
+function qpNav(dir){
+  if(!currentQpId) return;
+  const idx = qpCatItems.indexOf(currentQpId);
+  const nextIdx = idx + dir;
+  if(nextIdx < 0 || nextIdx >= qpCatItems.length){
+    showToast(dir>0?'마지막 상품이에요':'첫 번째 상품이에요','info');
+    return;
+  }
+  qpSaveAll(false); // 조용히 저장
+  openQuickPanel(qpCatItems[nextIdx]);
+}
+
+function qpSetImg(src){
+  const img = document.getElementById('qpImg');
+  const placeholder = document.getElementById('qpImgPlaceholder');
+  if(src){
+    img.src = src;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+}
+
+// 클립보드 자동 채우기
+async function qpAutoFillClipboard(){
+  try {
+    const text = await navigator.clipboard.readText();
+    const urlInput = document.getElementById('qpImgUrl');
+    if(text && (text.startsWith('http')||text.startsWith('//')) && !urlInput.value){
+      urlInput.value = text;
+      qpUrlPreview();
+      showToast('클립보드에서 URL을 가져왔어요!','success');
+    }
+  } catch(e){ /* 클립보드 권한 없을 때 조용히 무시 */ }
+}
+
+async function qpPasteClipboard(){
+  try {
+    const text = await navigator.clipboard.readText();
+    if(text && (text.startsWith('http')||text.startsWith('//'))){
+      document.getElementById('qpImgUrl').value = text;
+      qpUrlPreview();
+      showToast('클립보드 URL 입력됨!','success');
+    } else {
+      showToast('클립보드에 이미지 URL이 없어요','warn');
+    }
+  } catch(e){
+    showToast('클립보드 접근 권한이 필요해요','warn');
+  }
+}
+
+function qpUrlPreview(){
+  const url = document.getElementById('qpImgUrl').value.trim();
+  if(url) qpSetImg(url);
+}
+
+function qpImgZoneClick(){
+  // 이미지가 없으면 URL 입력에 포커스
+  document.getElementById('qpImgUrl').focus();
+  qpAutoFillClipboard();
+}
+
+function qpHandleFile(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    qpSetImg(ev.target.result);
+    document.getElementById('qpImgUrl').value = '';
+    // 즉시 저장
+    if(currentQpId){
+      const idx = products.findIndex(p=>p.id===currentQpId);
+      if(idx!==-1){
+        products[idx].img = ev.target.result;
+        products[idx].updatedAt = new Date().toISOString();
+        saveAll(); renderSlots();
+        showToast('이미지 저장됨!','success');
+      }
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function qpSaveImg(){
+  if(!currentQpId) return;
+  const url = document.getElementById('qpImgUrl').value.trim();
+  const idx = products.findIndex(p=>p.id===currentQpId);
+  if(idx!==-1){
+    products[idx].img = url;
+    products[idx].updatedAt = new Date().toISOString();
+    saveAll(); renderSlots(); renderProgress();
+    qpSetImg(url);
+    showToast('이미지 저장됨!','success');
+  }
+}
+
+function qpCalcChannels(){
+  const w = Number(document.getElementById('qpWholesale').value)||0;
+  const chBox = document.getElementById('qpChannels');
+  if(!w){ chBox.style.display='none'; return; }
+  chBox.style.display='flex';
+  const cp = calcPrices(w);
+  document.getElementById('qpPriceW').textContent = cp.wellipet.toLocaleString()+'원';
+  document.getElementById('qpPriceC').textContent = cp.coupang.toLocaleString()+'원';
+  document.getElementById('qpPriceS').textContent = cp.smart.toLocaleString()+'원';
+}
+
+function qpSaveWholesale(){
+  if(!currentQpId) return;
+  const w = document.getElementById('qpWholesale').value;
+  const idx = products.findIndex(p=>p.id===currentQpId);
+  if(idx!==-1){
+    const cp = calcPrices(Number(w));
+    products[idx].wholesale = w;
+    products[idx].retail = cp ? String(cp.wellipet) : '';
+    products[idx].price_wellipet = cp ? String(cp.wellipet) : '';
+    products[idx].price_coupang = cp ? String(cp.coupang) : '';
+    products[idx].price_smart = cp ? String(cp.smart) : '';
+    products[idx].updatedAt = new Date().toISOString();
+  }
+}
+
+function qpSaveAll(showMsg=true){
+  if(!currentQpId) return;
+  qpSaveImg();
+  qpSaveWholesale();
+  if(showMsg) showToast('저장됐어요!','success');
+  renderSlots(); renderProgress(); renderSideStats();
+}
+
+// 키보드 단축키
+document.addEventListener('keydown', e=>{
+  if(!currentQpId) return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') qpNav(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') qpNav(-1);
+  if(e.key==='Escape') closeQuickPanel();
+});
+
+// ── 쇼핑몰 발행 ──
+let publishingId = null;
+let publishingUpdateMode = false;
+let scrapedDetailImgs = [];
+let scrapedDetailHtml = '';
+const EDGE_FN = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/scrape-product';
+
+function openPublishModal(id, updateMode = false){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  publishingId = id;
+  publishingUpdateMode = updateMode;
+  scrapedDetailImgs = [];
+  scrapedDetailHtml = '';
+  const w = Number(p.wholesale)||0;
+  const cp = calcPrices(w);
+
+  document.getElementById('pubProductName').textContent = p.name;
+  document.getElementById('pubPrice').value = cp ? cp.wellipet : (Number(p.retail)||'');
+  document.getElementById('pubOrigPrice').value = '';
+  document.getElementById('pubBadge').value = '';
+  document.getElementById('pubPetType').value = 'dog';
+  document.getElementById('pubDonation').value = '500';
+  document.getElementById('pubDesc').value = p.desc||'';
+  document.getElementById('pubScrapeUrl').value = p.link||'';
+  document.getElementById('pubImgPreview').style.display='none';
+  document.getElementById('pubImgPreview').innerHTML='';
+
+  document.getElementById('pubModalTitle').textContent = updateMode ? '상세페이지 수정' : '🛒 쇼핑몰에 올리기';
+  document.getElementById('pubConfirmBtn').textContent = updateMode ? '상세페이지 업데이트' : '쇼핑몰에 올리기';
+  document.getElementById('pubPriceRow').style.display = updateMode ? 'none' : '';
+  document.getElementById('pubBadgeRow').style.display = updateMode ? 'none' : '';
+  document.getElementById('publishModal').style.display='flex';
+}
+
+async function scrapeProductDetail(){
+  const url = document.getElementById('pubScrapeUrl').value.trim();
+  if(!url){ alert('도매처 상품 URL을 입력해주세요.'); return; }
+
+  const btn = document.getElementById('pubScrapeBtn');
+  btn.textContent = '가져오는 중...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(EDGE_FN, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url})
+    });
+    const data = await res.json();
+
+    if(data.error){ alert('가져오기 실패: '+data.error); return; }
+
+    scrapedDetailHtml = data.detailHtml||'';
+
+    if(data.desc) document.getElementById('pubDesc').value = data.desc;
+
+    // 미리보기
+    const preview = document.getElementById('pubImgPreview');
+    if(scrapedDetailHtml){
+      // 미리보기용 이미지 개수 세기
+      const imgCount = (scrapedDetailHtml.match(/<img/gi)||[]).length;
+      preview.style.display='block';
+      preview.innerHTML = `<div style="background:#e8f8ee;border-radius:8px;padding:8px 12px;font-size:11px;color:#1a9e4a;font-weight:700;">✓ 상세페이지 가져오기 완료 (이미지 약 ${imgCount}개 포함)</div>`;
+      showToast('상세페이지를 가져왔어요!','success');
+    } else {
+      preview.style.display='block';
+      preview.innerHTML = '<div style="font-size:11px;color:#e04040;">상세 내용을 찾지 못했어요. 개별 상품 URL인지 확인해보세요.</div>';
+    }
+  } catch(e) {
+    alert('오류: '+e.message);
+  } finally {
+    btn.textContent = '가져오기';
+    btn.disabled = false;
+  }
+}
+
+function closePublishModal(){
+  document.getElementById('publishModal').style.display='none';
+  publishingId = null;
+}
+
+async function confirmPublish(){
+  if(!publishingId) return;
+  const p = products.find(x=>x.id===publishingId);
+  if(!p) return;
+
+  const price = Number(document.getElementById('pubPrice').value);
+  if(!price){ alert('판매가를 입력해주세요.'); return; }
+
+  const origPrice = Number(document.getElementById('pubOrigPrice').value)||null;
+  const badge = document.getElementById('pubBadge').value||null;
+  const petType = document.getElementById('pubPetType').value;
+  const donation = Number(document.getElementById('pubDonation').value)||0;
+  const desc = document.getElementById('pubDesc').value||p.desc||'';
+
+  const btn = document.getElementById('pubConfirmBtn');
+  btn.disabled = true;
+  btn.textContent = '처리 중...';
+
+  let error, data;
+
+  if(publishingUpdateMode){
+    // 이미 올린 상품 — detail_content 만 업데이트
+    const shopId = publishedMap[publishingId];
+    if(!shopId){ alert('올린 상품 ID를 찾을 수 없어요.'); btn.disabled=false; btn.textContent='업데이트'; return; }
+    if(!scrapedDetailHtml){ alert('먼저 "가져오기" 버튼을 눌러 상세페이지를 가져와주세요.'); btn.disabled=false; btn.textContent='상세페이지 업데이트'; return; }
+    ({error} = await _supabase.from('products').update({ detail_content: scrapedDetailHtml }).eq('id', shopId));
+    btn.disabled = false; btn.textContent = '상세페이지 업데이트';
+    if(error){ alert('오류: '+error.message); return; }
+    closePublishModal();
+    showToast('상세페이지가 업데이트됐어요! 🎉','success');
+  } else {
+    // 새 상품 INSERT
+    ({data, error} = await _supabase.from('products').insert({
+      name: p.name,
+      price: price,
+      original_price: origPrice,
+      category: p.cat,
+      badge: badge,
+      pet_type: petType,
+      donation_amount: donation,
+      description: desc,
+      image_url: p.img||null,
+      emoji: '🐾',
+      detail_content: scrapedDetailHtml || null,
+    }).select().single());
+    btn.disabled = false; btn.textContent = '쇼핑몰에 올리기';
+    if(error){ alert('오류: '+error.message); return; }
+    publishedMap[publishingId] = data.id;
+    savePublished();
+    closePublishModal();
+    renderSlots();
+    showToast('쇼핑몰에 올라갔어요! 🎉','success');
+  }
+}
+
+async function unpublishProduct(sourcingId){
+  const shopId = publishedMap[sourcingId];
+  if(!shopId) return;
+  if(!confirm('쇼핑몰에서 이 상품을 내릴까요?')) return;
+
+  const {error} = await _supabase.from('products').delete().eq('id', shopId);
+  if(error){ alert('오류: '+error.message); return; }
+
+  delete publishedMap[sourcingId];
+  savePublished();
+  renderSlots();
+  showToast('쇼핑몰에서 내렸어요.','info');
+}
+
+// ── 로그인 체크 ──
+async function checkAuth(){
+  const {data:{session}} = await _supabase.auth.getSession();
+  if(!session){
+    document.getElementById('authBanner').style.display='flex';
+  }
+}
+async function loginForPublish(){
+  const email = document.getElementById('authEmail').value;
+  const pw = document.getElementById('authPw').value;
+  if(!email||!pw){ alert('이메일과 비밀번호를 입력해주세요.'); return; }
+  const {error} = await _supabase.auth.signInWithPassword({email,password:pw});
+  if(error){ alert('로그인 실패: '+error.message); return; }
+  document.getElementById('authBanner').style.display='none';
+  showToast('로그인됐어요! 이제 쇼핑몰에 올릴 수 있어요.','success');
+}
+checkAuth();
+
+// ── 초기 렌더 ──
+renderProgress();
+renderSlots();
+renderSideStats();
+</script>
+
+<!-- 로그인 배너 -->
+<div id="authBanner" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9998;background:#fff;border:2px solid var(--pk);border-radius:16px;padding:18px 20px;box-shadow:0 4px 24px rgba(196,92,138,.2);flex-direction:column;gap:10px;width:280px;">
+  <div style="font-size:13px;font-weight:700;color:var(--pk);">🔐 쇼핑몰 올리기 로그인 필요</div>
+  <div style="font-size:11px;color:var(--muted);">웰리펫 계정으로 로그인하면 상품을 바로 올릴 수 있어요.</div>
+  <input id="authEmail" type="email" placeholder="이메일" style="padding:7px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;width:100%;"/>
+  <input id="authPw" type="password" placeholder="비밀번호" style="padding:7px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;width:100%;"/>
+  <button onclick="loginForPublish()" style="background:var(--pk);color:#fff;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;">로그인</button>
+</div>
+
+<!-- 발행 모달 -->
+<div id="publishModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:18px;padding:28px 24px;width:360px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,.18);">
+    <div id="pubModalTitle" style="font-size:16px;font-weight:800;color:var(--pk);margin-bottom:4px;">🛒 쇼핑몰에 올리기</div>
+    <div id="pubProductName" style="font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.4;"></div>
+    <div class="modal-body">
+      <div id="pubPriceRow" class="row2">
+        <div>
+          <label>판매가 (원) *</label>
+          <input type="number" id="pubPrice" placeholder="예) 12900"/>
+        </div>
+        <div>
+          <label>정가 (원, 선택)</label>
+          <input type="number" id="pubOrigPrice" placeholder="예) 15900"/>
+        </div>
+      </div>
+      <div id="pubBadgeRow" class="row2">
+        <div>
+          <label>뱃지</label>
+          <select id="pubBadge">
+            <option value="">없음</option>
+            <option value="NEW">NEW</option>
+            <option value="BEST">BEST</option>
+            <option value="SALE">SALE</option>
+            <option value="HOT">HOT</option>
+          </select>
+        </div>
+        <div>
+          <label>펫 타입</label>
+          <select id="pubPetType">
+            <option value="dog">강아지</option>
+            <option value="cat">고양이</option>
+            <option value="both">둘 다</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label>기부금 (원)</label>
+        <input type="number" id="pubDonation" value="500"/>
+      </div>
+      <div>
+        <label>상품 설명</label>
+        <input type="text" id="pubDesc" placeholder="간단한 상품 설명"/>
+      </div>
+      <div>
+        <label>도매처 상품 URL <span style="font-weight:400;color:var(--muted);">(상세이미지 자동 가져오기)</span></label>
+        <div style="display:flex;gap:6px;">
+          <input type="url" id="pubScrapeUrl" placeholder="https://petbtob.co.kr/product/..." style="flex:1;"/>
+          <button id="pubScrapeBtn" onclick="scrapeProductDetail()" style="white-space:nowrap;padding:8px 10px;border:1px solid var(--pk);border-radius:8px;background:var(--pkp);color:var(--pk);font-size:11px;font-weight:700;cursor:pointer;">가져오기</button>
+        </div>
+        <div id="pubImgPreview" style="display:none;margin-top:8px;"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:20px;">
+      <button onclick="closePublishModal()" style="flex:1;padding:10px;border:1px solid var(--bd);border-radius:10px;background:#fff;cursor:pointer;font-size:13px;">취소</button>
+      <button id="pubConfirmBtn" onclick="confirmPublish()" style="flex:2;padding:10px;border:none;border-radius:10px;background:var(--pk);color:#fff;font-weight:700;cursor:pointer;font-size:13px;">쇼핑몰에 올리기</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

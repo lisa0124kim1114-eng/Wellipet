@@ -486,7 +486,16 @@ async function saveProduct(){
 
 async function deleteProduct(id){
   if(!confirm('정말 삭제할까요?'))return;
-  await _supabase.from('products').delete().eq('id',id);
+  const {error}=await _supabase.from('products').delete().eq('id',id);
+  if(error){
+    if(error.message.includes('security policy')||error.message.includes('JWT')){
+      alert('로그인이 필요합니다. 페이지를 새로고침 후 로그인해주세요.');
+      showAdminLogin();
+    } else {
+      alert('삭제 실패: '+error.message);
+    }
+    return;
+  }
   loadProducts();
 }
 
@@ -526,7 +535,38 @@ async function loadOrders(){
 async function updateOrderStatus(id,status){await _supabase.from('orders').update({status}).eq('id',id);}
 async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
 
-loadDashboard();
+function showAdminLogin(){
+  document.getElementById('adminLoginOverlay').style.display='flex';
+}
+async function adminLogin(){
+  const email=document.getElementById('adminLoginEmail').value;
+  const pw=document.getElementById('adminLoginPw').value;
+  if(!email||!pw){alert('이메일과 비밀번호를 입력해주세요.');return;}
+  const {error}=await _supabase.auth.signInWithPassword({email,password:pw});
+  if(error){alert('로그인 실패: '+error.message);return;}
+  document.getElementById('adminLoginOverlay').style.display='none';
+  loadDashboard();
+}
+document.getElementById('adminLoginPw').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+
+// 시작 시 로그인 체크
+(async()=>{
+  const {data:{session}}=await _supabase.auth.getSession();
+  if(!session) showAdminLogin();
+  else loadDashboard();
+})();
 </script>
+
+<!-- 관리자 로그인 오버레이 -->
+<div id="adminLoginOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,.2);text-align:center;">
+    <div style="font-size:32px;margin-bottom:8px;">🔐</div>
+    <div style="font-size:18px;font-weight:800;color:#c45c8a;margin-bottom:4px;">관리자 로그인</div>
+    <div style="font-size:12px;color:#a08090;margin-bottom:24px;">웰리펫 계정으로 로그인하세요</div>
+    <input id="adminLoginEmail" type="email" placeholder="이메일" style="width:100%;padding:10px 14px;border:1px solid #f0d8e6;border-radius:10px;font-size:14px;margin-bottom:10px;box-sizing:border-box;"/>
+    <input id="adminLoginPw" type="password" placeholder="비밀번호" style="width:100%;padding:10px 14px;border:1px solid #f0d8e6;border-radius:10px;font-size:14px;margin-bottom:16px;box-sizing:border-box;"/>
+    <button onclick="adminLogin()" style="width:100%;padding:12px;background:#c45c8a;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">로그인</button>
+  </div>
+</div>
 </body>
 </html>
