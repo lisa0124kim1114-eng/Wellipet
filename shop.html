@@ -199,10 +199,13 @@ nav{display:none;}
 <div class="shop-wrap">
   <div class="cat-grid">
     <div class="cat-btn on" onclick="filterCat(this,'전체')"><div class="cat-icon">🐾</div><div class="cat-name">전체</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'배변패드')"><div class="cat-icon">🧻</div><div class="cat-name">배변패드</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'간식·푸드')"><div class="cat-icon">🦴</div><div class="cat-name">간식·푸드</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'그루밍')"><div class="cat-icon">🛁</div><div class="cat-name">그루밍</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'장난감·용품')"><div class="cat-icon">🎾</div><div class="cat-name">장난감·용품</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'간식')"><div class="cat-icon">🦴</div><div class="cat-name">간식</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'사료')"><div class="cat-icon">🍽</div><div class="cat-name">사료</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'패드/위생')"><div class="cat-icon">🧻</div><div class="cat-name">패드/위생</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'장난감')"><div class="cat-icon">🎾</div><div class="cat-name">장난감</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'영양제')"><div class="cat-icon">💊</div><div class="cat-name">영양제</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'옷/패션')"><div class="cat-icon">👕</div><div class="cat-name">옷/패션</div></div>
+    <div class="cat-btn" onclick="filterCat(this,'기타용품')"><div class="cat-icon">🏠</div><div class="cat-name">기타용품</div></div>
   </div>
   <div class="shop-top">
     <div class="shop-count">총 <strong id="productCount">0</strong>개 상품</div>
@@ -381,7 +384,7 @@ function filterCat(el, cat) {
 }
 
 function applyFilters() {
-  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all');
+  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
   if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
   renderProducts(filtered);
 }
@@ -389,7 +392,7 @@ function applyFilters() {
 function sortProducts(type, el) {
   document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all');
+  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
   if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
   if(type==='low') filtered.sort((a,b)=>a.price-b.price);
   else if(type==='high') filtered.sort((a,b)=>b.price-a.price);

@@ -744,13 +744,13 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 <script>
 // ── 카테고리 정의 ──
 const CATS = [
-  {id:'간식',    emoji:'🍖', name:'간식',    desc:'강아지·고양이 간식, 츄르, 져키, 껌', max:10},
-  {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:10},
-  {id:'패드/위생',emoji:'🧻', name:'패드/위생',desc:'배변패드, 배변봉투, 위생용품', max:10},
-  {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:10},
-  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민', max:10},
-  {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:10},
-  {id:'기타용품',emoji:'🏠', name:'기타용품',desc:'이동장, 하우스, 미용, 식기', max:10},
+  {id:'간식',    emoji:'🍖', name:'간식',    desc:'강아지·고양이 간식, 츄르, 져키, 껌', max:30},
+  {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:30},
+  {id:'패드/위생',emoji:'🧻', name:'패드/위생',desc:'배변패드, 배변봉투, 위생용품', max:30},
+  {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:30},
+  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민', max:30},
+  {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:30},
+  {id:'기타용품',emoji:'🏠', name:'기타용품',desc:'이동장, 하우스, 미용, 식기', max:30},
 ];
 
 // ── 사이트 색상 ──
@@ -1655,9 +1655,9 @@ function openPublishModal(id, updateMode = false){
   document.getElementById('pubImgPreview').innerHTML='';
 
   document.getElementById('pubModalTitle').textContent = updateMode ? '상세페이지 수정' : '🛒 쇼핑몰에 올리기';
-  document.getElementById('pubConfirmBtn').textContent = updateMode ? '상세페이지 업데이트' : '쇼핑몰에 올리기';
+  document.getElementById('pubConfirmBtn').textContent = updateMode ? '업데이트' : '쇼핑몰에 올리기';
   document.getElementById('pubPriceRow').style.display = updateMode ? 'none' : '';
-  document.getElementById('pubBadgeRow').style.display = updateMode ? 'none' : '';
+  document.getElementById('pubBadgeRow').style.display = '';  // 항상 표시 (펫타입 포함)
   document.getElementById('publishModal').style.display='flex';
 }
 
@@ -1732,8 +1732,9 @@ async function confirmPublish(){
     // 이미 올린 상품 — detail_content 만 업데이트
     const shopId = publishedMap[publishingId];
     if(!shopId){ alert('올린 상품 ID를 찾을 수 없어요.'); btn.disabled=false; btn.textContent='업데이트'; return; }
-    if(!scrapedDetailHtml){ alert('먼저 "가져오기" 버튼을 눌러 상세페이지를 가져와주세요.'); btn.disabled=false; btn.textContent='상세페이지 업데이트'; return; }
-    ({error} = await _supabase.from('products').update({ detail_content: scrapedDetailHtml }).eq('id', shopId));
+    const updateData = { pet_type: petType };
+    if(scrapedDetailHtml) updateData.detail_content = scrapedDetailHtml;
+    ({error} = await _supabase.from('products').update(updateData).eq('id', shopId));
     btn.disabled = false; btn.textContent = '상세페이지 업데이트';
     if(error){ alert('오류: '+error.message); return; }
     closePublishModal();
