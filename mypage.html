@@ -406,14 +406,17 @@ function closeModal(){document.getElementById('authModal').style.display='none';
 function showFindPw(){document.getElementById('formFindPw').style.display='block';}
 async function signInWithKakao(){const{error}=await _supabase.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:window.location.origin+window.location.pathname}});if(error){const box=document.getElementById('msgBox');box.style.display='block';box.style.background='#fff0f0';box.style.color='#e05050';box.style.border='1px solid #ffd0d0';box.textContent='카카오 로그인 오류: '+error.message;}}
 async function resetPassword(){const email=document.getElementById('resetEmail').value;if(!email){return;}const{error}=await _supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});const box=document.getElementById('msgBox');box.style.display='block';if(error){box.style.background='#fff0f0';box.style.color='#e05050';box.style.border='1px solid #ffd0d0';box.textContent='오류: '+error.message;}else{box.style.background='#f0faf5';box.style.color='#2a7a5a';box.style.border='1px solid #b8e8d0';box.textContent='📧 비밀번호 재설정 메일을 보냈어요! 이메일을 확인해주세요.';}}
+function _showErrMsg(msg){const box=document.getElementById('msgBox');box.style.display='block';box.style.background='#fff0f0';box.style.color='#e05050';box.style.border='1px solid #ffd0d0';box.textContent=msg;}
+function checkRateLimit(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.removeItem(key);return true;}if(d.c>=5){const left=Math.ceil((900000-(now-d.t))/60000);_showErrMsg('로그인 시도가 너무 많아요. '+left+'분 후 다시 시도해주세요.');return false;}return true;}
+function recordFailedAttempt(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.setItem(key,JSON.stringify({c:1,t:now}));}else{localStorage.setItem(key,JSON.stringify({c:d.c+1,t:d.t}));}}
 async function doSignIn(){
   const email=document.getElementById('loginEmail').value;
   const pw=document.getElementById('loginPw').value;
+  if(!checkRateLimit(email))return;
   const{error}=await _supabase.auth.signInWithPassword({email,password:pw});
   if(error){
-    const box=document.getElementById('msgBox');
-    box.style.display='block';box.style.background='#fff0f0';box.style.color='#e05050';
-    box.style.border='1px solid #ffd0d0';box.textContent='이메일 또는 비밀번호가 틀렸어요.';
+    recordFailedAttempt(email);
+    _showErrMsg('이메일 또는 비밀번호가 틀렸어요.');
     return;
   }
   closeModal();

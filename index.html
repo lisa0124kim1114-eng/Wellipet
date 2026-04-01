@@ -403,6 +403,8 @@ async function loadBestProducts(){
 loadBestProducts();
 
 function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
+function checkRateLimit(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.removeItem(key);return true;}if(d.c>=5){const left=Math.ceil((900000-(now-d.t))/60000);showMsg('로그인 시도가 너무 많아요. '+left+'분 후 다시 시도해주세요.',true);return false;}return true;}
+function recordFailedAttempt(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.setItem(key,JSON.stringify({c:1,t:now}));}else{localStorage.setItem(key,JSON.stringify({c:d.c+1,t:d.t}));}}
 
 function showSection(id){
   const sections=['formSignup','formLogin','formFindId','formFindPw','formDone'];
@@ -430,8 +432,9 @@ async function signIn(){
   const email=document.getElementById('loginEmail').value;
   const pw=document.getElementById('loginPw').value;
   if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}
+  if(!checkRateLimit(email))return;
   const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});
-  if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}
+  if(error){recordFailedAttempt(email);showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}
   const name=data.user?.user_metadata?.name||'고객';
   showSection('formDone');
   document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';

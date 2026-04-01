@@ -50,11 +50,10 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 async function init(){
   const params=new URLSearchParams(window.location.search);
-  const orderId=params.get('orderId')||'';
-  const amount=params.get('amount')||'0';
+  // 포트원 V2: paymentId로 리다이렉트됨
+  const paymentId=params.get('paymentId')||params.get('orderId')||'';
 
-  document.getElementById('orderId').textContent=orderId;
-  document.getElementById('orderAmount').textContent=Number(amount).toLocaleString()+'원';
+  document.getElementById('orderId').textContent=paymentId;
 
   // localStorage에서 주문 정보 가져오기
   const pending=JSON.parse(localStorage.getItem('pendingOrder')||'{}');
@@ -62,14 +61,18 @@ async function init(){
   if(pending.items){
     document.getElementById('orderName').textContent=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;
     document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
+    document.getElementById('orderAmount').textContent=Number(pending.amount||0).toLocaleString()+'원';
 
     // 기부금 계산
     const totalDon=pending.items.reduce((sum,item)=>(sum+(item.donation_amount||0)*(item.qty||1)),0);
     document.getElementById('donationAmt').textContent=Number(totalDon).toLocaleString()+'원';
 
     // Supabase에 주문 저장
+    const {data:{session}} = await _supabase.auth.getSession();
+    const userId = session?.user?.id || null;
     for(const item of pending.items){
       await _supabase.from('orders').insert({
+        user_id: userId,
         customer_name: pending.name,
         customer_email: pending.email,
         customer_phone: pending.phone,
