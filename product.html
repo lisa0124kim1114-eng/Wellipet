@@ -190,7 +190,7 @@
   </div>
 </div>
 
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');}
 function checkRateLimit(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.removeItem(key);return true;}if(d.c>=5){const left=Math.ceil((900000-(now-d.t))/60000);showMsg('로그인 시도가 너무 많아요. '+left+'분 후 다시 시도해주세요.',true);return false;}return true;}
