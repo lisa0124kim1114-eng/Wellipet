@@ -242,8 +242,15 @@ async function loadProduct(){
 
   const imgWrap=document.getElementById('productImgWrap');
   if(p.image_url){
+    imgWrap.innerHTML=p.badge?`<span class="product-badge badge-${p.badge}">${p.badge}</span>`:'';
+    const img=document.createElement('img');
+    img.loading='lazy';
+    img.className='product-img';
+    img.alt=p.name||'';
     const bigSrc=p.image_url.replace('/extra/small/','/big/').replace('/small/','/big/').replace('/medium/','/big/');
-    imgWrap.innerHTML=`${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge}</span>`:''}<img loading="lazy" src="${bigSrc}" class="product-img" alt="${p.name}" onerror="this.onerror=null;this.src='${p.image_url}'"/>`;
+    img.onerror=function(){this.onerror=null;this.src=p.image_url;};
+    img.src=bigSrc;
+    imgWrap.appendChild(img);
   } else {
     imgWrap.innerHTML=`<div class="product-img-placeholder">🐾</div>`;
   }
