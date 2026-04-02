@@ -1774,8 +1774,10 @@ function openPublishModal(id, updateMode = false){
   document.getElementById('pubScrapeUrl').value = p.link||'';
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
-  document.getElementById('pubManualImgs').value='';
-  document.getElementById('pubManualImgs2').value='';
+  [1,2,3,4,5].forEach(n=>{
+    const id=n===1?'pubManualImgs':'pubManualImgs'+n;
+    const el=document.getElementById(id); if(el) el.value='';
+  });
 
   document.getElementById('pubModalTitle').textContent = updateMode ? '✏️ 쇼핑몰 상품 수정' : '🛒 쇼핑몰에 올리기';
   document.getElementById('pubConfirmBtn').textContent = updateMode ? '업데이트' : '쇼핑몰에 올리기';
@@ -1851,18 +1853,17 @@ function switchDetailTab(tab){
 }
 
 function applyManualImgs(){
-  const raw1 = document.getElementById('pubManualImgs').value.trim();
-  const raw2 = document.getElementById('pubManualImgs2').value.trim();
-  const urls1 = raw1.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http'));
-  const urls2 = raw2.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http'));
-  const urls = [...urls1, ...urls2];
-  if(!urls.length){ alert('유효한 이미지 URL을 입력해주세요.'); return; }
-  scrapedDetailHtml = urls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+  const allUrls = [1,2,3,4,5].flatMap(n=>{
+    const id = n===1?'pubManualImgs':'pubManualImgs'+n;
+    const raw = document.getElementById(id)?.value.trim()||'';
+    return raw.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http'));
+  });
+  if(!allUrls.length){ alert('유효한 이미지 URL을 입력해주세요.'); return; }
+  scrapedDetailHtml = allUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
   const preview = document.getElementById('pubImgPreview');
   preview.style.display = 'block';
-  const msg = urls2.length>0 ? `✓ 1번째 ${urls1.length}개 + 2번째 ${urls2.length}개 = 총 ${urls.length}개 적용됨` : `✓ 이미지 ${urls.length}개 적용됨`;
-  preview.innerHTML = `<div style="background:#e8f8ee;border-radius:8px;padding:8px 12px;font-size:11px;color:#1a9e4a;font-weight:700;">${msg}</div>`;
-  showToast(`이미지 ${urls.length}개를 적용했어요!`,'success');
+  preview.innerHTML = `<div style="background:#e8f8ee;border-radius:8px;padding:8px 12px;font-size:11px;color:#1a9e4a;font-weight:700;">✓ 총 ${allUrls.length}개 이미지 적용됨</div>`;
+  showToast(`이미지 ${allUrls.length}개를 적용했어요!`,'success');
 }
 
 function closePublishModal(){
@@ -1906,6 +1907,7 @@ async function confirmPublish(){
       description: desc,
       image_url: p.img||null,
       option_images: optionImages,
+      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options) : null,
     };
     if(scrapedDetailHtml) updateData.detail_content = scrapedDetailHtml;
     ({error} = await _supabase.from('products').update(updateData).eq('id', shopId));
@@ -1929,6 +1931,7 @@ async function confirmPublish(){
       emoji: '🐾',
       detail_content: scrapedDetailHtml || null,
       option_images: optionImages,
+      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options) : null,
     }).select().single());
     btn.disabled = false; btn.textContent = '쇼핑몰에 올리기';
     if(error){ alert('오류: '+error.message); return; }
@@ -2082,11 +2085,18 @@ renderSideStats();
         </div>
         <!-- 직접 이미지 URL 입력 -->
         <div id="panelManual" style="display:none;">
-          <div style="font-size:11px;font-weight:700;color:var(--tx);margin-bottom:4px;">1번째 이미지 세트</div>
-          <textarea id="pubManualImgs" rows="3" placeholder="이미지 URL을 한 줄에 하나씩 붙여넣으세요&#10;예) https://img2.cafe24.com/web/upload/NNEditor/..." style="width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
-          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:8px 0 4px;">2번째 이미지 세트 <span style="font-weight:400;color:var(--muted);">(이미지가 2개로 나뉜 경우)</span></div>
-          <textarea id="pubManualImgs2" rows="3" placeholder="두 번째 그룹 이미지 URL (없으면 비워두세요)" style="width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
-          <div style="font-size:10px;color:var(--muted);margin-top:4px;">도매 사이트에서 로그인 후 상세 이미지 우클릭 → <b>이미지 주소 복사</b> → 여기 붙여넣기</div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">이미지가 여러 세트로 나뉜 경우 각 세트에 붙여넣으세요 (없으면 비워두세요)</div>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin-bottom:3px;">1번째</div>
+          <textarea id="pubManualImgs" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">2번째</div>
+          <textarea id="pubManualImgs2" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">3번째</div>
+          <textarea id="pubManualImgs3" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">4번째</div>
+          <textarea id="pubManualImgs4" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">5번째</div>
+          <textarea id="pubManualImgs5" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">상세 이미지 우클릭 → <b>이미지 주소 복사</b> → 붙여넣기</div>
           <button onclick="applyManualImgs()" style="margin-top:6px;padding:6px 12px;border:1px solid var(--pk);border-radius:7px;background:var(--pkp);color:var(--pk);font-size:11px;font-weight:700;cursor:pointer;">이미지 적용</button>
         </div>
         <div id="pubImgPreview" style="display:none;margin-top:8px;"></div>
