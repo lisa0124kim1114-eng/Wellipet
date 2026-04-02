@@ -1,14 +1,14 @@
 /* Wellipet Common Styles - Premium UI Polish */
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --pk:#d85c94;
-  --pkm:#ec78ae;
-  --pkl:#f9aecf;
-  --pkp:#fdf0f6;
-  --pkbg:#fff8fb;
+  --pk:#c45c8a;
+  --pkm:#e07aaa;
+  --pkl:#f2aecb;
+  --pkp:#fce8f2;
+  --pkbg:#fff5f9;
   --tx:#2a1a22;
-  --muted:#8c6a7a;
-  --bd:#f4dfea;
+  --muted:#a08090;
+  --bd:#f0d8e6;
   --cr:#fdf8f5;
   --glass:rgba(255, 255, 255, 0.85);
   --shadow-sm:0 4px 12px rgba(216, 92, 148, 0.08);
