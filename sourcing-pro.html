@@ -621,6 +621,16 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           <textarea id="f-desc" placeholder="예) 부드러운 퓨레 타입, 사은품으로도 인기. 당일 오전11시 주문마감."></textarea>
         </div>
 
+        <!-- 옵션 -->
+        <div class="fg form-full">
+          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 종류가 여러 개일 때 입력 (예: 소형/중형/대형, 핑크/블루)</span></label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;">
+            <input id="f-opt-input" type="text" placeholder="옵션값 입력 후 Enter 또는 추가 클릭" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addOption();}"/>
+            <button type="button" class="btn btn-gray btn-sm" onclick="addOption()" style="white-space:nowrap;">+ 추가</button>
+          </div>
+          <div id="f-opt-tags" style="display:flex;flex-wrap:wrap;gap:5px;min-height:24px;"></div>
+        </div>
+
         <div class="fg">
           <label>브랜드</label>
           <input id="f-brand" type="text" placeholder="예) 캣츄미, 테라카니스"/>
@@ -1023,6 +1033,7 @@ function renderSlots(){
       </div>
       <div class="card-body">
         <div class="card-name">${p.link?`<a href="${esc(p.link)}" target="_blank" style="color:inherit;text-decoration:none;" onclick="event.stopPropagation();" title="도매처 상품 페이지 열기">${esc(p.name)}</a>`:esc(p.name)}</div>
+        ${p.options&&p.options.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px;">${p.options.map(o=>`<span style="background:var(--pkp);border:1px solid var(--pkl);border-radius:10px;padding:1px 7px;font-size:10px;color:var(--pk);">${esc(o)}</span>`).join('')}</div>`:''}
         <div class="price-row" style="margin-bottom:6px;">
           <span class="price-label" style="font-size:9px;color:var(--muted);width:28px;">도매</span>
           <span class="price-val wholesale">${w?w.toLocaleString()+'원':'<span class="empty-price">미입력</span>'}</span>
@@ -1151,10 +1162,27 @@ function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeOnOverlay(e,id){if(e.target===e.currentTarget)closeModal(id);}
 
+let _options = [];
+function renderOptionTags(){
+  const wrap=document.getElementById('f-opt-tags');
+  wrap.innerHTML=_options.map((o,i)=>`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--pkp);border:1px solid var(--pkl);border-radius:20px;padding:3px 10px;font-size:12px;">${esc(o)}<button type="button" onclick="_options.splice(${i},1);renderOptionTags();" style="background:none;border:none;color:#c45c8a;cursor:pointer;font-size:13px;line-height:1;padding:0 0 0 2px;">×</button></span>`).join('');
+}
+function addOption(){
+  const inp=document.getElementById('f-opt-input');
+  const v=inp.value.trim();
+  if(!v)return;
+  if(!_options.includes(v)) _options.push(v);
+  inp.value='';
+  renderOptionTags();
+  inp.focus();
+}
+
 function resetForm(){
-  ['f-name','f-site','f-cat','f-wholesale','f-retail','f-img-url','f-desc','f-brand','f-link'].forEach(id=>{
+  ['f-name','f-site','f-cat','f-wholesale','f-retail','f-img-url','f-desc','f-brand','f-link','f-opt-input'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
+  _options=[];
+  renderOptionTags();
   document.getElementById('priceCalcArea').style.display='none';
   document.getElementById('retailManualWrap').style.display='none';
   document.getElementById('img-preview-area').style.display='none';
@@ -1188,6 +1216,8 @@ function openEditModal(id){
   document.getElementById('f-desc').value=p.desc||'';
   document.getElementById('f-brand').value=p.brand||'';
   document.getElementById('f-link').value=p.link||'';
+  _options=Array.isArray(p.options)?[...p.options]:(p.options?p.options.split(',').map(s=>s.trim()).filter(Boolean):[]);
+  renderOptionTags();
   if(p.img){
     if(p.img.startsWith('data:')){
       switchImgTab('file');
@@ -1239,6 +1269,7 @@ function saveProduct(){
     img, desc:document.getElementById('f-desc').value.trim(),
     brand:document.getElementById('f-brand').value.trim(),
     link:document.getElementById('f-link').value.trim(),
+    options:[..._options],
     updatedAt:new Date().toISOString(),
   };
   if(editingId){
