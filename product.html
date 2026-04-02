@@ -251,6 +251,8 @@ async function loadProduct(){
     const bigSrc=p.image_url.replace('/extra/small/','/big/').replace('/small/','/big/').replace('/medium/','/big/');
     img.onerror=function(){this.onerror=null;this.src=p.image_url;};
     img.src=bigSrc;
+    img.style.cursor='zoom-in';
+    img.onclick=function(){openLightbox(this.src);};
     imgWrap.appendChild(img);
 
     // 옵션 이미지 썸네일 갤러리
@@ -267,6 +269,7 @@ async function loadProduct(){
           img.src=url;
           thumbWrap.querySelectorAll('img').forEach(t=>t.style.borderColor='var(--bd)');
           this.style.borderColor='var(--pk)';
+          openLightbox(url);
         };
         tb.onerror=function(){this.style.display='none';};
         thumbWrap.appendChild(tb);
@@ -492,6 +495,24 @@ loadReviews();
 <script>
 function openMobileNav(){document.getElementById("mobileNav").classList.add("open");}
 function closeMobileNav(e){if(!e||e.target===document.getElementById("mobileNav"))document.getElementById("mobileNav").classList.remove("open");}
+</script>
+
+<!-- 이미지 라이트박스 -->
+<div id="imgLightbox" onclick="closeLightbox()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="imgLightboxImg" src="" style="max-width:92vw;max-height:88vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.4);"/>
+  <button onclick="closeLightbox()" style="position:absolute;top:16px;right:20px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:24px;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;">×</button>
+</div>
+<script>
+function openLightbox(url){
+  document.getElementById('imgLightboxImg').src=url;
+  document.getElementById('imgLightbox').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('imgLightbox').style.display='none';
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox();});
 </script>
 </body>
 </html>
