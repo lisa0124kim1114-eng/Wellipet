@@ -1774,7 +1774,7 @@ function openPublishModal(id, updateMode = false){
   document.getElementById('pubScrapeUrl').value = p.link||'';
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
-  [1,2,3,4,5].forEach(n=>{
+  [1,2,3,4,5,6,7,8,9,10].forEach(n=>{
     const id=n===1?'pubManualImgs':'pubManualImgs'+n;
     const el=document.getElementById(id); if(el) el.value='';
   });
@@ -1853,7 +1853,7 @@ function switchDetailTab(tab){
 }
 
 function applyManualImgs(){
-  const allUrls = [1,2,3,4,5].flatMap(n=>{
+  const allUrls = [1,2,3,4,5,6,7,8,9,10].flatMap(n=>{
     const id = n===1?'pubManualImgs':'pubManualImgs'+n;
     const raw = document.getElementById(id)?.value.trim()||'';
     return raw.split('\n').map(u=>u.trim()).filter(u=>u.startsWith('http'));
@@ -2096,6 +2096,16 @@ renderSideStats();
           <textarea id="pubManualImgs4" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
           <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">5번째</div>
           <textarea id="pubManualImgs5" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">6번째</div>
+          <textarea id="pubManualImgs6" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">7번째</div>
+          <textarea id="pubManualImgs7" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">8번째</div>
+          <textarea id="pubManualImgs8" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">9번째</div>
+          <textarea id="pubManualImgs9" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
+          <div style="font-size:11px;font-weight:700;color:var(--tx);margin:6px 0 3px;">10번째</div>
+          <textarea id="pubManualImgs10" rows="2" placeholder="이미지 URL 한 줄에 하나씩" style="width:100%;padding:7px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:monospace;resize:vertical;"></textarea>
           <div style="font-size:10px;color:var(--muted);margin-top:4px;">상세 이미지 우클릭 → <b>이미지 주소 복사</b> → 붙여넣기</div>
           <button onclick="applyManualImgs()" style="margin-top:6px;padding:6px 12px;border:1px solid var(--pk);border-radius:7px;background:var(--pkp);color:var(--pk);font-size:11px;font-weight:700;cursor:pointer;">이미지 적용</button>
         </div>
