@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# 비공개 페이지 크롤링 방지
+Disallow: /admin.html
+Disallow: /mypage.html
+Disallow: /cart.html
+Disallow: /checkout.html
+Disallow: /success.html
+Disallow: /fail.html
+
+# AI 크롤러 허용 (AI 검색 노출)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# 사이트맵
+Sitemap: https://wellipet.shop/sitemap.xml

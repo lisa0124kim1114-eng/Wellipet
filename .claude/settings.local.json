@@ -87,7 +87,28 @@
       "Read(//c/Users/lisa0/AppData/Local/**)",
       "Bash(winget install:*)",
       "Bash(rm birdieagle_workflow.json email_check_workflow.json wellypet_reels_workflow.json)",
-      "Bash(rm -rf \"my-video\" \"콘텐츠 제작\")"
+      "Bash(rm -rf \"my-video\" \"콘텐츠 제작\")",
+      "Bash(sh)",
+      "Bash(bash)",
+      "Bash(bash /tmp/install_infsh.sh)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(bash -x /tmp/install_infsh.sh)",
+      "Bash(tar -xzf /tmp/infsh.tar.gz -C /tmp)",
+      "Bash(ls /tmp/inferencesh*)",
+      "Bash(mkdir -p ~/.local/bin)",
+      "Bash(cp /tmp/inferencesh-cli-v1.7.16-linux-amd64 ~/.local/bin/infsh)",
+      "WebFetch(domain:inference.sh)",
+      "Bash(wsl --list --quiet)",
+      "Bash(wsl echo:*)",
+      "Read(//c/Users/lisa0/.config/**)",
+      "Read(//c/Users/lisa0/**)",
+      "Bash(gh auth:*)",
+      "Bash(ffmpeg -version)",
+      "Bash(export PATH=\"$PATH:/c/Users/lisa0/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-7.1.1-full_build/bin\")",
+      "Bash(/c/Users/lisa0/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1-full_build/bin/ffmpeg.exe -version)",
+      "Bash(cp:*)",
+      "Bash(explorer C:\\\\Users\\\\lisa0\\\\claude\\\\wellipet-video\\\\output:*)",
+      "Bash(echo \"PID: $!\")"
     ]
   }
 }

@@ -3,51 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
 <title>주문하기 · Wellypet</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;}
-body{font-family:'Noto Sans KR',sans-serif;background:#f8f8f8;color:var(--tx);}
-header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;}
-.logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);text-decoration:none;}
-.logo em{font-style:normal;color:var(--pkm);}
-.back-btn{font-size:13px;color:var(--muted);text-decoration:none;}
-.container{max-width:900px;margin:32px auto;padding:0 20px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;}
-.section{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--bd);margin-bottom:20px;}
-.section-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bd);}
-.form-group{margin-bottom:16px;}
-.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.form-group input{width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;color:var(--tx);}
-.form-group input:focus{border-color:var(--pk);}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.product-item{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #fafafa;}
-.product-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.product-img{width:60px;height:60px;background:var(--pkp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;}
-.product-img img{width:100%;height:100%;object-fit:cover;}
-.product-info{flex:1;}
-.product-name{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:4px;}
-.product-option{font-size:12px;color:var(--muted);font-weight:300;}
-.product-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);white-space:nowrap;}
-.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;}
-.summary-row .label{font-size:13px;color:var(--muted);font-weight:300;}
-.summary-row .value{font-size:13px;color:var(--tx);}
-.summary-row.total{border-top:1px solid var(--bd);padding-top:14px;margin-top:4px;}
-.summary-row.total .label{font-size:15px;font-weight:700;color:var(--tx);}
-.summary-row.total .value{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pk);}
-.donation-notice{background:var(--pkbg);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;}
-.donation-notice .icon{font-size:18px;}
-.donation-notice .text{font-size:12px;color:var(--pk);font-weight:300;}
-.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.pay-method{border:1.5px solid var(--bd);border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;}
-.pay-method:hover{border-color:var(--pkl);}
-.pay-method.active{border-color:var(--pk);background:var(--pkbg);}
-.pm-icon{font-size:24px;}
-.pm-name{font-size:12px;color:var(--muted);}
-.btn-pay{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;}
-.safe-badge{text-align:center;font-size:11px;color:#bbb;font-weight:300;}
-.empty-cart{text-align:center;padding:40px;color:var(--muted);}
-</style>
+<link rel="stylesheet" href="common.css"/>
+<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;} body{font-family:'Noto Sans KR',sans-serif;background:#f8f8f8;color:var(--tx);} header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:60px;display:flex;align-items:center;justify-content:space-between;} .logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);text-decoration:none;} .logo em{font-style:normal;color:var(--pkm);} .back-btn{font-size:13px;color:var(--muted);text-decoration:none;} .container{max-width:900px;margin:32px auto;padding:0 20px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;} .section{background:#fff;border-radius:16px;padding:28px;border:1px solid var(--bd);margin-bottom:20px;} .section-title{font-size:16px;font-weight:700;color:var(--tx);margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--bd);} .form-group{margin-bottom:16px;} .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:500;} .form-group input{width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;color:var(--tx);} .form-group input:focus{border-color:var(--pk);} .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .product-item{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #fafafa;} .product-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;} .product-img{width:60px;height:60px;background:var(--pkp);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden;} .product-img img{width:100%;height:100%;object-fit:cover;} .product-info{flex:1;} .product-name{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:4px;} .product-option{font-size:12px;color:var(--muted);font-weight:300;} .product-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);white-space:nowrap;} .summary-row{display:flex;justify-content:space-between;margin-bottom:12px;} .summary-row .label{font-size:13px;color:var(--muted);font-weight:300;} .summary-row .value{font-size:13px;color:var(--tx);} .summary-row.total{border-top:1px solid var(--bd);padding-top:14px;margin-top:4px;} .summary-row.total .label{font-size:15px;font-weight:700;color:var(--tx);} .summary-row.total .value{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pk);} .donation-notice{background:var(--pkbg);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin:14px 0;} .donation-notice .icon{font-size:18px;} .donation-notice .text{font-size:12px;color:var(--pk);font-weight:300;} .pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;} .pay-method{border:1.5px solid var(--bd);border-radius:12px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .2s;} .pay-method:hover{border-color:var(--pkl);} .pay-method.active{border-color:var(--pk);background:var(--pkbg);} .pm-icon{font-size:24px;} .pm-name{font-size:12px;color:var(--muted);} .btn-pay{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;} .safe-badge{text-align:center;font-size:11px;color:#bbb;font-weight:300;} .empty-cart{text-align:center;padding:40px;color:var(--muted);} </style>
 </head>
 <body>
 <header>
@@ -97,7 +57,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 40px;height:6
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdn.iamport.kr/v2/iamport.js"></script>
 <script>
@@ -145,7 +105,7 @@ function loadCartItems(){
     totalDonation+=(item.donation_amount||0)*(item.qty||1);
     return `
       <div class="product-item">
-        <div class="product-img">${item.image_url?`<img src="${item.image_url}"/>`:'🐾'}</div>
+        <div class="product-img">${item.image_url?`<img loading="lazy" src="${item.image_url}"/>`:'🐾'}</div>
         <div class="product-info">
           <div class="product-name">${item.name}</div>
           <div class="product-option">수량 ${item.qty||1}개</div>

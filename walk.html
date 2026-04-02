@@ -3,114 +3,26 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>산책 기록 · Wellipet 웰리펫</title>
+<title>강아지 산책 기록 · 경로와 거리 자동 저장 | 웰리펫</title>
+<meta name="description" content="시작 버튼 하나로 반려동물 산책 경로와 거리를 자동 기록해요. GPS 경로, 소모 칼로리, 동네 이름까지! 웰리펫 산책 기록."/>
+<link rel="canonical" href="https://wellipet.shop/walk.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://wellipet.shop/walk.html"/>
+<meta property="og:title" content="강아지 산책 기록 | 웰리펫"/>
+<meta property="og:description" content="시작 버튼 하나로 반려동물 산책 경로와 거리를 자동 기록. GPS, 칼로리, 동네 이름까지!"/>
+<meta property="og:image" content="https://wellipet.shop/logo.png"/>
+<meta property="og:site_name" content="웰리펫 Wellipet"/>
+<meta property="og:locale" content="ko_KR"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="강아지 산책 기록 | 웰리펫"/>
+<meta name="twitter:description" content="산책 경로와 거리를 자동으로 기록해드려요."/>
+<meta name="twitter:image" content="https://wellipet.shop/logo.png"/>
+<meta name="robots" content="index, follow"/>
+<meta name="keywords" content="강아지산책기록,반려동물산책,산책거리측정,펫산책앱,GPS산책,웰리펫산책"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="common.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
-body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
-header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
-.header-left{display:flex;align-items:center;gap:32px;}
-.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);text-decoration:none;}
-.logo em{font-style:normal;color:var(--pkm);}
-nav{display:flex;gap:28px;}
-nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;transition:color .2s;}
-nav a:hover,nav a.active{color:var(--pk);}
-.hicons{display:flex;gap:14px;align-items:center;}
-.ibt{font-size:16px;cursor:pointer;}
-.btn-login{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;}
-.user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;cursor:pointer;}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;}
-.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
-.mobile-nav.open{display:block;}
-.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
-.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
-.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;}
-.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
-@media(max-width:768px){.hamburger{display:flex;}nav{display:none;}.btn-login,.btn-logout,.user-name{display:none !important;}}
-
-.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:40px 32px;text-align:center;border-bottom:1px solid var(--bd);}
-.hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:12px;}
-.hero h1{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#2a1220;margin-bottom:8px;}
-.hero p{font-size:13px;color:var(--muted);font-weight:300;}
-
-.wrap{max-width:720px;margin:0 auto;padding:32px 20px;}
-
-/* 산책 컨트롤 */
-.walk-control{background:#fff;border:1.5px solid var(--bd);border-radius:24px;padding:32px;text-align:center;margin-bottom:24px;}
-.walk-status{font-size:13px;color:var(--muted);margin-bottom:8px;}
-.walk-timer{font-family:'Nunito',sans-serif;font-size:56px;font-weight:800;color:var(--pk);margin-bottom:4px;letter-spacing:2px;}
-.walk-distance{font-size:18px;color:var(--pkm);font-weight:500;margin-bottom:24px;}
-.btn-start{background:var(--pk);color:#fff;border:none;padding:18px 48px;border-radius:30px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;box-shadow:0 4px 20px rgba(196,92,138,.3);}
-.btn-start:hover{background:var(--pkm);transform:translateY(-2px);}
-.btn-stop{background:#ff6b6b;color:#fff;border:none;padding:18px 48px;border-radius:30px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;box-shadow:0 4px 20px rgba(255,107,107,.3);}
-.btn-stop:hover{background:#ff5252;transform:translateY(-2px);}
-.walk-location{font-size:12px;color:var(--muted);margin-top:12px;}
-
-/* 진행 중 지도 */
-#liveMapWrap{display:none;margin-bottom:24px;border-radius:16px;overflow:hidden;border:1.5px solid var(--bd);}
-#liveMap{height:280px;}
-.map-label{background:var(--pkbg);padding:10px 16px;font-size:12px;color:var(--muted);font-weight:500;}
-
-/* 결과 카드 */
-.result-card{display:none;background:#fff;border:1.5px solid var(--bd);border-radius:24px;overflow:hidden;margin-bottom:24px;box-shadow:0 8px 32px rgba(196,92,138,.08);}
-.result-header{background:linear-gradient(135deg,var(--pk),var(--pkm));padding:24px;color:#fff;text-align:center;}
-.result-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;}
-.result-subtitle{font-size:13px;opacity:.85;}
-.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--bd);}
-.stat-item{padding:20px 16px;text-align:center;border-right:1px solid var(--bd);}
-.stat-item:last-child{border-right:none;}
-.stat-icon{font-size:24px;margin-bottom:6px;}
-.stat-value{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);margin-bottom:2px;}
-.stat-label{font-size:11px;color:var(--muted);font-weight:300;}
-.result-map-wrap{padding:16px;}
-.result-map-title{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:10px;}
-#resultMap{height:240px;border-radius:12px;overflow:hidden;}
-.result-neighborhood{padding:0 16px 16px;}
-.neighborhood-tag{display:inline-block;background:var(--pkbg);color:var(--pk);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--bd);}
-.result-actions{display:flex;gap:10px;padding:0 16px 20px;}
-.btn-save{flex:1;background:var(--pk);color:#fff;border:none;padding:12px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-.btn-discard{flex:1;background:#fff;color:var(--muted);border:1px solid var(--bd);padding:12px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
-/* 산책 기록 */
-.section-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:16px;}
-.walk-card{background:#fff;border:1px solid var(--bd);border-radius:16px;overflow:hidden;margin-bottom:12px;}
-.walk-card-header{background:var(--pkbg);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;}
-.walk-date{font-size:12px;color:var(--muted);}
-.walk-hood{font-size:12px;color:var(--pk);font-weight:500;}
-.walk-card-body{padding:14px 16px;display:flex;gap:24px;align-items:center;}
-.walk-stat{text-align:center;}
-.walk-stat-val{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:var(--pk);}
-.walk-stat-lbl{font-size:10px;color:var(--muted);}
-.walk-mini-map{flex:1;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);}
-.empty-walks{text-align:center;padding:48px;color:var(--muted);}
-.empty-walks .icon{font-size:40px;margin-bottom:12px;}
-
-/* 로그인 필요 */
-.login-required{text-align:center;padding:80px 20px;}
-.login-required .icon{font-size:48px;margin-bottom:16px;}
-.login-required p{font-size:14px;color:var(--muted);margin-bottom:20px;}
-.btn-login-big{background:var(--pk);color:#fff;border:none;padding:12px 32px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-
-footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
-.fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-.f-links{display:flex;gap:20px;}
-.f-links a{font-size:12px;color:#a08090;text-decoration:none;}
-.f-copy{font-size:12px;color:#6a4a5a;}
-
-@media(max-width:768px){
-  header{padding:0 16px;height:60px;}
-  .hero{padding:32px 20px;}
-  .hero h1{font-size:22px;}
-  .wrap{padding:20px 16px;}
-  .walk-timer{font-size:44px;}
-  .result-stats{grid-template-columns:repeat(3,1fr);}
-  footer{padding:24px 20px;}
-}
-</style>
+<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;} header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;} .header-left{display:flex;align-items:center;gap:32px;} .logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);text-decoration:none;} .logo em{font-style:normal;color:var(--pkm);} nav{display:flex;gap:28px;} nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;transition:color .2s;} nav a:hover,nav a.active{color:var(--pk);} .hicons{display:flex;gap:14px;align-items:center;} .ibt{font-size:16px;cursor:pointer;} .btn-login{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;} .user-name{font-size:13px;color:var(--pk);font-weight:500;display:none;cursor:pointer;} .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;} .hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;} .mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;} .mobile-nav.open{display:block;} .mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;} .mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;} .mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;} .mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);} @media(max-width:768px){.hamburger{display:flex;}nav{display:none;}.btn-login,.btn-logout,.user-name{display:none !important;}}  .hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:40px 32px;text-align:center;border-bottom:1px solid var(--bd);} .hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:12px;} .hero h1{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:#2a1220;margin-bottom:8px;} .hero p{font-size:13px;color:var(--muted);font-weight:300;}  .wrap{max-width:720px;margin:0 auto;padding:32px 20px;}  /* ?곗콉 而⑦듃濡?*/ .walk-control{background:#fff;border:1.5px solid var(--bd);border-radius:24px;padding:32px;text-align:center;margin-bottom:24px;} .walk-status{font-size:13px;color:var(--muted);margin-bottom:8px;} .walk-timer{font-family:'Nunito',sans-serif;font-size:56px;font-weight:800;color:var(--pk);margin-bottom:4px;letter-spacing:2px;} .walk-distance{font-size:18px;color:var(--pkm);font-weight:500;margin-bottom:24px;} .btn-start{background:var(--pk);color:#fff;border:none;padding:18px 48px;border-radius:30px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;box-shadow:0 4px 20px rgba(196,92,138,.3);} .btn-start:hover{background:var(--pkm);transform:translateY(-2px);} .btn-stop{background:#ff6b6b;color:#fff;border:none;padding:18px 48px;border-radius:30px;font-size:17px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;box-shadow:0 4px 20px rgba(255,107,107,.3);} .btn-stop:hover{background:#ff5252;transform:translateY(-2px);} .walk-location{font-size:12px;color:var(--muted);margin-top:12px;}  /* 吏꾪뻾 以?吏??*/ #liveMapWrap{display:none;margin-bottom:24px;border-radius:16px;overflow:hidden;border:1.5px solid var(--bd);} #liveMap{height:280px;} .map-label{background:var(--pkbg);padding:10px 16px;font-size:12px;color:var(--muted);font-weight:500;}  /* 寃곌낵 移대뱶 */ .result-card{display:none;background:#fff;border:1.5px solid var(--bd);border-radius:24px;overflow:hidden;margin-bottom:24px;box-shadow:0 8px 32px rgba(196,92,138,.08);} .result-header{background:linear-gradient(135deg,var(--pk),var(--pkm));padding:24px;color:#fff;text-align:center;} .result-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;margin-bottom:4px;} .result-subtitle{font-size:13px;opacity:.85;} .result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--bd);} .stat-item{padding:20px 16px;text-align:center;border-right:1px solid var(--bd);} .stat-item:last-child{border-right:none;} .stat-icon{font-size:24px;margin-bottom:6px;} .stat-value{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);margin-bottom:2px;} .stat-label{font-size:11px;color:var(--muted);font-weight:300;} .result-map-wrap{padding:16px;} .result-map-title{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:10px;} #resultMap{height:240px;border-radius:12px;overflow:hidden;} .result-neighborhood{padding:0 16px 16px;} .neighborhood-tag{display:inline-block;background:var(--pkbg);color:var(--pk);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--bd);} .result-actions{display:flex;gap:10px;padding:0 16px 20px;} .btn-save{flex:1;background:var(--pk);color:#fff;border:none;padding:12px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-discard{flex:1;background:#fff;color:var(--muted);border:1px solid var(--bd);padding:12px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}  /* ?곗콉 湲곕줉 */ .section-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:16px;} .walk-card{background:#fff;border:1px solid var(--bd);border-radius:16px;overflow:hidden;margin-bottom:12px;} .walk-card-header{background:var(--pkbg);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;} .walk-date{font-size:12px;color:var(--muted);} .walk-hood{font-size:12px;color:var(--pk);font-weight:500;} .walk-card-body{padding:14px 16px;display:flex;gap:24px;align-items:center;} .walk-stat{text-align:center;} .walk-stat-val{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:var(--pk);} .walk-stat-lbl{font-size:10px;color:var(--muted);} .walk-mini-map{flex:1;height:80px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);} .empty-walks{text-align:center;padding:48px;color:var(--muted);} .empty-walks .icon{font-size:40px;margin-bottom:12px;}  /* 濡쒓렇???꾩슂 */ .login-required{text-align:center;padding:80px 20px;} .login-required .icon{font-size:48px;margin-bottom:16px;} .login-required p{font-size:14px;color:var(--muted);margin-bottom:20px;} .btn-login-big{background:var(--pk);color:#fff;border:none;padding:12px 32px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}  footer{background:#2a1220;padding:32px 48px;margin-top:80px;} .fb{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;} .f-links{display:flex;gap:20px;} .f-links a{font-size:12px;color:#a08090;text-decoration:none;} .f-copy{font-size:12px;color:#6a4a5a;}  @media(max-width:768px){   header{padding:0 16px;height:60px;}   .hero{padding:32px 20px;}   .hero h1{font-size:22px;}   .wrap{padding:20px 16px;}   .walk-timer{font-size:44px;}   .result-stats{grid-template-columns:repeat(3,1fr);}   footer{padding:24px 20px;} } </style>
 </head>
 <body>
 
@@ -255,7 +167,7 @@ footer{background:#2a1220;padding:32px 48px;margin-top:80px;}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const SUPABASE_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';

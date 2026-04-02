@@ -3,26 +3,11 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex, nofollow"/>
 <title>결제 완료 · Wellypet</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;}
-body{font-family:'Noto Sans KR',sans-serif;background:#f8f8f8;color:var(--tx);display:flex;align-items:center;justify-content:center;min-height:100vh;}
-.wrap{background:#fff;border-radius:20px;padding:48px 40px;max-width:480px;width:100%;text-align:center;border:1px solid var(--bd);}
-.icon{font-size:64px;margin-bottom:20px;}
-h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;margin-bottom:8px;}
-p{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:28px;line-height:1.7;}
-.order-info{background:var(--pkbg);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;}
-.order-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;}
-.order-row:last-child{margin-bottom:0;}
-.order-row .k{color:var(--muted);font-weight:300;}
-.order-row .v{color:var(--tx);font-weight:500;}
-.donation-box{background:var(--pk);border-radius:12px;padding:16px;margin-bottom:28px;color:#fff;font-size:13px;font-weight:300;}
-.donation-box strong{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;}
-.btn-home{background:var(--pk);color:#fff;border:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-right:10px;}
-.btn-shop{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:14px 36px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
-</style>
+<link rel="stylesheet" href="common.css"/>
+<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;} body{font-family:'Noto Sans KR',sans-serif;background:#f8f8f8;color:var(--tx);display:flex;align-items:center;justify-content:center;min-height:100vh;} .wrap{background:#fff;border-radius:20px;padding:48px 40px;max-width:480px;width:100%;text-align:center;border:1px solid var(--bd);} .icon{font-size:64px;margin-bottom:20px;} h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:#2a1220;margin-bottom:8px;} p{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:28px;line-height:1.7;} .order-info{background:var(--pkbg);border-radius:12px;padding:20px;margin-bottom:28px;text-align:left;} .order-row{display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px;} .order-row:last-child{margin-bottom:0;} .order-row .k{color:var(--muted);font-weight:300;} .order-row .v{color:var(--tx);font-weight:500;} .donation-box{background:var(--pk);border-radius:12px;padding:16px;margin-bottom:28px;color:#fff;font-size:13px;font-weight:300;} .donation-box strong{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;} .btn-home{background:var(--pk);color:#fff;border:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-right:10px;} .btn-shop{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:14px 36px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} </style>
 </head>
 <body>
 <div class="wrap">
@@ -42,7 +27,7 @@ p{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:28px;line-heig
   <button class="btn-shop" onclick="location.href='shop.html'">계속 쇼핑하기</button>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
