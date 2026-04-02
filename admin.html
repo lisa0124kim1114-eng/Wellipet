@@ -364,7 +364,7 @@ async function moveProduct(idx, dir){
 
   const updates = _productList.map((p,i) => _supabase.from('products').update({sort_order:i+1}).eq('id',p.id));
   await Promise.all(updates);
-
+  localStorage.removeItem('wellipet_products_cache');
   renderProductTable();
 }
 
@@ -459,12 +459,14 @@ async function saveProduct(){
   } else {
     await _supabase.from('products').insert(product);
   }
+  localStorage.removeItem('wellipet_products_cache');
   closeProductModal();
   loadProducts();
 }
 
 async function deleteProduct(id){
   if(!confirm('정말 삭제할까요?'))return;
+  localStorage.removeItem('wellipet_products_cache');
   const {error}=await _supabase.from('products').delete().eq('id',id);
   if(error){
     if(error.message.includes('security policy')||error.message.includes('JWT')){

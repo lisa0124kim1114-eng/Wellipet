@@ -242,8 +242,22 @@ function renderProducts(products) {
 }
 
 async function loadProducts() {
+  const CACHE_KEY = 'wellipet_products_cache';
+  const CACHE_TTL = 5 * 60 * 1000; // 5분
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached) {
+    try {
+      const {ts, data} = JSON.parse(cached);
+      if (Date.now() - ts < CACHE_TTL) {
+        allProducts = data;
+        applyFilters();
+        return;
+      }
+    } catch(e) {}
+  }
   const {data} = await _supabase.from('products').select('*').order('sort_order',{ascending:true});
   allProducts = data||[];
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ts: Date.now(), data: allProducts}));
   applyFilters();
 }
 
