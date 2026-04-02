@@ -182,7 +182,16 @@ let allProducts = [];
 let currentCat = '전체';
 let currentPetType = 'dog';
 let currentPage = 1;
+let currentSort = 'default';
 const PAGE_SIZE = 20;
+
+function saveShopState(){
+  sessionStorage.setItem('shopState',JSON.stringify({cat:currentCat,petType:currentPetType,page:currentPage,sort:currentSort}));
+}
+function goToProduct(id){
+  saveShopState();
+  location.href='product.html?id='+id;
+}
 
 function getBgClass(cat) {
   if(cat==='배변패드') return 'pp';
@@ -252,7 +261,7 @@ function renderProducts(products) {
   const paged=products.slice(start,start+PAGE_SIZE);
   grid.innerHTML = paged.map(p=>`
     <div class="pcard">
-      <div class="pimg ${getBgClass(p.category)}" onclick="location.href='product.html?id=${p.id}'">
+      <div class="pimg ${getBgClass(p.category)}" onclick="goToProduct(${p.id})">
         ${p.badge?`<span class="pbadge badge-${p.badge}">${p.badge}</span>`:''}
         ${p.image_url
           ? `<img loading="lazy" src="${p.image_url}" alt="${p.name}"/>`
@@ -261,12 +270,12 @@ function renderProducts(products) {
       </div>
       <div class="pinfo">
         <div class="ptag">${p.category}</div>
-        <div class="pname" onclick="location.href='product.html?id=${p.id}'" style="cursor:pointer;">${p.name}</div>
+        <div class="pname" onclick="goToProduct(${p.id})" style="cursor:pointer;">${p.name}</div>
         <div class="pprice">${Number(p.price).toLocaleString()}원 ${p.original_price?`<s>${Number(p.original_price).toLocaleString()}원</s>`:''}</div>
         <div class="pdon">🏠 ${Number(Math.floor(p.price*0.03)).toLocaleString()}원 기부 &nbsp;·&nbsp; 🚚 2-3 영업일 배송</div>
         <div class="pship">🚚 배송비 3,000원 &nbsp;·&nbsp; <span>5만원 이상 무료배송</span></div>
         <div class="pbtns">
-          <button class="pbtn-detail" onclick="location.href='product.html?id=${p.id}'">자세히 보기</button>
+          <button class="pbtn-detail" onclick="goToProduct(${p.id})">자세히 보기</button>
           <button class="pbtn-cart" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">🛒 담기</button>
         </div>
       </div>
@@ -275,16 +284,52 @@ function renderProducts(products) {
   renderPagination(products.length);
 }
 
+function restoreShopState(){
+  const saved=sessionStorage.getItem('shopState');
+  if(!saved)return;
+  sessionStorage.removeItem('shopState');
+  try{
+    const s=JSON.parse(saved);
+    // 펫 타입 복원
+    if(s.petType){
+      currentPetType=s.petType;
+      document.querySelectorAll('.pet-tab').forEach(b=>b.classList.remove('on'));
+      document.querySelectorAll('.pet-tab').forEach(b=>{
+        if((s.petType==='dog'&&b.textContent.includes('강아지'))||(s.petType==='cat'&&b.textContent.includes('고양이'))) b.classList.add('on');
+      });
+    }
+    // 카테고리 복원
+    if(s.cat){
+      currentCat=s.cat;
+      document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+      document.querySelectorAll('.cat-btn').forEach(b=>{
+        if(b.querySelector('.cat-name')&&b.querySelector('.cat-name').textContent===s.cat) b.classList.add('on');
+      });
+    }
+    // 정렬 복원
+    if(s.sort&&s.sort!=='default'){
+      currentSort=s.sort;
+      document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
+      document.querySelectorAll('.sort-btn').forEach(b=>{
+        if((s.sort==='new'&&b.textContent==='신상품순')||(s.sort==='low'&&b.textContent==='낮은가격순')||(s.sort==='high'&&b.textContent==='높은가격순')) b.classList.add('on');
+      });
+    }
+    // 페이지 복원 (applyFilters 이후에 처리)
+    if(s.page&&s.page>1) window._restorePage=s.page;
+  }catch(e){}
+}
+
 async function loadProducts() {
   const CACHE_KEY = 'wellipet_products_cache';
   const CACHE_TTL = 5 * 60 * 1000; // 5분
+  restoreShopState();
   const cached = localStorage.getItem(CACHE_KEY);
   if (cached) {
     try {
       const {ts, data} = JSON.parse(cached);
       if (Date.now() - ts < CACHE_TTL) {
         allProducts = data;
-        applyFilters();
+        applyFiltersWithSort();
         return;
       }
     } catch(e) {}
@@ -292,7 +337,17 @@ async function loadProducts() {
   const {data} = await _supabase.from('products').select('*').order('sort_order',{ascending:true});
   allProducts = data||[];
   localStorage.setItem(CACHE_KEY, JSON.stringify({ts: Date.now(), data: allProducts}));
-  applyFilters();
+  applyFiltersWithSort();
+}
+
+function applyFiltersWithSort(){
+  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
+  if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
+  if(currentSort==='low') filtered.sort((a,b)=>a.price-b.price);
+  else if(currentSort==='high') filtered.sort((a,b)=>b.price-a.price);
+  else if(currentSort==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(window._restorePage){currentPage=window._restorePage;delete window._restorePage;}
+  renderProducts(filtered);
 }
 
 function switchPet(el, petType) {
@@ -314,21 +369,18 @@ function filterCat(el, cat) {
 
 function applyFilters() {
   currentPage=1;
-  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
-  if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
-  renderProducts(filtered);
+  currentSort='default';
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.sort-btn').classList.add('on');
+  applyFiltersWithSort();
 }
 
 function sortProducts(type, el) {
   currentPage=1;
+  currentSort=type;
   document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
-  if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
-  if(type==='low') filtered.sort((a,b)=>a.price-b.price);
-  else if(type==='high') filtered.sort((a,b)=>b.price-a.price);
-  else if(type==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  renderProducts(filtered);
+  applyFiltersWithSort();
 }
 
 function updateHeader(user){
