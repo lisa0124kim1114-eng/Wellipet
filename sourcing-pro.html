@@ -611,7 +611,8 @@ if(!products){
 // ── Supabase 연결 ──
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
-const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let _supabase = null;
+try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn('Supabase 초기화 실패 (발행 기능 비활성화):', e); }
 // 발행된 상품 추적: { sourcingId → supabaseProductId }
 let publishedMap = JSON.parse(localStorage.getItem('welliPublished')||'{}');
 function savePublished(){localStorage.setItem('welliPublished',JSON.stringify(publishedMap));}
@@ -1514,6 +1515,7 @@ function closePublishModal(){
 
 async function confirmPublish(){
   if(!publishingId) return;
+  if(!_supabase){ alert('네트워크 오류로 발행 불가. 페이지를 새로고침해주세요.'); return; }
   const p = products.find(x=>x.id===publishingId);
   if(!p) return;
 
@@ -1609,6 +1611,7 @@ async function unpublishProduct(sourcingId){
 
 // ── 로그인 체크 ──
 async function checkAuth(){
+  if(!_supabase) return;
   const {data:{session}} = await _supabase.auth.getSession();
   if(!session){
     document.getElementById('authBanner').style.display='flex';
@@ -1618,6 +1621,7 @@ async function loginForPublish(){
   const email = document.getElementById('authEmail').value;
   const pw = document.getElementById('authPw').value;
   if(!email||!pw){ alert('이메일과 비밀번호를 입력해주세요.'); return; }
+  if(!_supabase){ alert('네트워크 오류로 로그인 불가'); return; }
   const {error} = await _supabase.auth.signInWithPassword({email,password:pw});
   if(error){ alert('로그인 실패: '+error.message); return; }
   document.getElementById('authBanner').style.display='none';
