@@ -51,6 +51,7 @@
       <div class="section-title">결제 금액</div>
       <div class="summary-row"><span class="label">상품 금액</span><span class="value" id="sumAmount">0원</span></div>
       <div class="summary-row"><span class="label">배송비</span><span class="value" style="color:#2a7a5a;">무료</span></div>
+      <div class="summary-row" id="discountRow" style="display:none;"><span class="label">🎁 첫 주문 10% 할인</span><span class="value" id="discountAmt" style="color:#2a7a5a;font-weight:700;">-0원</span></div>
       <div class="donation-notice"><span class="icon">🏠</span><span class="text" id="donationText">이 주문으로 0원이 유기견 보호소에 기부돼요</span></div>
       <div class="summary-row total"><span class="label">최종 결제금액</span><span class="value" id="totalAmount">0원</span></div>
     </div>
@@ -83,6 +84,8 @@ let cartItems=[];
 let totalPrice=0;
 let totalDonation=0;
 let orderName='';
+let discountApplied=false;
+let discountAmount=0;
 
 // 장바구니에서 상품 불러오기
 function loadCartItems(){
@@ -136,6 +139,16 @@ function loadCartItems(){
         if(profile.zipcode)document.getElementById('zipcode').value=profile.zipcode;
         if(profile.address)document.getElementById('address').value=profile.address;
         if(profile.address_detail)document.getElementById('addressDetail').value=profile.address_detail;
+      }
+      // 첫 주문 10% 할인 적용 (미사용 회원만)
+      if(!profile||!profile.first_order_used){
+        discountApplied=true;
+        discountAmount=Math.floor(totalPrice*0.1);
+        const finalPrice=totalPrice-discountAmount;
+        document.getElementById('discountRow').style.display='flex';
+        document.getElementById('discountAmt').textContent='-'+Number(discountAmount).toLocaleString()+'원';
+        document.getElementById('totalAmount').textContent=Number(finalPrice).toLocaleString()+'원';
+        document.getElementById('btnPay').textContent=Number(finalPrice).toLocaleString()+'원 결제하기';
       }
     }
   });
@@ -214,6 +227,8 @@ async function requestPayment(){
 
   const paymentId='order-'+Date.now();
 
+  const finalPrice=totalPrice-discountAmount;
+
   // 결제 전에 배송 정보 localStorage에 임시 저장
   localStorage.setItem('pendingOrder',JSON.stringify({
     name,email,phone,
@@ -221,7 +236,9 @@ async function requestPayment(){
     address,
     addressDetail:document.getElementById('addressDetail').value,
     items:cartItems,
-    amount:totalPrice,
+    amount:finalPrice,
+    discount_applied:discountApplied,
+    discount_amount:discountAmount,
   }));
 
   const channelKey = CHANNEL_KEYS[selectedMethod];
@@ -237,7 +254,7 @@ async function requestPayment(){
     channelKey: channelKey,
     paymentId: paymentId,
     orderName: orderName,
-    totalAmount: totalPrice,
+    totalAmount: finalPrice,
     currency: 'CURRENCY_KRW',
     payMethod: isEasyPay ? 'EASY_PAY' : 'CARD',
     customer: {
