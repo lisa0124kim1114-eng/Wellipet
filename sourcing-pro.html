@@ -1777,10 +1777,24 @@ function openPublishModal(id, updateMode = false){
   document.getElementById('pubManualImgs').value='';
   document.getElementById('pubManualImgs2').value='';
 
-  document.getElementById('pubModalTitle').textContent = updateMode ? '상세페이지 수정' : '🛒 쇼핑몰에 올리기';
+  document.getElementById('pubModalTitle').textContent = updateMode ? '✏️ 쇼핑몰 상품 수정' : '🛒 쇼핑몰에 올리기';
   document.getElementById('pubConfirmBtn').textContent = updateMode ? '업데이트' : '쇼핑몰에 올리기';
-  document.getElementById('pubPriceRow').style.display = updateMode ? 'none' : '';
-  document.getElementById('pubBadgeRow').style.display = '';  // 항상 표시 (펫타입 포함)
+  document.getElementById('pubPriceRow').style.display = '';
+  document.getElementById('pubBadgeRow').style.display = '';
+  if(updateMode){
+    const shopId = publishedMap[id];
+    if(shopId){
+      _supabase.from('products').select('price,original_price,badge,pet_type,donation_amount,description').eq('id',shopId).single().then(({data:sd})=>{
+        if(!sd) return;
+        if(sd.price) document.getElementById('pubPrice').value = sd.price;
+        if(sd.original_price) document.getElementById('pubOrigPrice').value = sd.original_price;
+        if(sd.badge) document.getElementById('pubBadge').value = sd.badge;
+        if(sd.pet_type) document.getElementById('pubPetType').value = sd.pet_type;
+        if(sd.donation_amount) document.getElementById('pubDonation').value = sd.donation_amount;
+        if(sd.description) document.getElementById('pubDesc').value = sd.description;
+      });
+    }
+  }
   document.getElementById('publishModal').style.display='flex';
 }
 
@@ -1879,16 +1893,27 @@ async function confirmPublish(){
   let error, data;
 
   if(publishingUpdateMode){
-    // 이미 올린 상품 — detail_content 만 업데이트
     const shopId = publishedMap[publishingId];
     if(!shopId){ alert('올린 상품 ID를 찾을 수 없어요.'); btn.disabled=false; btn.textContent='업데이트'; return; }
-    const updateData = { pet_type: petType };
+    const updateData = {
+      name: p.name,
+      price: price,
+      original_price: origPrice,
+      category: p.cat,
+      badge: badge,
+      pet_type: petType,
+      donation_amount: donation,
+      description: desc,
+      image_url: p.img||null,
+      option_images: optionImages,
+    };
     if(scrapedDetailHtml) updateData.detail_content = scrapedDetailHtml;
     ({error} = await _supabase.from('products').update(updateData).eq('id', shopId));
-    btn.disabled = false; btn.textContent = '상세페이지 업데이트';
+    btn.disabled = false; btn.textContent = '업데이트';
     if(error){ alert('오류: '+error.message); return; }
+    localStorage.removeItem('wellipet_products_cache');
     closePublishModal();
-    showToast('상세페이지가 업데이트됐어요! 🎉','success');
+    showToast('쇼핑몰 상품이 업데이트됐어요! 🎉','success');
   } else {
     // 새 상품 INSERT
     ({data, error} = await _supabase.from('products').insert({
