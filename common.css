@@ -122,6 +122,5 @@ footer{background:linear-gradient(180deg, #321626 0%, #201018 100%);padding:56px
   .sbox{display:none;}
   .ft{grid-template-columns:1fr;}
   body{overflow-x:hidden;}
-  .modal-overlay{padding:12px;align-items:flex-end;}
-  .modal{padding:28px 20px;border-radius:20px 20px 0 0;max-width:100%;width:100%;}
+  .modal{padding:28px 20px;}
 }
