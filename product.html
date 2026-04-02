@@ -257,7 +257,7 @@ async function loadProduct(){
 
   if(p.detail_content){
     document.getElementById('detailContentSection').style.display='block';
-    document.getElementById('detailContentWrap').innerHTML=escHtml(p.detail_content);
+    document.getElementById('detailContentWrap').innerHTML=p.detail_content;
   } else if(p.detail_images){
     try{
       const imgs=JSON.parse(p.detail_images);
