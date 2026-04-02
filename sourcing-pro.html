@@ -1737,7 +1737,8 @@ function openPublishModal(id, updateMode = false){
   document.getElementById('pubOrigPrice').value = '';
   document.getElementById('pubBadge').value = '';
   document.getElementById('pubPetType').value = 'dog';
-  document.getElementById('pubDonation').value = '500';
+  const pubPrice = cp ? cp.wellipet : (Number(p.retail)||0);
+  document.getElementById('pubDonation').value = Math.floor(pubPrice*0.03);
   document.getElementById('pubDesc').value = p.desc||'';
   document.getElementById('pubScrapeUrl').value = p.link||'';
   document.getElementById('pubImgPreview').style.display='none';
@@ -1993,7 +1994,7 @@ renderSideStats();
       </div>
       <div>
         <label>기부금 (원)</label>
-        <input type="number" id="pubDonation" value="500"/>
+        <input type="number" id="pubDonation" value="0"/>
       </div>
       <div>
         <label>상품 설명</label>
