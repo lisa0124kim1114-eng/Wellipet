@@ -158,7 +158,7 @@ function renderCart(){
         <div class="cart-info">
           <div class="cart-name" onclick="location.href='product.html?id=${item.id}'">${item.name}</div>
           <div class="cart-cat">${item.category}</div>
-          <div class="cart-don">🏠 ${Number((item.donation_amount||0)*item.qty).toLocaleString()}원 기부</div>
+          <div class="cart-don">🏠 ${Number(Math.floor((item.price||0)*0.03)*item.qty).toLocaleString()}원 기부</div>
         </div>
         <div class="cart-qty">
           <button class="cart-qty-btn" onclick="changeQty(${i},-1)">−</button>
@@ -185,7 +185,7 @@ function updateSummary(){
   checks.forEach((c,i)=>{
     if(c.checked){
       total += cart[i].price * cart[i].qty;
-      don += (cart[i].donation_amount||0) * cart[i].qty;
+      don += Math.floor((cart[i].price||0)*0.03) * cart[i].qty;
     }
   });
   const shipping = total >= 50000 ? 0 : (total > 0 ? 3000 : 0);

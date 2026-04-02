@@ -428,7 +428,7 @@ function renderProductTable(){
       </td>
       <td>${p.category}<br><span style="font-size:10px;color:#a08090;">${p.pet_type==='dog'?'🐶 강아지':p.pet_type==='cat'?'🐱 고양이':'🐾 공통'}</span></td>
       <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
-      <td>${Number(p.donation_amount||0).toLocaleString()}원</td>
+      <td>${Math.floor((p.price||0)*0.03).toLocaleString()}원</td>
       <td style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
         <button class="btn-edit" onclick="editProduct(${p.id})">수정</button>
         <button class="btn-edit" data-qimg="${p.id}" onclick="quickReplaceImage(${p.id})" title="이미지만 빠르게 교체">📷</button>
@@ -517,7 +517,7 @@ async function editProduct(id){
   document.getElementById('pCategory').value=data.category||'배변패드';
   document.getElementById('pPetType').value=data.pet_type||'dog';
   document.getElementById('pBadge').value=data.badge||'';
-  document.getElementById('pDonation').value=data.donation_amount||'';
+  document.getElementById('pDonation').value=Math.floor((data.price||0)*0.03);
   document.getElementById('pDescription').value=data.description||'';
   document.getElementById('pImageFile').value='';
   document.getElementById('pDetailFiles').value='';

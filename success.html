@@ -49,7 +49,7 @@ async function init(){
     document.getElementById('orderAmount').textContent=Number(pending.amount||0).toLocaleString()+'원';
 
     // 기부금 계산
-    const totalDon=pending.items.reduce((sum,item)=>(sum+(item.donation_amount||0)*(item.qty||1)),0);
+    const totalDon=pending.items.reduce((sum,item)=>(sum+Math.floor((item.price||0)*0.03)*(item.qty||1)),0);
     document.getElementById('donationAmt').textContent=Number(totalDon).toLocaleString()+'원';
 
     // Supabase에 주문 저장

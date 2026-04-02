@@ -105,7 +105,7 @@ function loadCartItems(){
   const itemsHtml=cartItems.map(item=>{
     const itemTotal=item.price*(item.qty||1);
     totalPrice+=itemTotal;
-    totalDonation+=(item.donation_amount||0)*(item.qty||1);
+    totalDonation+=Math.floor((item.price||0)*0.03)*(item.qty||1);
     return `
       <div class="product-item">
         <div class="product-img">${item.image_url?`<img loading="lazy" src="${item.image_url}"/>`:'🐾'}</div>
