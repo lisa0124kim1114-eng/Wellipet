@@ -40,9 +40,16 @@
         <div style="font-size:13px;color:var(--muted);">등록된 상품을 관리해요</div>
         <button class="btn-primary" onclick="openProductModal()">+ 상품 추가</button>
       </div>
+      <!-- 펫 타입 탭 -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="cat-tab on" id="petTab-all" onclick="filterAdminPet('all',this)">🐾 전체</button>
+        <button class="cat-tab" id="petTab-dog" onclick="filterAdminPet('dog',this)">🐶 강아지</button>
+        <button class="cat-tab" id="petTab-cat" onclick="filterAdminPet('cat',this)">🐱 고양이</button>
+        <button class="cat-tab" id="petTab-both" onclick="filterAdminPet('both',this)">🐾 공통</button>
+      </div>
       <!-- 카테고리 탭 -->
       <div id="catTabs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-        <button class="cat-tab on" onclick="filterAdminCat('전체',this)">🐾 전체</button>
+        <button class="cat-tab on" onclick="filterAdminCat('전체',this)">전체</button>
         <button class="cat-tab" onclick="filterAdminCat('간식',this)">🍖 간식</button>
         <button class="cat-tab" onclick="filterAdminCat('사료',this)">🍽 사료</button>
         <button class="cat-tab" onclick="filterAdminCat('배변/위생',this)">🧻 배변/위생</button>
@@ -369,10 +376,18 @@ async function uploadImage(file,prefix='product'){
 
 let _productList = [];
 let _adminCat = '전체';
+let _adminPet = 'all';
+
+function filterAdminPet(pet, el){
+  _adminPet = pet;
+  document.querySelectorAll('#petTab-all,#petTab-dog,#petTab-cat,#petTab-both').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderProductTable();
+}
 
 function filterAdminCat(cat, el){
   _adminCat = cat;
-  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#catTabs .cat-tab').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   renderProductTable();
 }
@@ -390,7 +405,9 @@ async function loadProducts(){
 
 function renderProductTable(){
   const tbody=document.getElementById('productTable');
-  const list = _adminCat==='전체' ? _productList : _productList.filter(p=>p.category===_adminCat);
+  let list = _productList;
+  if(_adminPet!=='all') list=list.filter(p=>p.pet_type===_adminPet||(p.pet_type==='both'&&_adminPet==='both'));
+  if(_adminCat!=='전체') list=list.filter(p=>p.category===_adminCat);
   if(!list.length){
     tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>이 카테고리에 상품이 없어요</p></div></td></tr>';
     return;
