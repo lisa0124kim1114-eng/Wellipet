@@ -104,6 +104,31 @@
       <div class="upload-progress" id="uploadProgress">⏳ 업로드 중...</div>
     </div>
 
+    <!-- 옵션 이미지 3장 -->
+    <div class="form-group">
+      <label>🎨 옵션 이미지 (최대 3장 · 색상/사이즈별 이미지)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;">
+        <div class="img-upload-area" style="padding:10px;position:relative;">
+          <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="previewOptionImage(this,0)"/>
+          <img id="optPreview0" style="width:100%;height:72px;object-fit:contain;border-radius:8px;display:none;margin-bottom:4px;"/>
+          <div id="optPlaceholder0" style="text-align:center;"><div style="font-size:22px;">📷</div><div style="font-size:10px;color:var(--muted);">옵션 1</div></div>
+          <button id="optDel0" onclick="clearOptionImage(0)" style="display:none;position:absolute;top:4px;right:4px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:1;">×</button>
+        </div>
+        <div class="img-upload-area" style="padding:10px;position:relative;">
+          <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="previewOptionImage(this,1)"/>
+          <img id="optPreview1" style="width:100%;height:72px;object-fit:contain;border-radius:8px;display:none;margin-bottom:4px;"/>
+          <div id="optPlaceholder1" style="text-align:center;"><div style="font-size:22px;">📷</div><div style="font-size:10px;color:var(--muted);">옵션 2</div></div>
+          <button id="optDel1" onclick="clearOptionImage(1)" style="display:none;position:absolute;top:4px;right:4px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:1;">×</button>
+        </div>
+        <div class="img-upload-area" style="padding:10px;position:relative;">
+          <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="previewOptionImage(this,2)"/>
+          <img id="optPreview2" style="width:100%;height:72px;object-fit:contain;border-radius:8px;display:none;margin-bottom:4px;"/>
+          <div id="optPlaceholder2" style="text-align:center;"><div style="font-size:22px;">📷</div><div style="font-size:10px;color:var(--muted);">옵션 3</div></div>
+          <button id="optDel2" onclick="clearOptionImage(2)" style="display:none;position:absolute;top:4px;right:4px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:1;">×</button>
+        </div>
+      </div>
+    </div>
+
     <hr class="section-divider"/>
 
     <!-- 상세 이미지 -->
@@ -205,6 +230,8 @@ let currentDetailImages=[];
 let newDetailFiles=[];
 let colorOptions=[];
 let sizeOptions=[];
+let currentOptionImages=[null,null,null];
+let newOptionFiles=[null,null,null];
 
 function showPage(name,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -257,6 +284,52 @@ function renderDetailPreviews(){
 function removeExistingDetail(i){currentDetailImages.splice(i,1);renderDetailPreviews();}
 function removeNewDetail(i){newDetailFiles.splice(i,1);renderDetailPreviews();}
 function calcDonation(input){document.getElementById('pDonation').value=Math.round((parseInt(input.value)||0)*0.03);}
+
+function previewOptionImage(input,idx){
+  const file=input.files[0];if(!file)return;
+  newOptionFiles[idx]=file;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('optPreview'+idx).src=e.target.result;
+    document.getElementById('optPreview'+idx).style.display='block';
+    document.getElementById('optPlaceholder'+idx).style.display='none';
+    document.getElementById('optDel'+idx).style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearOptionImage(idx){
+  newOptionFiles[idx]=null;
+  currentOptionImages[idx]=null;
+  document.getElementById('optPreview'+idx).style.display='none';
+  document.getElementById('optPlaceholder'+idx).style.display='block';
+  document.getElementById('optDel'+idx).style.display='none';
+}
+
+function resetOptionImages(){
+  for(let i=0;i<3;i++){
+    newOptionFiles[i]=null;
+    currentOptionImages[i]=null;
+    document.getElementById('optPreview'+i).style.display='none';
+    document.getElementById('optPlaceholder'+i).style.display='block';
+    document.getElementById('optDel'+i).style.display='none';
+  }
+}
+
+function loadOptionImages(optJson){
+  resetOptionImages();
+  try{
+    const arr=JSON.parse(optJson||'[]');
+    arr.slice(0,3).forEach((url,i)=>{
+      if(!url)return;
+      currentOptionImages[i]=url;
+      document.getElementById('optPreview'+i).src=url;
+      document.getElementById('optPreview'+i).style.display='block';
+      document.getElementById('optPlaceholder'+i).style.display='none';
+      document.getElementById('optDel'+i).style.display='block';
+    });
+  }catch(e){}
+}
 
 // 옵션 추가/삭제
 function addOption(type){
@@ -388,6 +461,7 @@ function openProductModal(){
   document.getElementById('colorInput').value='';
   document.getElementById('sizeInput').value='';
   renderOptionTags();
+  resetOptionImages();
   document.getElementById('productModal').classList.add('open');
 }
 
@@ -423,6 +497,7 @@ async function editProduct(id){
   }
   renderDetailPreviews();
   renderOptionTags();
+  loadOptionImages(data.option_images);
   document.getElementById('productModal').classList.add('open');
 }
 
@@ -435,6 +510,16 @@ async function saveProduct(){
     document.getElementById('uploadProgress').style.display='none';
     if(!imageUrl)return;
   }
+  // 옵션 이미지 업로드
+  let optUrls=[...currentOptionImages];
+  for(let i=0;i<3;i++){
+    if(newOptionFiles[i]){
+      const url=await uploadImage(newOptionFiles[i],'option');
+      if(url)optUrls[i]=url;
+    }
+  }
+  optUrls=optUrls.filter(Boolean);
+
   let detailUrls=[...currentDetailImages];
   if(newDetailFiles.length>0){
     document.getElementById('uploadProgressDetail').style.display='block';
@@ -454,6 +539,7 @@ async function saveProduct(){
     detail_images:detailUrls.length>0?JSON.stringify(detailUrls):null,
     color_options:colorOptions.length>0?JSON.stringify(colorOptions):null,
     size_options:sizeOptions.length>0?JSON.stringify(sizeOptions):null,
+    option_images:optUrls.length>0?JSON.stringify(optUrls):null,
   };
   if(!product.name||!product.price){alert('상품명과 가격은 필수예요!');return;}
   if(editingProductId){

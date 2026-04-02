@@ -251,6 +251,27 @@ async function loadProduct(){
     img.onerror=function(){this.onerror=null;this.src=p.image_url;};
     img.src=bigSrc;
     imgWrap.appendChild(img);
+
+    // 옵션 이미지 썸네일 갤러리
+    let allImgs=[p.image_url];
+    try{ if(p.option_images){ const opts=JSON.parse(p.option_images); if(opts.length>0) allImgs=[...allImgs,...opts]; } }catch(e){}
+    if(allImgs.length>1){
+      const thumbWrap=document.createElement('div');
+      thumbWrap.style.cssText='display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;';
+      allImgs.forEach((url,i)=>{
+        const tb=document.createElement('img');
+        tb.src=url;tb.loading='lazy';
+        tb.style.cssText='width:60px;height:60px;object-fit:contain;border-radius:10px;border:2px solid '+(i===0?'var(--pk)':'var(--bd)')+';cursor:pointer;background:#fff;padding:3px;transition:border-color .15s;';
+        tb.onclick=function(){
+          img.src=url;
+          thumbWrap.querySelectorAll('img').forEach(t=>t.style.borderColor='var(--bd)');
+          this.style.borderColor='var(--pk)';
+        };
+        tb.onerror=function(){this.style.display='none';};
+        thumbWrap.appendChild(tb);
+      });
+      imgWrap.appendChild(thumbWrap);
+    }
   } else {
     imgWrap.innerHTML=`<div class="product-img-placeholder">🐾</div>`;
   }

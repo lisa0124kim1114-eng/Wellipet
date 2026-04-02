@@ -1831,6 +1831,8 @@ async function confirmPublish(){
   const petType = document.getElementById('pubPetType').value;
   const donation = Number(document.getElementById('pubDonation').value)||0;
   const desc = document.getElementById('pubDesc').value||p.desc||'';
+  const optImgs=[0,1,2].map(i=>document.getElementById('pubOptImg'+i).value.trim()).filter(Boolean);
+  const optionImages=optImgs.length>0?JSON.stringify(optImgs):null;
 
   const btn = document.getElementById('pubConfirmBtn');
   btn.disabled = true;
@@ -1863,6 +1865,7 @@ async function confirmPublish(){
       image_url: p.img||null,
       emoji: '🐾',
       detail_content: scrapedDetailHtml || null,
+      option_images: optionImages,
     }).select().single());
     btn.disabled = false; btn.textContent = '쇼핑몰에 올리기';
     if(error){ alert('오류: '+error.message); return; }
@@ -1989,6 +1992,15 @@ renderSideStats();
       <div>
         <label>상품 설명</label>
         <input type="text" id="pubDesc" placeholder="간단한 상품 설명"/>
+      </div>
+      <div>
+        <label>🎨 옵션 이미지 URL (최대 3장, 선택)</label>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px;">
+          <input type="url" id="pubOptImg0" placeholder="옵션 이미지 URL 1 (색상/사이즈별)" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg1" placeholder="옵션 이미지 URL 2" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg2" placeholder="옵션 이미지 URL 3" style="font-size:11px;"/>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">도매 사이트에서 이미지 우클릭 → 이미지 주소 복사 → 붙여넣기</div>
       </div>
       <div>
         <label>상세 이미지</label>
