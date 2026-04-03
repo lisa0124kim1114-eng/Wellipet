@@ -45,13 +45,16 @@ Deno.serve(async (req) => {
       ],
     });
 
-    const raw = (msg.content[0] as { type: string; text: string }).text.trim();
+    let raw = (msg.content[0] as { type: string; text: string }).text.trim();
+
+    // 마크다운 코드블록 제거 (```json ... ``` 또는 ``` ... ```)
+    raw = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+
     let parsed: { hook: string; body: string; full: string };
 
     try {
       parsed = JSON.parse(raw);
     } catch {
-      // JSON 파싱 실패 시 텍스트 그대로 full에 담아 반환
       return new Response(
         JSON.stringify({ error: "AI 응답 파싱 실패", raw }),
         { status: 500, headers: { ...CORS, "Content-Type": "application/json" } }
