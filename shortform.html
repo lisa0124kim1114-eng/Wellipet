@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>쇼폼 대본 생성기 · Wellipet 웰리펫</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="common.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;}
+body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;}
+
+header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:32px;}
+.logo-img{height:52px;object-fit:contain;}
+.logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);text-decoration:none;}
+.logo em{font-style:normal;color:var(--pkm);}
+nav{display:flex;gap:28px;}
+nav a{font-size:15px;color:#2a1220;text-decoration:none;font-weight:600;transition:color .2s;}
+nav a:hover,nav a.active{color:var(--pk);}
+.hicons{display:flex;gap:14px;align-items:center;}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;}
+.mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;}
+.mobile-nav.open{display:block;}
+.mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;}
+.mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;}
+.mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;}
+.mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);}
+@media(max-width:768px){.hamburger{display:flex;}nav{display:none;}}
+
+.hero{background:linear-gradient(135deg,var(--pkbg) 0%,#fff0f7 100%);padding:56px 32px;text-align:center;border-bottom:1px solid var(--bd);}
+.hero-badge{display:inline-block;background:var(--pk);color:#fff;font-size:12px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+.hero h1{font-family:'Nunito',sans-serif;font-size:34px;font-weight:800;color:#2a1220;margin-bottom:10px;line-height:1.3;}
+.hero p{font-size:15px;color:var(--muted);font-weight:300;line-height:1.8;}
+
+.wrap{max-width:680px;margin:0 auto;padding:48px 24px;}
+
+.form-card{background:#fff;border:1.5px solid var(--bd);border-radius:24px;padding:32px;}
+.form-title{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:24px;}
+.field{margin-bottom:20px;}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:8px;}
+.field input,.field textarea{width:100%;border:1.5px solid var(--bd);border-radius:14px;padding:14px 16px;font-size:15px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#fff;transition:border-color .2s;outline:none;resize:none;}
+.field input:focus,.field textarea:focus{border-color:var(--pk);}
+.field textarea{height:100px;line-height:1.7;}
+.btn-gen{width:100%;background:var(--pk);color:#fff;border:none;padding:16px;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-gen:hover{background:var(--pkm);transform:translateY(-1px);}
+.btn-gen:disabled{background:var(--pkl);cursor:not-allowed;transform:none;}
+
+.loading{display:none;text-align:center;padding:40px 0;}
+.loading-icon{font-size:48px;animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.loading-text{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#2a1220;margin-top:12px;}
+.loading-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+.result-wrap{display:none;margin-top:28px;}
+.result-section{margin-bottom:16px;}
+.result-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+
+.hook-box{background:linear-gradient(135deg,var(--pk),var(--pkm));border-radius:18px;padding:24px;text-align:center;}
+.hook-badge{display:inline-block;background:rgba(255,255,255,.25);color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
+.hook-text{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#fff;line-height:1.4;}
+
+.body-box{background:var(--pkbg);border:1.5px solid var(--bd);border-radius:18px;padding:24px;}
+.body-text{font-size:16px;color:var(--tx);line-height:1.8;white-space:pre-wrap;word-break:keep-all;}
+.closing-highlight{color:var(--pk);font-weight:700;}
+
+.copy-btns{display:flex;gap:10px;margin-top:16px;}
+.btn-copy{flex:1;background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:12px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s;}
+.btn-copy:hover{background:var(--pkbg);}
+.btn-copy.copied{background:var(--pk);color:#fff;}
+.btn-regen{width:100%;background:var(--pkbg);color:var(--pk);border:1.5px solid var(--bd);padding:13px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:10px;transition:all .2s;}
+.btn-regen:hover{border-color:var(--pk);}
+
+footer{background:linear-gradient(180deg,#321626 0%,#201018 100%);padding:40px 48px;margin-top:80px;}
+.ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px;}
+.f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#f2aecb;margin-bottom:10px;}
+.f-desc{font-size:12px;color:#b294a2;font-weight:300;line-height:1.8;}
+.f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:12px;}
+.f-col a{display:block;font-size:11px;color:#b294a2;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;}
+.f-col a:hover{color:#f2aecb;}
+.fb{border-top:1px solid rgba(255,255,255,.06);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.f-copy{font-size:11px;color:#805a6d;}
+
+@media(max-width:768px){
+  header{padding:0 16px;height:60px;}
+  .hero{padding:40px 20px;}
+  .hero h1{font-size:26px;}
+  .wrap{padding:32px 16px;}
+  .ft{grid-template-columns:1fr 1fr;gap:16px;}
+  footer{padding:28px 20px;}
+  .hook-text{font-size:20px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="/"><img class="logo-img" src="logo.png" alt="Wellipet" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/></a>
+    <div class="logo" style="display:none;">Welli<em>pet</em></div>
+    <nav>
+      <a href="shop.html">Products</a>
+      <a href="adoption.html">입양 스토리</a>
+      <a href="donation.html">후원 프로젝트</a>
+      <a href="ai-hub.html">🐾 AI 놀이터</a>
+    </nav>
+  </div>
+  <div class="hicons">
+    <span style="font-size:16px;cursor:pointer;" onclick="location.href='cart.html'">🛒</span>
+    <button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+    <a href="shop.html">Products</a>
+    <a href="adoption.html">입양 스토리</a>
+    <a href="donation.html">후원 프로젝트</a>
+    <a href="ai-hub.html">🐾 AI 놀이터</a>
+    <a href="shortform.html">🎬 쇼폼 대본</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">🎬 쇼폼 대본 생성기</div>
+  <h1>제품명 + 특징만 넣으면<br>대본이 뚝딱!</h1>
+  <p>10~13초짜리 후킹 대본, AI가 바로 써드려요<br>인스타·틱톡·릴스 바로 사용 가능 🔥</p>
+</div>
+
+<div class="wrap">
+
+  <div class="form-card">
+    <div class="form-title">✍️ 제품 정보 입력</div>
+
+    <div class="field">
+      <label>제품명</label>
+      <input type="text" id="productName" placeholder="예) 웰리펫 강아지 샴푸" maxlength="50"/>
+    </div>
+
+    <div class="field">
+      <label>제품 특징</label>
+      <textarea id="features" placeholder="예) 저자극 천연성분, 강아지 피부 맞춤, 향이 오래 지속됨"></textarea>
+    </div>
+
+    <button class="btn-gen" id="genBtn" onclick="generate()">✨ 대본 생성하기</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-icon">✨</div>
+    <div class="loading-text">대본 쓰는 중...</div>
+    <div class="loading-sub">후킹 문구 고민 중이에요 🤔</div>
+  </div>
+
+  <div class="result-wrap" id="resultWrap">
+
+    <div class="result-section">
+      <div class="result-label">🔥 후킹 문구 (0~3초)</div>
+      <div class="hook-box">
+        <div class="hook-badge">썸네일 / 첫 문장</div>
+        <div class="hook-text" id="hookText"></div>
+      </div>
+    </div>
+
+    <div class="result-section">
+      <div class="result-label">📢 본론 + 클로징 (3~13초)</div>
+      <div class="body-box">
+        <div class="body-text" id="bodyText"></div>
+      </div>
+    </div>
+
+    <div class="copy-btns">
+      <button class="btn-copy" id="copyHook" onclick="copyText('hook')">후킹만 복사</button>
+      <button class="btn-copy" id="copyFull" onclick="copyText('full')">전체 복사</button>
+    </div>
+    <button class="btn-regen" onclick="generate()">🔄 다시 생성하기</button>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="ft">
+    <div>
+      <div class="f-logo">Wellipet</div>
+      <div class="f-desc">유기견을 위한 반려용품 쇼핑몰<br>웰리펫과 함께해요 🐾</div>
+    </div>
+    <div class="f-col">
+      <h4>쇼핑</h4>
+      <a href="shop.html">전체 상품</a>
+      <a href="cart.html">장바구니</a>
+      <a href="mypage.html">마이페이지</a>
+    </div>
+    <div class="f-col">
+      <h4>AI 서비스</h4>
+      <a href="ai-hub.html">AI 놀이터</a>
+      <a href="shortform.html">쇼폼 대본</a>
+      <a href="mbti.html">강아지 MBTI</a>
+    </div>
+    <div class="f-col">
+      <h4>고객지원</h4>
+      <a href="faq.html">자주 묻는 질문</a>
+      <a href="contact.html">1:1 문의</a>
+      <a href="privacy.html">개인정보처리방침</a>
+    </div>
+  </div>
+  <div class="fb">
+    <div class="f-copy">© 2025 Wellipet. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+const FUNCTION_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/generate-shortform';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
+
+let lastHook = '';
+let lastFull = '';
+
+function openMobileNav() { document.getElementById('mobileNav').classList.add('open'); }
+function closeMobileNav(e) {
+  if (!e || e.target === document.getElementById('mobileNav'))
+    document.getElementById('mobileNav').classList.remove('open');
+}
+
+async function generate() {
+  const productName = document.getElementById('productName').value.trim();
+  const features = document.getElementById('features').value.trim();
+
+  if (!productName) { alert('제품명을 입력해주세요.'); document.getElementById('productName').focus(); return; }
+  if (!features) { alert('제품 특징을 입력해주세요.'); document.getElementById('features').focus(); return; }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('resultWrap').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      },
+      body: JSON.stringify({ productName, features })
+    });
+
+    const data = await res.json();
+    document.getElementById('loading').style.display = 'none';
+
+    if (data.error) { alert('오류: ' + data.error); btn.disabled = false; return; }
+
+    lastHook = data.hook || '';
+    lastFull = data.full || (data.hook + '\n\n' + data.body);
+
+    document.getElementById('hookText').textContent = lastHook;
+
+    // 클로징 강조 처리
+    const bodyRaw = data.body || '';
+    const closing = '써야겠어요?! 안써야겠어요?!';
+    const bodyEl = document.getElementById('bodyText');
+    if (bodyRaw.includes(closing)) {
+      const parts = bodyRaw.split(closing);
+      bodyEl.innerHTML = parts[0].replace(/\n/g, '<br>') +
+        '<span class="closing-highlight">' + closing + '</span>';
+    } else {
+      bodyEl.textContent = bodyRaw;
+    }
+
+    document.getElementById('resultWrap').style.display = 'block';
+    document.getElementById('resultWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    alert('요청 중 오류가 발생했어요. 다시 시도해주세요.');
+  }
+
+  btn.disabled = false;
+}
+
+function copyText(type) {
+  const text = type === 'hook' ? lastHook : lastFull;
+  const btnId = type === 'hook' ? 'copyHook' : 'copyFull';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById(btnId);
+    btn.textContent = '✓ 복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = type === 'hook' ? '후킹만 복사' : '전체 복사';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // 클립보드 API 미지원 fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('복사되었어요!');
+  });
+}
+
+// Enter 키 단축키
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'Enter') generate();
+});
+</script>
+</body>
+</html>
