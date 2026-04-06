@@ -133,6 +133,17 @@
   <div class="fb"><div class="f-biz">상호: 아이에스에이 | 대표: KIMLISAYUNSUN | 사업자등록번호: 604-07-63223 | 주소: 경기도 남양주시 다산순환로 365 5208-404 | 전화: 010-7118-1824</div><div class="f-copy">© 2025 Wellipet. All rights reserved. &nbsp;|&nbsp; <a href="terms.html" style="color:#6a4a5a;text-decoration:none;">이용약관</a> &nbsp;|&nbsp; <a href="privacy.html" style="color:#6a4a5a;text-decoration:none;">개인정보처리방침</a> &nbsp;|&nbsp; <a href="refund.html" style="color:#6a4a5a;text-decoration:none;">환불정책</a></div></div>
 </footer>
 
+<div id="checkoutAuthModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:400px;text-align:center;">
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';" style="float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;">×</button>
+    <div style="font-size:40px;margin-bottom:12px;">🛒</div>
+    <h2 style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:8px;">결제를 시작할게요!</h2>
+    <p style="font-size:13px;color:#a08090;margin-bottom:24px;line-height:1.7;">로그인하면 주문 내역 조회와<br><strong style="color:#c45c8a;">첫 주문 10% 할인</strong> 혜택을 받을 수 있어요.</p>
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';openModal('login');" style="width:100%;background:#c45c8a;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;">로그인하고 결제하기</button>
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';location.href='checkout.html';" style="width:100%;background:#fff;color:#a08090;border:1.5px solid #f0d8e6;padding:13px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">비로그인으로 결제하기</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -354,14 +365,19 @@ function addToCart(){
   showToast('🛒 장바구니에 담았어요!');
 }
 
-function buyNow(){
+async function buyNow(){
   if(!currentProduct)return;
   const colorOptions=currentProduct.color_options?JSON.parse(currentProduct.color_options||'[]'):[];
   const sizeOptions=currentProduct.size_options?JSON.parse(currentProduct.size_options||'[]'):[];
   if(colorOptions.length>0&&!selectedColor){showToast('색상을 선택해줘요!');return;}
   if(sizeOptions.length>0&&!selectedSize){showToast('사이즈를 선택해줘요!');return;}
   addToCart();
-  location.href='checkout.html';
+  const{data:{session}}=await _supabase.auth.getSession();
+  if(session){
+    location.href='checkout.html';
+  } else {
+    document.getElementById('checkoutAuthModal').style.display='flex';
+  }
 }
 
 function showToast(msg){
