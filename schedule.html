@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>교육 일정표</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: #fff;
+    padding: 18mm 16mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 헤더 */
+  .header {
+    text-align: center;
+    border-bottom: 3px solid #1a3a5c;
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+  }
+  .header .title {
+    font-size: 26pt;
+    font-weight: 900;
+    color: #1a3a5c;
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+  .header .subtitle {
+    font-size: 11pt;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  /* 날짜 섹션 */
+  .day-section {
+    margin-bottom: 22px;
+  }
+
+  .day-header {
+    background: #1a3a5c;
+    color: #fff;
+    font-size: 14pt;
+    font-weight: 700;
+    padding: 10px 18px;
+    letter-spacing: 2px;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .day-body {
+    border: 1.5px solid #1a3a5c;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+  }
+
+  .session-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid #dde4ed;
+  }
+  .session-row:last-child {
+    border-bottom: none;
+  }
+
+  .session-time {
+    background: #eaf0f8;
+    color: #1a3a5c;
+    font-size: 12pt;
+    font-weight: 700;
+    width: 90px;
+    min-width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 8px;
+    letter-spacing: 1px;
+    border-right: 1.5px solid #c8d8ea;
+    text-align: center;
+  }
+
+  .session-content {
+    padding: 14px 20px;
+    font-size: 12.5pt;
+    font-weight: 500;
+    color: #1c1c2e;
+    display: flex;
+    align-items: center;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .session-content .dot {
+    width: 7px;
+    height: 7px;
+    background: #1a3a5c;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+
+  /* 오후 행 강조 */
+  .session-row.afternoon .session-time {
+    background: #f0f5ff;
+    color: #2c5282;
+  }
+  .session-row.afternoon .session-content {
+    background: #fafcff;
+  }
+  .session-row.afternoon .dot {
+    background: #4a72a8;
+  }
+
+  /* 푸터 */
+  .footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1.5px solid #dde4ed;
+    text-align: center;
+    color: #888;
+    font-size: 9.5pt;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page {
+      width: 100%;
+      min-height: auto;
+      box-shadow: none;
+      padding: 15mm 14mm;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="title">교 육 일 정 표</div>
+    <div class="subtitle">전통 석재 가공 기법 교육 과정</div>
+  </div>
+
+  <!-- 1일차 -->
+  <div class="day-section">
+    <div class="day-header">제 1일</div>
+    <div class="day-body">
+      <div class="session-row morning">
+        <div class="session-time">오전</div>
+        <div class="session-content">
+          <span class="dot"></span>기초작업 가공이론
+        </div>
+      </div>
+      <div class="session-row afternoon">
+        <div class="session-time">오후</div>
+        <div class="session-content">
+          <span class="dot"></span>전통도구 벼르기 및 활석
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2일차 -->
+  <div class="day-section">
+    <div class="day-header">제 2일</div>
+    <div class="day-body">
+      <div class="session-row morning">
+        <div class="session-time">오전</div>
+        <div class="session-content">
+          <span class="dot"></span>전통가공기법 이론교육
+        </div>
+      </div>
+      <div class="session-row afternoon">
+        <div class="session-time">오후</div>
+        <div class="session-content">
+          <span class="dot"></span>거친정다듬 실습 및 고운정다듬 실습
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3일차 -->
+  <div class="day-section">
+    <div class="day-header">제 3일</div>
+    <div class="day-body">
+      <div class="session-row morning">
+        <div class="session-time">오전</div>
+        <div class="session-content">
+          <span class="dot"></span>도드락다듬 및 모접기다듬
+        </div>
+      </div>
+      <div class="session-row afternoon">
+        <div class="session-time">오후</div>
+        <div class="session-content">
+          <span class="dot"></span>본인교육 내용 평가 및 마무리
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    ※ 일정은 운영 상황에 따라 변경될 수 있습니다.
+  </div>
+
+</div>
+</body>
+</html>
