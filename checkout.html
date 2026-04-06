@@ -51,7 +51,7 @@
     <div class="section">
       <div class="section-title">결제 금액</div>
       <div class="summary-row"><span class="label">상품 금액</span><span class="value" id="sumAmount">0원</span></div>
-      <div class="summary-row"><span class="label">배송비</span><span class="value" style="color:#2a7a5a;">무료</span></div>
+      <div class="summary-row"><span class="label">배송비</span><span class="value" id="sumShipping">3,000원</span></div>
       <div class="summary-row" id="discountRow" style="display:none;"><span class="label">🎁 첫 주문 10% 할인</span><span class="value" id="discountAmt" style="color:#2a7a5a;font-weight:700;">-0원</span></div>
       <div class="donation-notice"><span class="icon">🏠</span><span class="text" id="donationText">이 주문으로 0원이 유기견 보호소에 기부돼요</span></div>
       <div class="summary-row total"><span class="label">최종 결제금액</span><span class="value" id="totalAmount">0원</span></div>
@@ -121,11 +121,23 @@ function loadCartItems(){
 
   orderName=cartItems.length===1?cartItems[0].name:`${cartItems[0].name} 외 ${cartItems.length-1}건`;
 
+  const shipping=totalPrice>=50000?0:3000;
+  const finalBase=totalPrice+shipping;
+
   document.getElementById('orderItems').innerHTML=itemsHtml;
   document.getElementById('sumAmount').textContent=Number(totalPrice).toLocaleString()+'원';
-  document.getElementById('totalAmount').textContent=Number(totalPrice).toLocaleString()+'원';
+  const shipEl=document.getElementById('sumShipping');
+  if(shipping===0){
+    shipEl.textContent='무료';
+    shipEl.style.color='#2a7a5a';
+    shipEl.style.fontWeight='600';
+  } else {
+    shipEl.textContent='3,000원';
+    shipEl.style.color='';
+  }
+  document.getElementById('totalAmount').textContent=Number(finalBase).toLocaleString()+'원';
   document.getElementById('donationText').textContent=`이 주문으로 ${Number(totalDonation).toLocaleString()}원이 유기견 보호소에 기부돼요`;
-  document.getElementById('btnPay').textContent=`${Number(totalPrice).toLocaleString()}원 결제하기`;
+  document.getElementById('btnPay').textContent=`${Number(finalBase).toLocaleString()}원 결제하기`;
 
   // 로그인 회원 정보 + 기본 주소 자동 입력
   _supabase.auth.getSession().then(async({data:{session}})=>{
@@ -228,7 +240,8 @@ async function requestPayment(){
 
   const paymentId='order-'+Date.now();
 
-  const finalPrice=totalPrice-discountAmount;
+  const shipping=totalPrice>=50000?0:3000;
+  const finalPrice=totalPrice+shipping-discountAmount;
 
   // 결제 전에 배송 정보 localStorage에 임시 저장
   localStorage.setItem('pendingOrder',JSON.stringify({

@@ -50,7 +50,7 @@
     <hr class="summary-divider"/>
     <div class="summary-total"><span class="k">총 결제금액</span><span class="v" id="sumTotal">0원</span></div>
     <div class="summary-don" id="sumDon">🏠 0원이 유기견·유기묘 보호소에 기부돼요</div>
-    <button class="btn-checkout" onclick="location.href='checkout.html'">결제하기</button>
+    <button class="btn-checkout" onclick="goToCheckout()">결제하기</button>
     <button class="btn-continue" onclick="location.href='shop.html'">계속 쇼핑하기</button>
   </div>
 </div>
@@ -64,6 +64,17 @@
   </div>
   <div class="fb"><div class="f-biz">상호: 아이에스에이 | 대표: KIMLISAYUNSUN | 사업자등록번호: 604-07-63223 | 주소: 경기도 남양주시 다산순환로 365 5208-404 | 전화: 010-7118-1824</div><div class="f-copy">© 2025 Wellipet. All rights reserved. &nbsp;|&nbsp; <a href="terms.html" style="color:#6a4a5a;text-decoration:none;">이용약관</a> &nbsp;|&nbsp; <a href="privacy.html" style="color:#6a4a5a;text-decoration:none;">개인정보처리방침</a> &nbsp;|&nbsp; <a href="refund.html" style="color:#6a4a5a;text-decoration:none;">환불정책</a></div></div>
 </footer>
+
+<div class="modal-overlay" id="checkoutAuthModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;">
+  <div class="modal" style="text-align:center;">
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';" style="float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;">×</button>
+    <div style="font-size:40px;margin-bottom:12px;">🛒</div>
+    <h2 style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:#2a1220;margin-bottom:8px;">결제를 시작할게요!</h2>
+    <p style="font-size:13px;color:#a08090;margin-bottom:24px;line-height:1.7;">로그인하면 주문 내역 조회와<br><strong style="color:var(--pk);">첫 주문 10% 할인</strong> 혜택을 받을 수 있어요.</p>
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';openModal('login');" style="width:100%;background:var(--pk);color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-bottom:10px;">로그인하고 결제하기</button>
+    <button onclick="document.getElementById('checkoutAuthModal').style.display='none';location.href='checkout.html';" style="width:100%;background:#fff;color:#a08090;border:1.5px solid #f0d8e6;padding:13px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">비로그인으로 결제하기</button>
+  </div>
+</div>
 
 <div class="modal-overlay" id="authModal">
   <div class="modal">
@@ -129,6 +140,17 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
+
+async function goToCheckout(){
+  const cart=getCart();
+  if(cart.length===0){alert('장바구니가 비어있어요.');return;}
+  const{data:{session}}=await _supabase.auth.getSession();
+  if(session){
+    location.href='checkout.html';
+  } else {
+    document.getElementById('checkoutAuthModal').style.display='flex';
+  }
+}
 function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart));}
 
 function renderCart(){
