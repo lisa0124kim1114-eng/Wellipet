@@ -272,7 +272,7 @@ function renderProducts(products) {
         <div class="ptag">${p.category}</div>
         <div class="pname" onclick="goToProduct(${p.id})" style="cursor:pointer;">${p.name}</div>
         <div class="pprice">${Number(p.price).toLocaleString()}원 ${p.original_price?`<s>${Number(p.original_price).toLocaleString()}원</s>`:''}</div>
-        <div class="pdon">🏠 ${Number(Math.floor(p.price*0.03)).toLocaleString()}원 기부 &nbsp;·&nbsp; 🚚 2-3 영업일 배송</div>
+        <div class="pdon">🏠 ${Number(Math.floor(p.price*0.03)).toLocaleString()}원 기부 &nbsp;·&nbsp; 📦 배송기간 2-5일</div>
         <div class="pship">🚚 배송비 3,000원 &nbsp;·&nbsp; <span>5만원 이상 무료배송</span></div>
         <div class="pbtns">
           <button class="pbtn-detail" onclick="goToProduct(${p.id})">자세히 보기</button>
