@@ -34,7 +34,9 @@
       <div class="section-title">결제 수단</div>
       <div class="pay-methods">
         <div class="pay-method active" onclick="selectMethod(this,'카드')"><div class="pm-icon">💳</div><div class="pm-name">신용/체크카드</div></div>
+        <!-- NHN KCP: 사이트코드/채널키 발급 후 활성화
         <div class="pay-method" onclick="selectMethod(this,'NHKCP')"><div class="pm-icon">🏦</div><div class="pm-name">농협카드(KCP)</div></div>
+        -->
       </div>
       <button class="btn-pay" id="btnPay" onclick="requestPayment()">결제하기</button>
       <div class="safe-badge">🔒 SSL 보안 결제 · 개인정보 안전 보호</div>
