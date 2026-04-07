@@ -89,6 +89,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 /* ── 슬롯 카드 ── */
 .slot-card{border-radius:14px;overflow:hidden;border:1.5px solid var(--bd);background:#fff;transition:all .2s;position:relative;}
 .slot-card:hover{box-shadow:0 4px 20px rgba(196,92,138,.12);transform:translateY(-2px);}
+.slot-card.bulk-selected{border-color:#e04040!important;background:#fff5f5!important;box-shadow:0 0 0 2px #e0404040;}
 .slot-card.empty{border:2px dashed var(--bd);background:var(--pkbg);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:220px;gap:8px;}
 .slot-card.empty:hover{border-color:var(--pkl);background:var(--pkp);}
 .slot-card.empty .add-icon{font-size:32px;color:var(--pkl);}
@@ -439,6 +440,13 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span class="slot-count" id="slotCount"></span>
+          <!-- 선택삭제 모드 -->
+          <div id="bulkDeleteBar" style="display:none;align-items:center;gap:6px;">
+            <span id="bulkCount" style="font-size:12px;color:#e04040;font-weight:700;">0개 선택</span>
+            <button class="btn btn-sm" style="background:#fff0f3;color:#e04040;border:1px solid #f0c0c0;" onclick="bulkDelete()">🗑 선택 삭제</button>
+            <button class="btn btn-gray btn-sm" onclick="toggleBulkMode(false)">취소</button>
+          </div>
+          <button id="bulkModeBtn" class="btn btn-gray btn-sm" onclick="toggleBulkMode(true)">☑ 선택 삭제</button>
           <button class="btn btn-pk btn-sm" onclick="openAddModal(currentCat)">+ 추가</button>
         </div>
       </div>
@@ -1010,6 +1018,38 @@ function scheduleRender(){
   });
 }
 
+// ── 선택 삭제 ──
+let _bulkMode = false;
+let _bulkSelected = new Set();
+
+function toggleBulkMode(on){
+  _bulkMode = on;
+  _bulkSelected.clear();
+  document.getElementById('bulkDeleteBar').style.display = on ? 'flex' : 'none';
+  document.getElementById('bulkModeBtn').style.display = on ? 'none' : '';
+  renderSlots();
+}
+
+function onBulkCardClick(id, cardEl){
+  if(_bulkSelected.has(id)) _bulkSelected.delete(id);
+  else _bulkSelected.add(id);
+  cardEl.classList.toggle('bulk-selected', _bulkSelected.has(id));
+  const cb = cardEl.querySelector('input[type=checkbox]');
+  if(cb) cb.checked = _bulkSelected.has(id);
+  document.getElementById('bulkCount').textContent = `${_bulkSelected.size}개 선택`;
+}
+
+async function bulkDelete(){
+  if(!_bulkSelected.size){ showToast('삭제할 상품을 선택해주세요','warn'); return; }
+  if(!confirm(`선택한 ${_bulkSelected.size}개 상품을 삭제할까요?`)) return;
+  const ids = [..._bulkSelected];
+  products = products.filter(p=>!ids.includes(p.id));
+  const {error} = await _supabase.from('sourcing_products').delete().in('id', ids);
+  if(error){ showToast('삭제 실패: '+error.message,'warn'); return; }
+  showToast(`${ids.length}개 삭제됐어요`,'info');
+  toggleBulkMode(false);
+}
+
 let currentCat = '간식';
 let editingId = null;
 let currentImgData = null;
@@ -1080,12 +1120,14 @@ function renderSlots(){
       ? `<img src="${esc(p.img)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
       : `<div class="no-img">🐾</div>`;
     const siteColor = SITE_COLORS[p.site]||'#999';
-    html += `<div class="slot-card" data-id="${p.id}">
+    const isSelected = _bulkSelected.has(p.id);
+    html += `<div class="slot-card${_bulkMode&&isSelected?' bulk-selected':''}" data-id="${p.id}" ${_bulkMode?`onclick="onBulkCardClick('${p.id}',this)"`:''}>
+      ${_bulkMode?`<div style="position:absolute;top:8px;left:8px;z-index:10;pointer-events:none;"><input type="checkbox" ${isSelected?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:var(--pk);pointer-events:none;" /></div>`:''}
       <div class="slot-num">${i+1}</div>
-      <div class="card-img" onclick="openQuickPanel('${p.id}')" style="cursor:pointer;">
+      <div class="card-img" onclick="${_bulkMode?'':'openQuickPanel(\''+p.id+'\')'}" style="cursor:pointer;">
         ${imgHtml}
         <div class="site-badge" style="background:${siteColor};">${esc(p.site)}</div>
-        <div class="img-quick-overlay">
+        <div class="img-quick-overlay" style="${_bulkMode?'display:none;':''}"
           ${p.link?`<button class="qo-btn" style="background:var(--pk);color:#fff;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;width:100%;margin-bottom:4px;" onclick="event.stopPropagation();window.open('${esc(p.link)}','_blank')">🔗 도매처 바로가기</button>`:''}
           <span class="qo-label" style="font-size:9px;">${p.img?'🖼 이미지 변경':'📷 이미지 추가'} · 빠른편집</span>
         </div>
@@ -1105,11 +1147,11 @@ function renderSlots(){
         <div class="margin-chip ${mc}" style="font-size:9px;margin-bottom:8px;">
           ${margin!==null?`📈 웰리펫 마진 ${margin}% (+${profit.toLocaleString()}원)`:'가격 미입력'}
         </div>
-        <div class="card-actions">
+        ${_bulkMode?'':`<div class="card-actions">
           ${p.link?`<button class="btn btn-gray btn-xs" onclick="window.open('${esc(p.link)}','_blank')" title="도매처 상품 페이지 열기">🔗 도매처</button>`:''}
           <button class="btn btn-out btn-xs" onclick="openEditModal('${p.id}')">수정</button>
           <button class="btn btn-danger btn-xs" onclick="delProduct('${p.id}')">삭제</button>
-        </div>
+        </div>`}
         <div style="margin-top:6px;">
           ${publishedMap[p.id]
             ? `<div style="display:flex;gap:4px;flex-wrap:wrap;">
