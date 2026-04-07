@@ -331,6 +331,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
     <a href="/admin.html" style="background:rgba(255,255,255,.25);font-weight:700;">⚙️ 관리자 페이지</a>
   </div>
   <div class="topbar-right">
+    <button class="btn btn-sm" style="background:#fff3e0;color:#e67e22;border:1px solid #f0c080;font-weight:700;" onclick="openImportModal()">📥 관리자 상품 복구</button>
     <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:none;" onclick="openMarginModal()">📊 전체 마진표</button>
     <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:none;" onclick="exportWellipet()">📤 웰리펫 내보내기</button>
   </div>
@@ -2206,5 +2207,193 @@ setTimeout(()=>loadProducts(), 0);
     </div>
   </div>
 </div>
+<!-- ── 관리자 상품 복구 모달 ── -->
+<div id="importModal" style="display:none;position:fixed;inset:0;background:rgba(42,26,34,.6);z-index:800;align-items:flex-start;justify-content:center;padding:24px;overflow-y:auto;">
+  <div style="background:#fff;border-radius:20px;width:100%;max-width:780px;margin:0 auto;box-shadow:0 24px 80px rgba(42,26,34,.25);">
+    <div style="padding:20px 24px 0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);padding-bottom:14px;">
+      <div>
+        <div style="font-size:17px;font-weight:800;color:var(--tx);">📥 관리자 상품 소싱으로 복구</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;">쇼핑몰에 올라간 상품을 소싱 목록으로 가져와요. 이미 소싱에 있는 상품은 건너뜁니다.</div>
+      </div>
+      <button onclick="closeImportModal()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);">×</button>
+    </div>
+    <div style="padding:16px 24px;">
+      <!-- 카테고리 필터 -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="importCatTabs"></div>
+      <!-- 검색 -->
+      <input id="importSearch" placeholder="상품명 검색..." oninput="renderImportList()" style="width:100%;padding:8px 12px;border:1px solid var(--bd);border-radius:10px;font-size:13px;margin-bottom:12px;font-family:inherit;"/>
+      <!-- 전체선택 / 선택 개수 -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="importSelectAll" onchange="toggleImportAll(this.checked)"/> 전체 선택
+        </label>
+        <span id="importSelectedCount" style="font-size:12px;color:var(--pk);font-weight:700;">0개 선택</span>
+      </div>
+      <!-- 상품 목록 -->
+      <div id="importList" style="max-height:420px;overflow-y:auto;border:1px solid var(--bd);border-radius:12px;"></div>
+    </div>
+    <div style="padding:14px 24px;border-top:1px solid var(--bd);display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeImportModal()" style="padding:10px 20px;border:1px solid var(--bd);border-radius:10px;background:#fff;cursor:pointer;font-size:13px;">취소</button>
+      <button id="importConfirmBtn" onclick="confirmImport()" style="padding:10px 24px;border:none;border-radius:10px;background:var(--pk);color:#fff;font-weight:700;cursor:pointer;font-size:13px;">소싱으로 가져오기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let _importAll = [];       // products 테이블 전체
+let _importCat = 'all';
+let _importSelected = new Set(); // 선택된 shop product ID
+
+async function openImportModal(){
+  document.getElementById('importModal').style.display='flex';
+  document.getElementById('importList').innerHTML='<div style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">불러오는 중...</div>';
+  document.getElementById('importSearch').value='';
+  _importSelected.clear();
+  _importCat = 'all';
+
+  const {data, error} = await _supabase.from('products').select('id,name,category,price,image_url').order('category').order('name');
+  if(error||!data){ document.getElementById('importList').innerHTML='<div style="padding:40px;text-align:center;color:#e04040;">불러오기 실패</div>'; return; }
+
+  // 이미 소싱에 있는 shopId 목록 (publishedMap의 values)
+  const alreadyShopIds = new Set(Object.values(publishedMap).map(v=>String(v)));
+  // 이미 소싱 products에 있는 이름 목록 (중복 방지 보조)
+  const sourcingNames = new Set(products.map(p=>p.name));
+
+  _importAll = data.map(d=>({
+    ...d,
+    alreadyLinked: alreadyShopIds.has(String(d.id)),
+    alreadyNamed: sourcingNames.has(d.name),
+  }));
+
+  // 카테고리 탭
+  const cats = ['all', ...new Set(data.map(d=>d.category).filter(Boolean).sort())];
+  document.getElementById('importCatTabs').innerHTML = cats.map(c=>
+    `<button class="btn btn-sm btn-gray" id="importTab_${c}" style="${c==='all'?'background:var(--pk);color:#fff;':''}" onclick="setImportCat('${c}',this)">${c==='all'?'🐾 전체':c}</button>`
+  ).join('');
+
+  renderImportList();
+}
+
+function setImportCat(cat, el){
+  _importCat = cat;
+  document.querySelectorAll('#importCatTabs button').forEach(b=>{ b.style.background=''; b.style.color=''; });
+  el.style.background='var(--pk)'; el.style.color='#fff';
+  renderImportList();
+}
+
+function renderImportList(){
+  const q = document.getElementById('importSearch').value.trim().toLowerCase();
+  let items = _importAll;
+  if(_importCat!=='all') items = items.filter(d=>d.category===_importCat);
+  if(q) items = items.filter(d=>d.name.toLowerCase().includes(q));
+
+  if(!items.length){
+    document.getElementById('importList').innerHTML='<div style="padding:40px;text-align:center;color:var(--muted);">해당 상품 없음</div>';
+    return;
+  }
+
+  document.getElementById('importList').innerHTML = items.map(d=>{
+    const linked = d.alreadyLinked;
+    const named = d.alreadyNamed;
+    const disabled = linked || named;
+    const checked = _importSelected.has(d.id);
+    return `<label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #fafafa;cursor:${disabled?'default':'pointer'};background:${disabled?'#f9f9f9':'#fff'};${disabled?'opacity:.5':''}" onclick="event.stopPropagation()">
+      <input type="checkbox" ${checked?'checked':''} ${disabled?'disabled':''} onchange="toggleImportItem(${d.id},this.checked)" style="width:15px;height:15px;flex-shrink:0;"/>
+      ${d.image_url?`<img src="${d.image_url}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);flex-shrink:0;" onerror="this.style.display='none'"/>`:`<div style="width:40px;height:40px;background:var(--pkbg);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">🐾</div>`}
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${d.category||''} · ${d.price?d.price.toLocaleString()+'원':'가격미입력'}</div>
+      </div>
+      ${linked?'<span style="font-size:10px;background:#e8f8ee;color:#1a9e4a;padding:2px 7px;border-radius:8px;flex-shrink:0;">✓ 연결됨</span>':named?'<span style="font-size:10px;background:#fff8e8;color:#e6a800;padding:2px 7px;border-radius:8px;flex-shrink:0;">중복</span>':''}
+    </label>`;
+  }).join('');
+
+  updateImportCount();
+}
+
+function toggleImportItem(id, checked){
+  if(checked) _importSelected.add(id);
+  else _importSelected.delete(id);
+  updateImportCount();
+}
+
+function toggleImportAll(checked){
+  const q = document.getElementById('importSearch').value.trim().toLowerCase();
+  let items = _importAll;
+  if(_importCat!=='all') items = items.filter(d=>d.category===_importCat);
+  if(q) items = items.filter(d=>d.name.toLowerCase().includes(q));
+  items.filter(d=>!d.alreadyLinked&&!d.alreadyNamed).forEach(d=>{
+    if(checked) _importSelected.add(d.id);
+    else _importSelected.delete(d.id);
+  });
+  renderImportList();
+}
+
+function updateImportCount(){
+  document.getElementById('importSelectedCount').textContent = `${_importSelected.size}개 선택`;
+}
+
+function closeImportModal(){
+  document.getElementById('importModal').style.display='none';
+}
+
+async function confirmImport(){
+  if(!_importSelected.size){ showToast('가져올 상품을 선택해주세요','warn'); return; }
+  const btn = document.getElementById('importConfirmBtn');
+  btn.disabled=true; btn.textContent='가져오는 중...';
+
+  const toImport = _importAll.filter(d=>_importSelected.has(d.id));
+  const newSourcingItems = toImport.map(d=>({
+    id: uid(),
+    name: d.name,
+    cat: d.category||'기타',
+    site: '기타',
+    wholesale: '',
+    retail: String(d.price||''),
+    img: d.image_url||'',
+    description: '',
+    brand: '',
+    link: '',
+    options: [],
+    createdAt: new Date().toISOString(),
+    _shopId: d.id, // publishedMap 연결용
+  }));
+
+  // sourcing_products에 insert
+  const dbItems = newSourcingItems.map(p=>({
+    id: p.id,
+    name: p.name,
+    cat: p.cat,
+    site: p.site,
+    wholesale: p.wholesale||null,
+    retail: p.retail||null,
+    img: p.img||null,
+    description: p.description||null,
+    brand: p.brand||null,
+    link: p.link||null,
+    options: JSON.stringify(p.options||[]),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
+
+  const {error} = await _supabase.from('sourcing_products').insert(dbItems);
+  if(error){ showToast('가져오기 실패: '+error.message,'warn'); btn.disabled=false; btn.textContent='소싱으로 가져오기'; return; }
+
+  // publishedMap 복원
+  newSourcingItems.forEach(p=>{
+    publishedMap[p.id] = p._shopId;
+  });
+  savePublished();
+
+  // 로컬 products 배열에 추가
+  products = [...products, ...newSourcingItems.map(p=>({...p, _shopId:undefined}))];
+  scheduleRender();
+
+  btn.disabled=false; btn.textContent='소싱으로 가져오기';
+  closeImportModal();
+  showToast(`${newSourcingItems.length}개 상품을 소싱으로 복구했어요! 도매가만 입력하면 돼요.`,'success');
+}
+</script>
+
 </body>
 </html>
