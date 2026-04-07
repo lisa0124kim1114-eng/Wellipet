@@ -1265,8 +1265,8 @@ function openAddModal(cat){
 function openEditModal(id){
   const p=products.find(x=>x.id===id);
   if(!p) return;
-  editingId=id;
   resetForm();
+  editingId=id;
   document.getElementById('addModalTitle').textContent='상품 수정';
   document.getElementById('f-name').value=p.name||'';
   document.getElementById('f-site').value=p.site||'';
