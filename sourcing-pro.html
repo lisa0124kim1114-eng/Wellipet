@@ -955,7 +955,6 @@ function localToDb(p){
 }
 
 async function loadProducts(){
-  showToast('데이터 불러오는 중...','info');
   const {data, error} = await _supabase.from('sourcing_products').select('*').order('created_at', {ascending:true});
   if(error){ showToast('데이터 로드 실패: '+error.message,'warn'); return; }
 
@@ -2091,7 +2090,8 @@ async function loginForPublish(){
 checkAuth();
 
 // ── 초기 렌더 (Supabase에서 데이터 로드) ──
-loadProducts();
+// setTimeout으로 브라우저 첫 렌더 완료 후 로드 (페이지 로딩 스피너 방지)
+setTimeout(()=>loadProducts(), 0);
 </script>
 
 <!-- 로그인 배너 -->
