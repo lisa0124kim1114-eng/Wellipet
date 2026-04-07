@@ -896,65 +896,92 @@ const SEED = [
   {cat:'장난감',site:'딱펫',name:'딱좋은 로프 터그 장난감',brand:'딱좋은',desc:'면 로프 터그놀이 장난감. 치아건강.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
 ];
 
-// ── 상태 ── (버전 v3 — petbtob.co.kr 추가)
-const DATA_VER = 'welliSourcingPro_v3';
-let products = JSON.parse(localStorage.getItem(DATA_VER) || 'null');
-if(!products){
-  // 구버전 데이터가 있으면 마이그레이션, 없으면 SEED로 시작
-  const old = localStorage.getItem('welliSourcingPro') || localStorage.getItem('welliSourcingPro_v2');
-  if(old){
-    products = JSON.parse(old);
-    // 기존 데이터 유지 + 새 SEED 중 없는 상품만 추가
-    const existNames = new Set(products.map(p=>p.name));
-    const newItems = SEED.filter(s=>!existNames.has(s.name))
-      .map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
-    products = [...products, ...newItems];
-  } else {
-    products = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
-  }
-  localStorage.setItem(DATA_VER, JSON.stringify(products));
-} else {
-  // 기존 v3 데이터가 있어도 새 SEED 상품(펫도매·딱펫 등) 자동 추가
-  const existNames = new Set(products.map(p=>p.name));
-  const newItems = SEED.filter(s=>!existNames.has(s.name))
-    .map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
-  if(newItems.length > 0){
-    products = [...products, ...newItems];
-    localStorage.setItem(DATA_VER, JSON.stringify(products));
-  }
-}
 // ── Supabase 연결 ──
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
 let _supabase = null;
 try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) { console.warn("Supabase 초기화 실패:", e); }
+
 // 발행된 상품 추적: { sourcingId → supabaseProductId }
 let publishedMap = JSON.parse(localStorage.getItem('welliPublished')||'{}');
 function savePublished(){localStorage.setItem('welliPublished',JSON.stringify(publishedMap));}
 
-// 모바일 URL + 카테고리명 마이그레이션
-const CAT_RENAME = {'패드/위생':'배변/위생', '기타용품':'미용'};
-let _migrated = false;
-products = products.map(p => {
-  let updated = {...p};
-  if(p.link && p.link.includes('m.petbtob.co.kr')){
-    updated.link = p.link.replace('https://m.petbtob.co.kr/', 'https://petbtob.co.kr/');
-    _migrated = true;
+// ── 상태 ──
+let products = [];
+
+// DB → 로컬 변환
+function dbToLocal(r){
+  return {
+    id: r.id,
+    name: r.name,
+    site: r.site||'',
+    cat: r.cat||'',
+    wholesale: r.wholesale||'',
+    retail: r.retail||'',
+    price_wellipet: r.price_wellipet||'',
+    price_coupang: r.price_coupang||'',
+    price_smart: r.price_smart||'',
+    selectedChannel: r.selected_channel||'wellipet',
+    img: r.img||'',
+    desc: r.description||'',
+    brand: r.brand||'',
+    link: r.link||'',
+    options: Array.isArray(r.options)?r.options:[],
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
+  };
+}
+
+// 로컬 → DB 변환
+function localToDb(p){
+  return {
+    id: p.id,
+    name: p.name,
+    site: p.site||'',
+    cat: p.cat||'',
+    wholesale: p.wholesale||'',
+    retail: p.retail||'',
+    price_wellipet: p.price_wellipet||'',
+    price_coupang: p.price_coupang||'',
+    price_smart: p.price_smart||'',
+    selected_channel: p.selectedChannel||'wellipet',
+    img: p.img||'',
+    description: p.desc||'',
+    brand: p.brand||'',
+    link: p.link||'',
+    options: Array.isArray(p.options)?p.options:[],
+    updated_at: new Date().toISOString(),
+  };
+}
+
+async function loadProducts(){
+  showToast('데이터 불러오는 중...','info');
+  const {data, error} = await _supabase.from('sourcing_products').select('*').order('created_at', {ascending:true});
+  if(error){ showToast('데이터 로드 실패: '+error.message,'warn'); return; }
+
+  if(data && data.length > 0){
+    products = data.map(dbToLocal);
+  } else {
+    // DB 비어있으면 SEED로 초기화
+    const seedItems = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
+    const dbItems = seedItems.map(p=>({...localToDb(p), created_at: new Date().toISOString()}));
+    const {error:insertErr} = await _supabase.from('sourcing_products').insert(dbItems);
+    if(insertErr){ showToast('초기 데이터 저장 실패','warn'); }
+    products = seedItems;
   }
-  if(CAT_RENAME[p.cat]){
-    updated.cat = CAT_RENAME[p.cat];
-    _migrated = true;
-  }
-  return updated;
-});
-if(_migrated) localStorage.setItem(DATA_VER, JSON.stringify(products));
-function saveAll(){localStorage.setItem(DATA_VER, JSON.stringify(products));}
+  renderProgress(); renderSlots(); renderSideStats();
+  showToast('불러오기 완료','success');
+}
+
+async function saveAll(){
+  // 호환성 유지 (saveProduct/delProduct에서 직접 upsert/delete 처리)
+}
+
+function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);}
 let currentCat = '간식';
 let editingId = null;
 let currentImgData = null;
 let viewTab = 'grid';
-
-function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);}
 
 // ── 진행 바 렌더 ──
 function renderProgress(){
@@ -1234,7 +1261,7 @@ function openEditModal(id){
   openModal('addModal');
 }
 
-function saveProduct(){
+async function saveProduct(){
   const name=document.getElementById('f-name').value.trim();
   const site=document.getElementById('f-site').value;
   const cat=document.getElementById('f-cat').value;
@@ -1275,20 +1302,27 @@ function saveProduct(){
   if(editingId){
     const idx=products.findIndex(p=>p.id===editingId);
     if(idx!==-1) products[idx]={...products[idx],...data};
+    const {error} = await _supabase.from('sourcing_products').upsert(localToDb(data));
+    if(error){ showToast('저장 실패: '+error.message,'warn'); return; }
     showToast('수정되었습니다','success');
   } else {
     data.createdAt=data.updatedAt;
     products.push(data);
+    const dbData = {...localToDb(data), created_at: data.createdAt};
+    const {error} = await _supabase.from('sourcing_products').insert(dbData);
+    if(error){ showToast('저장 실패: '+error.message,'warn'); return; }
     showToast('상품이 추가되었습니다!','success');
   }
-  saveAll(); closeModal('addModal');
+  closeModal('addModal');
   renderProgress(); renderSlots(); renderSideStats();
 }
 
-function delProduct(id){
+async function delProduct(id){
   if(!confirm('이 상품을 삭제할까요?')) return;
   products=products.filter(p=>p.id!==id);
-  saveAll(); renderProgress(); renderSlots(); renderSideStats();
+  const {error} = await _supabase.from('sourcing_products').delete().eq('id', id);
+  if(error){ showToast('삭제 실패: '+error.message,'warn'); return; }
+  renderProgress(); renderSlots(); renderSideStats();
   showToast('삭제되었습니다','info');
 }
 
@@ -1408,7 +1442,7 @@ function dzDrop(e){
 }
 
 // ── 전체 가격 재계산 ──
-function recalcAllPrices(){
+async function recalcAllPrices(){
   const targets = products.filter(p=>Number(p.wholesale)>0);
   if(!targets.length){ alert('도매가가 입력된 상품이 없습니다.'); return; }
   if(!confirm(`도매가가 있는 상품 ${targets.length}개의 판매가를 새 공식(카드4%+기부3%+마진25%)으로 재계산할까요?`)) return;
@@ -1419,7 +1453,8 @@ function recalcAllPrices(){
     if(!cp) return p;
     return {...p, price_wellipet:String(cp.wellipet), price_coupang:String(cp.coupang), price_smart:String(cp.smart)};
   });
-  saveAll();
+  const dbItems = products.filter(p=>Number(p.wholesale)>0).map(localToDb);
+  await _supabase.from('sourcing_products').upsert(dbItems);
   renderSlots();
   alert(`✅ ${targets.length}개 상품 가격 재계산 완료!`);
 }
@@ -1682,7 +1717,8 @@ function qpHandleFile(e){
       if(idx!==-1){
         products[idx].img = ev.target.result;
         products[idx].updatedAt = new Date().toISOString();
-        saveAll(); renderSlots();
+        _supabase.from('sourcing_products').upsert(localToDb(products[idx]));
+        renderSlots();
         showToast('이미지 저장됨!','success');
       }
     }
@@ -1697,7 +1733,8 @@ function qpSaveImg(){
   if(idx!==-1){
     products[idx].img = url;
     products[idx].updatedAt = new Date().toISOString();
-    saveAll(); renderSlots(); renderProgress();
+    _supabase.from('sourcing_products').upsert(localToDb(products[idx]));
+    renderSlots(); renderProgress();
     qpSetImg(url);
     showToast('이미지 저장됨!','success');
   }
@@ -2000,10 +2037,8 @@ async function loginForPublish(){
 }
 checkAuth();
 
-// ── 초기 렌더 ──
-renderProgress();
-renderSlots();
-renderSideStats();
+// ── 초기 렌더 (Supabase에서 데이터 로드) ──
+loadProducts();
 </script>
 
 <!-- 로그인 배너 -->
