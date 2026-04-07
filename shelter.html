@@ -121,15 +121,28 @@ let currentDogImageUrl = null;
 
 // 로그인 확인
 _supabase.auth.getSession().then(({data:{session}})=>{
-  if(session) showAdmin();
+  if(session) checkRoleAndShow(session.user);
 });
 
 async function shelterLogin(){
   const email=document.getElementById('loginEmail').value;
   const pw=document.getElementById('loginPw').value;
-  const {error}=await _supabase.auth.signInWithPassword({email,password:pw});
-  if(error){document.getElementById('loginErr').style.display='block';return;}
-  showAdmin();
+  const {error, data}=await _supabase.auth.signInWithPassword({email,password:pw});
+  if(error){document.getElementById('loginErr').style.display='block';document.getElementById('loginErr').textContent='이메일 또는 비밀번호가 틀렸어요.';return;}
+  await checkRoleAndShow(data.user);
+}
+
+async function checkRoleAndShow(user){
+  if(!user) return;
+  const {data:profile}=await _supabase.from('profiles').select('role').eq('user_id',user.id).single();
+  const role = profile?.role||'';
+  if(role==='shelter'||role==='admin'){
+    showAdmin();
+  } else {
+    await _supabase.auth.signOut();
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginErr').textContent='보호소 권한이 없어요. 웰리펫 관리자에게 권한 요청을 해주세요.';
+  }
 }
 
 function showAdmin(){

@@ -83,10 +83,11 @@
     </div>
     <div class="page" id="page-members">
       <div class="page-title">👤 회원 관리</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">💡 보호소 계정에 권한을 부여하면 <strong>shelter.html</strong>에 로그인할 수 있어요.</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>마지막 로그인</th></tr></thead>
-          <tbody id="memberTable"><tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr></tbody>
+          <thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>권한</th><th>관리</th></tr></thead>
+          <tbody id="memberTable"><tr><td colspan="5"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -266,6 +267,7 @@ function showPage(name,el){
   if(name==='orders')loadOrders();
   if(name==='dashboard')loadDashboard();
   if(name==='sourcing')loadSourcing();
+  if(name==='members')loadMembers();
 }
 
 let _sourcingAll = [];
@@ -312,6 +314,41 @@ function renderSourcingTable(){
       <td>${shopId?`<a href="/product.html?id=${shopId}" target="_blank" style="color:var(--pk);font-size:12px;font-weight:700;">✓ 올라감</a>`:'<span style="color:#ccc;font-size:12px;">미등록</span>'}</td>
     </tr>`;
   }).join('');
+}
+
+async function loadMembers(){
+  const tbody=document.getElementById('memberTable');
+  const {data,error}=await _supabase.from('profiles').select('user_id,name,role,created_at').order('created_at',{ascending:false});
+  if(error||!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="icon">👤</div><p>가입 회원이 없어요.</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML=data.map(p=>{
+    const roleBadge = p.role==='admin'
+      ? '<span style="background:#2a1220;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;">관리자</span>'
+      : p.role==='shelter'
+      ? '<span style="background:#1a9e4a;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;">🏠 보호소</span>'
+      : '<span style="background:#f0f0f0;color:#888;padding:2px 8px;border-radius:8px;font-size:11px;">일반</span>';
+    const actionBtn = p.role==='shelter'
+      ? `<button class="btn-edit" style="font-size:11px;" onclick="setShelterRole('${p.user_id}','user')">권한 취소</button>`
+      : p.role==='admin' ? ''
+      : `<button class="btn-edit" style="font-size:11px;background:#e8f8ee;color:#1a9e4a;border-color:#a8dbb8;" onclick="setShelterRole('${p.user_id}','shelter')">🏠 보호소 권한 부여</button>`;
+    return `<tr>
+      <td style="font-size:12px;color:var(--muted);">${p.created_at?p.created_at.slice(0,10):'-'}</td>
+      <td>${p.name||'(이름없음)'}</td>
+      <td style="font-size:12px;">-</td>
+      <td>${roleBadge}</td>
+      <td>${actionBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function setShelterRole(userId, role){
+  const {error}=await _supabase.from('profiles').update({role}).eq('user_id',userId);
+  if(error){alert('오류: '+error.message);return;}
+  const msg = role==='shelter'?'보호소 권한을 부여했어요!':'권한을 취소했어요.';
+  alert(msg);
+  loadMembers();
 }
 
 async function loadDashboard(){
