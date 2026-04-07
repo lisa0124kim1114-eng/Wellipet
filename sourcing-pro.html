@@ -961,12 +961,42 @@ async function loadProducts(){
 
   if(data && data.length > 0){
     products = data.map(dbToLocal);
+
+    // localStorage에 남은 데이터가 있으면 Supabase로 마이그레이션
+    const localRaw = localStorage.getItem('welliSourcingPro_v3') || localStorage.getItem('welliSourcingPro_v2') || localStorage.getItem('welliSourcingPro');
+    if(localRaw){
+      try {
+        const localItems = JSON.parse(localRaw);
+        const dbIds = new Set(data.map(d=>d.id));
+        // DB에 없는 항목 추가
+        const missing = localItems.filter(p=>!dbIds.has(p.id) && p.name);
+        if(missing.length > 0){
+          const dbItems = missing.map(p=>({...localToDb(p), created_at: p.createdAt||new Date().toISOString()}));
+          await _supabase.from('sourcing_products').upsert(dbItems);
+          products = [...products, ...missing];
+        }
+        // 가격 입력된 항목은 DB 업데이트
+        const priced = localItems.filter(p=>dbIds.has(p.id)&&(p.wholesale||p.retail));
+        if(priced.length > 0){
+          await _supabase.from('sourcing_products').upsert(priced.map(p=>localToDb(p)));
+          priced.forEach(lp=>{
+            const idx = products.findIndex(p=>p.id===lp.id);
+            if(idx!==-1) products[idx]={...products[idx], wholesale:lp.wholesale||'', retail:lp.retail||''};
+          });
+        }
+        if(missing.length > 0 || priced.length > 0){
+          showToast(`이전 데이터 ${missing.length+priced.length}개 복원됐어요!`,'success');
+        }
+        localStorage.removeItem('welliSourcingPro_v3');
+        localStorage.removeItem('welliSourcingPro_v2');
+        localStorage.removeItem('welliSourcingPro');
+      } catch(e){ console.warn('localStorage 마이그레이션 실패:', e); }
+    }
   } else {
     // DB 비어있으면 SEED로 초기화
     const seedItems = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
     const dbItems = seedItems.map(p=>({...localToDb(p), created_at: new Date().toISOString()}));
-    const {error:insertErr} = await _supabase.from('sourcing_products').insert(dbItems);
-    if(insertErr){ showToast('초기 데이터 저장 실패','warn'); }
+    await _supabase.from('sourcing_products').insert(dbItems);
     products = seedItems;
   }
   renderProgress(); renderSlots(); renderSideStats();
