@@ -240,8 +240,9 @@ async function signUp(){const name=document.getElementById('signupName').value;c
 async function signIn(){const email=document.getElementById('loginEmail').value;const pw=document.getElementById('loginPw').value;if(!email||!pw){showMsg('이메일과 비밀번호를 입력해주세요.',true);return;}const{data,error}=await _supabase.auth.signInWithPassword({email,password:pw});if(error){showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}const name=data.user?.user_metadata?.name||'고객';document.getElementById('formLogin').style.display='none';document.getElementById('formDone').style.display='block';document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';document.getElementById('doneDesc').textContent='로그인 성공!';setTimeout(closeModal,2000);}
 async function signInWithKakao(){await _supabase.auth.signInWithOAuth({provider:'kakao',options:{redirectTo:window.location.origin+window.location.pathname}});}
 function applyAdoption(dogName){
-  if(_currentUser){
-    // 로그인 상태 → 입양 신청 안내 모달
+  // 로그아웃 버튼이 보이면 로그인 상태
+  const loggedIn = _currentUser || document.getElementById('btnLogout').style.display==='inline-block';
+  if(loggedIn){
     document.getElementById('applyDogName').textContent=dogName||'이 아이';
     document.getElementById('applyModal').classList.add('open');
   } else {
