@@ -901,7 +901,7 @@ const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
 let _supabase = null;
 try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { storageKey: 'sb-sourcing-auth' }
+  auth: { storageKey: 'sb-sourcing-auth', autoRefreshToken: false, detectSessionInUrl: false }
 }); } catch(e) { console.warn("Supabase 초기화 실패:", e); }
 
 // 발행된 상품 추적: { sourcingId → supabaseProductId }
@@ -1815,7 +1815,9 @@ let scrapedDetailImgs = [];
 let scrapedDetailHtml = '';
 const EDGE_FN = 'https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/scrape-product';
 
-function openPublishModal(id, updateMode = false){
+async function openPublishModal(id, updateMode = false){
+  const authed = await checkAuthForPublish();
+  if(!authed) return;
   const p = products.find(x=>x.id===id);
   if(!p) return;
   publishingId = id;
@@ -2071,12 +2073,16 @@ async function unpublishProduct(sourcingId){
   showToast('쇼핑몰에서 내렸어요.','info');
 }
 
-// ── 로그인 체크 ──
-async function checkAuth(){
-  const {data:{session}} = await _supabase.auth.getSession();
-  if(!session){
-    document.getElementById('authBanner').style.display='flex';
-  }
+// ── 로그인 체크 (쇼핑몰 올리기 버튼 클릭 시에만 호출) ──
+async function checkAuthForPublish(){
+  try {
+    const {data:{session}} = await _supabase.auth.getSession();
+    if(!session){
+      document.getElementById('authBanner').style.display='flex';
+      return false;
+    }
+    return true;
+  } catch(e){ return true; } // 에러 시 일단 통과
 }
 async function loginForPublish(){
   const email = document.getElementById('authEmail').value;
@@ -2087,10 +2093,7 @@ async function loginForPublish(){
   document.getElementById('authBanner').style.display='none';
   showToast('로그인됐어요! 이제 쇼핑몰에 올릴 수 있어요.','success');
 }
-checkAuth();
-
 // ── 초기 렌더 (Supabase에서 데이터 로드) ──
-// setTimeout으로 브라우저 첫 렌더 완료 후 로드 (페이지 로딩 스피너 방지)
 setTimeout(()=>loadProducts(), 0);
 </script>
 
