@@ -227,9 +227,9 @@ async function shelterLogout(){
   location.reload();
 }
 
-// 강아지 목록
+// 강아지 목록 (자기 보호소 것만)
 async function loadDogs(){
-  const {data}=await _supabase.from('dogs').select('*').order('created_at',{ascending:false});
+  const {data}=await _supabase.from('dogs').select('*').eq('shelter_user_id',_currentUserId).order('created_at',{ascending:false});
   const tbody=document.getElementById('dogTable');
   document.getElementById('dogCount').textContent=`등록된 강아지: ${data?.length||0}마리`;
   if(!data||data.length===0){

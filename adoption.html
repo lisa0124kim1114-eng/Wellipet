@@ -189,6 +189,7 @@ function renderDogs(dogs){
         <span class="free-badge">🆓 무료 입양 · 분양 아님</span>
         <div class="dname">${d.name}</div>
         <div class="dmeta">${d.breed||''} · ${d.age||''} · ${d.gender||''} · ${d.size||''} · ${d.location||''}</div>
+        ${d.shelter_name?`<div style="font-size:11px;color:var(--pk);font-weight:600;margin-top:3px;">🏠 ${d.shelter_name}</div>`:''}
         <div class="ddesc">${d.description||''}</div>
         <div class="dtags">${(d.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="dtag">${t.trim()}</span>`).join('')}</div>
         <button class="dbtn" ${d.status==='입양완료'?'disabled':''} onclick="openModal('signup')">${d.status==='입양완료'?'입양 완료':'입양 신청하기'}</button>
