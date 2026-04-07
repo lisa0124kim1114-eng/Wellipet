@@ -4,7 +4,9 @@
       "Bash(\"C:/Users/lisa0/AppData/Local/Temp/wf_story.json\")",
       "WebFetch(domain:docs.kie.ai)",
       "Bash(ls C:/Users/lisa0/AppData/Local/Temp/*.json)",
-      "mcp__claude_ai_n8n__execute_workflow"
+      "mcp__claude_ai_n8n__execute_workflow",
+      "WebSearch",
+      "WebFetch(domain:ksearch.k-startup.go.kr)"
     ],
     "additionalDirectories": [
       "C:\\Users\\lisa0\\AppData\\Local\\Temp"

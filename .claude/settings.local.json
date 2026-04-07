@@ -109,7 +109,12 @@
       "Bash(cp:*)",
       "Bash(explorer C:\\\\Users\\\\lisa0\\\\claude\\\\wellipet-video\\\\output:*)",
       "Bash(echo \"PID: $!\")",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "WebFetch(domain:wellipet.shop)",
+      "Bash(sed -i 's/.card-img img{width:100%;height:100%;object-fit:cover;}/.card-img img{width:100%;height:100%;object-fit:contain;padding:4px;}/' sourcing-pro.html)",
+      "Bash(sed -i 's/.card-img{width:100%;aspect-ratio:1;background:var\\(--pkbg\\);overflow:hidden;position:relative;}/.card-img{width:100%;aspect-ratio:1;background:#fff;overflow:hidden;position:relative;}/' sourcing-pro.html)",
+      "WebFetch(domain:pzzunxgbzkhdqemmgavd.supabase.co)",
+      "WebFetch(domain:gang2.co.kr)"
     ]
   }
 }
