@@ -1080,9 +1080,10 @@ function renderSlots(){
         </div>
         <div style="margin-top:6px;">
           ${publishedMap[p.id]
-            ? `<div style="display:flex;gap:4px;">
+            ? `<div style="display:flex;gap:4px;flex-wrap:wrap;">
                 <button class="btn btn-published btn-xs" style="flex:1;font-size:10px;" onclick="unpublishProduct('${p.id}')">✓ 올림</button>
                 <button class="btn btn-publish btn-xs" style="flex:1;font-size:10px;" onclick="openPublishModal('${p.id}', true)">상세수정</button>
+                <a href="/product.html?id=${publishedMap[p.id]}" target="_blank" class="btn btn-gray btn-xs" style="flex:1;font-size:10px;text-align:center;text-decoration:none;">👁 미리보기</a>
                </div>`
             : `<button class="btn btn-publish btn-xs" style="width:100%;font-size:11px;" onclick="openPublishModal('${p.id}', false)">🛒 쇼핑몰에 올리기</button>`}
         </div>
@@ -1996,6 +1997,9 @@ async function confirmPublish(){
     closePublishModal();
     renderSlots();
     showToast('쇼핑몰에 올라갔어요! 🎉','success');
+    if(confirm('쇼핑몰에 올라갔어요! 지금 바로 확인할까요?')){
+      window.open('/product.html?id='+data.id, '_blank');
+    }
   }
 }
 
