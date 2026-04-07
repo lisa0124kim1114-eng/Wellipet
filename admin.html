@@ -23,7 +23,8 @@
     <div class="nav-item" onclick="showPage('orders',this)"><span class="nav-icon">🛍️</span> 주문 관리</div>
     <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
     <div class="nav-divider"></div>
-    <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;"><span class="nav-icon">🔍</span> 소싱 관리</a>
+    <div class="nav-item" onclick="showPage('sourcing',this)"><span class="nav-icon">🔍</span> 소싱 목록</div>
+    <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-size:12px;color:#aaa;padding-left:40px;"><span class="nav-icon" style="font-size:12px;">↗</span> 소싱 툴 열기</a>
   </div>
   <div class="main">
     <div class="page active" id="page-dashboard">
@@ -86,6 +87,21 @@
         <table>
           <thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>마지막 로그인</th></tr></thead>
           <tbody id="memberTable"><tr><td colspan="4"><div class="empty-state"><div class="icon">👤</div><p>회원 목록은 <a href="https://supabase.com/dashboard/project/pzzunxgbzkhdqemmgavd/auth/users" target="_blank" style="color:var(--pk);">Supabase → Authentication → Users</a>에서 확인해줘요!</p></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 소싱 목록 -->
+    <div class="page" id="page-sourcing">
+      <div class="page-title">🔍 소싱 목록</div>
+      <div class="toolbar">
+        <div style="font-size:13px;color:var(--muted);">소싱 중인 도매 상품 목록이에요</div>
+        <a href="/sourcing-pro.html" class="btn-primary" style="text-decoration:none;">↗ 소싱 툴에서 편집</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;" id="sourcingCatTabs"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>상품명</th><th>카테고리</th><th>도매사이트</th><th>도매가</th><th>판매가(웰리펫)</th><th>마진</th><th>쇼핑몰 등록</th></tr></thead>
+          <tbody id="sourcingTable"><tr><td colspan="8"><div class="empty-state"><div class="icon">🔍</div><p>불러오는 중...</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -249,6 +265,53 @@ function showPage(name,el){
   if(name==='products')loadProducts();
   if(name==='orders')loadOrders();
   if(name==='dashboard')loadDashboard();
+  if(name==='sourcing')loadSourcing();
+}
+
+let _sourcingAll = [];
+let _sourcingCat = 'all';
+async function loadSourcing(){
+  const tbody = document.getElementById('sourcingTable');
+  tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr>';
+  const {data, error} = await _supabase.from('sourcing_products').select('*').order('created_at',{ascending:true});
+  if(error||!data||data.length===0){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">🔍</div><p>소싱 데이터가 없어요.<br><a href="/sourcing-pro.html" style="color:var(--pk);">소싱 툴</a>에서 상품을 추가해주세요.</p></div></td></tr>';
+    return;
+  }
+  _sourcingAll = data;
+  // 카테고리 탭
+  const cats = ['all', ...new Set(data.map(d=>d.cat).filter(Boolean))];
+  const tabWrap = document.getElementById('sourcingCatTabs');
+  tabWrap.innerHTML = cats.map(c=>`<button class="cat-tab${c===_sourcingCat?' on':''}" onclick="filterSourcing('${c}',this)">${c==='all'?'🐾 전체':c}</button>`).join('');
+  renderSourcingTable();
+}
+function filterSourcing(cat, el){
+  _sourcingCat = cat;
+  document.querySelectorAll('#sourcingCatTabs .cat-tab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderSourcingTable();
+}
+function renderSourcingTable(){
+  const publishedMap = JSON.parse(localStorage.getItem('welliPublished')||'{}');
+  const items = _sourcingCat==='all' ? _sourcingAll : _sourcingAll.filter(d=>d.cat===_sourcingCat);
+  const tbody = document.getElementById('sourcingTable');
+  if(!items.length){ tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>해당 카테고리 상품이 없어요.</p></div></td></tr>'; return; }
+  tbody.innerHTML = items.map(d=>{
+    const w = Number(d.wholesale)||0;
+    const wellipet = w ? Math.round(w/0.72) : 0;
+    const margin = w&&wellipet ? Math.round((wellipet-w)/wellipet*100) : null;
+    const shopId = Object.entries(publishedMap).find(([sid])=>sid===d.id)?.[1];
+    return `<tr>
+      <td>${d.img?`<img src="${d.img}" class="prod-thumb" onerror="this.style.display='none'">`:`<div class="prod-thumb-placeholder">🐾</div>`}</td>
+      <td><div style="font-weight:500;max-width:200px;">${d.name||''}</div>${d.brand?`<div style="font-size:11px;color:var(--muted);">${d.brand}</div>`:''}</td>
+      <td><span style="font-size:12px;">${d.cat||''}</span></td>
+      <td><span style="background:#e0a87a;color:#fff;padding:2px 7px;border-radius:6px;font-size:11px;">${d.site||''}</span></td>
+      <td style="font-weight:600;">${w?w.toLocaleString()+'원':'<span style="color:#ccc">미입력</span>'}</td>
+      <td style="font-weight:700;color:var(--pk);">${wellipet?wellipet.toLocaleString()+'원':'<span style="color:#ccc">-</span>'}</td>
+      <td>${margin!==null?`<span style="background:${margin>=35?'#e8f8ee':margin>=20?'#fff8e8':'#fff0f0'};color:${margin>=35?'#1a9e4a':margin>=20?'#e6a800':'#e04040'};padding:2px 8px;border-radius:8px;font-size:11px;">${margin}%</span>`:'<span style="color:#ccc">-</span>'}</td>
+      <td>${shopId?`<a href="/product.html?id=${shopId}" target="_blank" style="color:var(--pk);font-size:12px;font-weight:700;">✓ 올라감</a>`:'<span style="color:#ccc;font-size:12px;">미등록</span>'}</td>
+    </tr>`;
+  }).join('');
 }
 
 async function loadDashboard(){

@@ -491,7 +491,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 </div>
 
 <!-- ── 상품 추가/수정 모달 ── -->
-<div class="overlay" id="addModal" onclick="closeOnOverlay(event,'addModal')">
+<div class="overlay" id="addModal">
   <div class="modal">
     <div class="modal-header">
       <h3 id="addModalTitle">상품 추가</h3>
@@ -513,9 +513,10 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="펫비투비">펫비투비</option>
             <option value="수진펫">수진펫</option>
             <option value="펫허그B2B">펫허그B2B</option>
+            <option value="후회없개B2B">후회없개B2B</option>
             <option value="펫도매">펫도매</option>
             <option value="딱펫">딱펫</option>
-            <option value="후회없개B2B">후회없개B2B</option>
+            <option value="비투비몰">비투비몰</option>
             <option value="기타">기타</option>
           </select>
         </div>
@@ -529,6 +530,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="배변/위생">🧻 배변/위생</option>
             <option value="장난감">🎮 장난감</option>
             <option value="영양제">💊 영양제</option>
+            <option value="덴탈">🦷 덴탈</option>
             <option value="옷/패션">👕 옷/패션</option>
             <option value="미용">✂️ 미용</option>
             <option value="홈&침대">🛏️ 홈&침대</option>
@@ -782,7 +784,8 @@ const CATS = [
   {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:50},
   {id:'배변/위생',emoji:'🧻', name:'배변/위생',desc:'배변패드, 배변봉투, 위생용품', max:50},
   {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:50},
-  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민', max:50},
+  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민, 덴탈', max:50},
+  {id:'덴탈',    emoji:'🦷', name:'덴탈',    desc:'치석제거, 덴탈껌, 구강세정제, 칫솔', max:50},
   {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:50},
   {id:'미용',    emoji:'✂️', name:'미용',    desc:'샴푸, 브러시, 이동장, 식기', max:50},
   {id:'홈&침대', emoji:'🛏️', name:'홈&침대', desc:'침대, 하우스, 방석, 켄넬', max:50},
@@ -791,7 +794,7 @@ const CATS = [
 // ── 사이트 색상 ──
 const SITE_COLORS = {
   '펫토리':'#7a9ee0','펫비투비':'#e0a87a','수진펫':'#e07aaa',
-  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','펫도매':'#6dbf8a','딱펫':'#f0a060','기타':'#90a090',
+  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','펫도매':'#6dbf8a','딱펫':'#f0a060','비투비몰':'#60a0d0','기타':'#90a090',
 };
 
 // ── 초기 데이터 (수집된 상품) ──
@@ -966,12 +969,6 @@ async function loadProducts(){
 
   if(data && data.length > 0){
     products = data.map(dbToLocal);
-  } else {
-    // DB 비어있으면 SEED로 초기화
-    const seedItems = SEED.map(s=>({...s, id:uid(), wholesale:'', retail:'', createdAt:new Date().toISOString()}));
-    const dbItems = seedItems.map(p=>({...localToDb(p), created_at: new Date().toISOString()}));
-    await _supabase.from('sourcing_products').insert(dbItems);
-    products = seedItems;
   }
   renderProgress(); renderSlots(); renderSideStats();
 
@@ -1003,6 +1000,17 @@ async function saveAll(){
 }
 
 function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);}
+
+// 렌더 배치 — 연속 호출 시 한 번만 실행
+let _renderFrame = null;
+function scheduleRender(){
+  if(_renderFrame) return;
+  _renderFrame = requestAnimationFrame(()=>{
+    _renderFrame = null;
+    renderProgress(); renderSlots(); renderSideStats();
+  });
+}
+
 let currentCat = '간식';
 let editingId = null;
 let currentImgData = null;
@@ -1340,7 +1348,7 @@ async function saveProduct(){
     showToast('상품이 추가되었습니다!','success');
   }
   closeModal('addModal');
-  renderProgress(); renderSlots(); renderSideStats();
+  scheduleRender();
 }
 
 async function delProduct(id){
@@ -1348,7 +1356,7 @@ async function delProduct(id){
   products=products.filter(p=>p.id!==id);
   const {error} = await _supabase.from('sourcing_products').delete().eq('id', id);
   if(error){ showToast('삭제 실패: '+error.message,'warn'); return; }
-  renderProgress(); renderSlots(); renderSideStats();
+  scheduleRender();
   showToast('삭제되었습니다','info');
 }
 
@@ -1760,7 +1768,7 @@ function qpSaveImg(){
     products[idx].img = url;
     products[idx].updatedAt = new Date().toISOString();
     _supabase.from('sourcing_products').upsert(localToDb(products[idx]));
-    renderSlots(); renderProgress();
+    scheduleRender();
     qpSetImg(url);
     showToast('이미지 저장됨!','success');
   }
@@ -1797,7 +1805,7 @@ function qpSaveAll(showMsg=true){
   qpSaveImg();
   qpSaveWholesale();
   if(showMsg) showToast('저장됐어요!','success');
-  renderSlots(); renderProgress(); renderSideStats();
+  scheduleRender();
 }
 
 // 키보드 단축키
@@ -1840,6 +1848,10 @@ async function openPublishModal(id, updateMode = false){
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
   initManualImgSlots();
+  // 스크래핑 결과 초기화
+  const scrapeBtn = document.getElementById('pubScrapeBtn');
+  if(scrapeBtn){ scrapeBtn.textContent='상세페이지 가져오기'; scrapeBtn.disabled=false; }
+  switchDetailTab('scrape');
 
   document.getElementById('pubModalTitle').textContent = updateMode ? '✏️ 쇼핑몰 상품 수정' : '🛒 쇼핑몰에 올리기';
   document.getElementById('pubConfirmBtn').textContent = updateMode ? '업데이트' : '쇼핑몰에 올리기';
@@ -2029,9 +2041,6 @@ async function confirmPublish(){
     closePublishModal();
     renderSlots();
     showToast('쇼핑몰에 올라갔어요! 🎉','success');
-    if(confirm('쇼핑몰에 올라갔어요! 지금 바로 확인할까요?')){
-      window.open('/product.html?id='+data.id, '_blank');
-    }
   }
 }
 
