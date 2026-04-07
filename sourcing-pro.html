@@ -529,8 +529,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="사료">🍽 사료</option>
             <option value="배변/위생">🧻 배변/위생</option>
             <option value="장난감">🎮 장난감</option>
-            <option value="영양제">💊 영양제</option>
-            <option value="덴탈">🦷 덴탈</option>
+            <option value="영양제 & 덴탈">💊 영양제 & 덴탈</option>
             <option value="옷/패션">👕 옷/패션</option>
             <option value="미용">✂️ 미용</option>
             <option value="홈&침대">🛏️ 홈&침대</option>
@@ -784,8 +783,7 @@ const CATS = [
   {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:50},
   {id:'배변/위생',emoji:'🧻', name:'배변/위생',desc:'배변패드, 배변봉투, 위생용품', max:50},
   {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:50},
-  {id:'영양제',  emoji:'💊', name:'영양제',  desc:'관절, 피부, 소화, 멀티비타민, 덴탈', max:50},
-  {id:'덴탈',    emoji:'🦷', name:'덴탈',    desc:'치석제거, 덴탈껌, 구강세정제, 칫솔', max:50},
+  {id:'영양제 & 덴탈', emoji:'💊', name:'영양제 & 덴탈', desc:'관절, 피부, 소화, 멀티비타민, 덴탈껌, 구강세정제', max:50},
   {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:50},
   {id:'미용',    emoji:'✂️', name:'미용',    desc:'샴푸, 브러시, 이동장, 식기', max:50},
   {id:'홈&침대', emoji:'🛏️', name:'홈&침대', desc:'침대, 하우스, 방석, 켄넬', max:50},
@@ -835,9 +833,9 @@ const SEED = [
   {cat:'장난감',site:'펫비투비',name:'[캣츄미] 고양이 자동 레이저 장난감',brand:'캣츄미',desc:'자동 회전 레이저. 혼자 놀기 가능.',img:'',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
   {cat:'장난감',site:'펫비투비',name:'[비유펫] 아이스 쿨 베게 (냉감 쿠션)',brand:'비유펫',desc:'여름용 냉감 쿠션. 고양이·강아지 겸용.',img:'https://petbtob.co.kr/web/product/medium/202308/a59cc4a3f45712faf5f79fb23cf22406.jpg',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
   // 영양제
-  {cat:'영양제',site:'펫토리',name:'메타멍스 관절건강 15g×5P',brand:'메타멍스',desc:'관절건강 기능성 영양제.',img:'',link:'https://pettory.com/'},
+  {cat:'영양제 & 덴탈',site:'펫토리',name:'메타멍스 관절건강 15g×5P',brand:'메타멍스',desc:'관절건강 기능성 영양제.',img:'',link:'https://pettory.com/'},
   // ── 펫비투비(PC) 영양제 추가 ──
-  {cat:'영양제',site:'펫비투비',name:'[요세라] 요시독 센서티브 어덜트 15kg',brand:'요세라',desc:'민감한 피부·장 전용 사료. 베스트 추천.',img:'https://petbtob.co.kr/web/product/medium/202507/f37494f477792906eee350082656b144.png',link:'https://petbtob.co.kr/product/요세라-요시독-센서티브-어덜트-15kg/39390/'},
+  {cat:'영양제 & 덴탈',site:'펫비투비',name:'[요세라] 요시독 센서티브 어덜트 15kg',brand:'요세라',desc:'민감한 피부·장 전용 사료. 베스트 추천.',img:'https://petbtob.co.kr/web/product/medium/202507/f37494f477792906eee350082656b144.png',link:'https://petbtob.co.kr/product/요세라-요시독-센서티브-어덜트-15kg/39390/'},
   // 옷/패션
   {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 쿨 야광 크롭 여름 기능성 민소매 S-3XL',brand:'비유펫',desc:'야광 여름 기능성. 익일출고.',img:'https://petbtob.co.kr/web/product/medium/202603/470dbaa82015dd22f199b3c6c937b785.png',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
   {cat:'옷/패션',site:'펫비투비',name:'[비유펫] 메이즈 크롭나시 모자별도 S-3XL',brand:'비유펫',desc:'메이즈 패턴 크롭 나시.',img:'https://petbtob.co.kr/web/product/medium/202405/8c003cdcd95dcbd30bda4ae18be9ce9b.png',link:'https://petbtob.co.kr/product/list.html?cate_no=286'},
@@ -876,9 +874,9 @@ const SEED = [
   {cat:'배변/위생',site:'펫도매',name:'아껴줄게 배변패드 대형 60x76cm 30매',brand:'아껴줄게',desc:'고흡수 대형 배변패드 30매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
   {cat:'배변/위생',site:'펫도매',name:'개님의패드 강아지 배변패드 대형',brand:'개님의패드',desc:'두꺼운 고흡수 배변패드. 베스트',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
   {cat:'배변/위생',site:'펫도매',name:'럭셔리펫 슈퍼대형 배변패드 40매',brand:'럭셔리펫',desc:'슈퍼대형 프리미엄 배변패드 40매.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=004'},
-  {cat:'영양제',site:'펫도매',name:'펫글로우 더마플러스 강아지 피모 영양제',brand:'펫글로우',desc:'피부·모질 개선 기능성 영양제. 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
-  {cat:'영양제',site:'펫도매',name:'동아제약 벳플 장유산균',brand:'동아제약',desc:'수의사 추천 반려견 장 건강 유산균.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
-  {cat:'영양제',site:'펫도매',name:'내추럴발란스 관절건강 영양제',brand:'내추럴발란스',desc:'글루코사민 함유 관절 건강 영양제.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'영양제 & 덴탈',site:'펫도매',name:'펫글로우 더마플러스 강아지 피모 영양제',brand:'펫글로우',desc:'피부·모질 개선 기능성 영양제. 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'영양제 & 덴탈',site:'펫도매',name:'동아제약 벳플 장유산균',brand:'동아제약',desc:'수의사 추천 반려견 장 건강 유산균.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
+  {cat:'영양제 & 덴탈',site:'펫도매',name:'내추럴발란스 관절건강 영양제',brand:'내추럴발란스',desc:'글루코사민 함유 관절 건강 영양제.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=005'},
   {cat:'장난감',site:'펫도매',name:'척잇 수륙양용 부메랑',brand:'척잇',desc:'물에서도 사용 가능한 수륙양용 부메랑 장난감.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
   {cat:'장난감',site:'펫도매',name:'JW 홀리롤러 S',brand:'JW',desc:'트릿을 넣어 굴리는 노즈워크 장난감 소형.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
   {cat:'장난감',site:'펫도매',name:'콩 클래식 S 스터핑 장난감',brand:'콩',desc:'스터핑 넣는 고무 장난감. 강아지 베스트.',img:'',link:'https://petdome.co.kr/index.php?mid=goods&category=003'},
@@ -892,9 +890,9 @@ const SEED = [
   {cat:'배변/위생',site:'딱펫',name:'딱좋은 배변패드 대형 50매',brand:'딱좋은',desc:'딱펫 대형 배변패드 50매 경제형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'배변/위생',site:'딱펫',name:'딱좋은 강아지 물티슈 100매',brand:'딱좋은',desc:'피부 자극 없는 천연 강아지 물티슈.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'배변/위생',site:'딱펫',name:'딱좋은 배변패드 슈퍼대형 20매',brand:'딱좋은',desc:'슈퍼대형 배변패드 20매.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'영양제',site:'딱펫',name:'딱좋은 오메가3 피모영양제 60정',brand:'딱좋은',desc:'오메가3 함유 피부·모질 개선 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'영양제',site:'딱펫',name:'딱좋은 멀티비타민 강아지 30g',brand:'딱좋은',desc:'종합 멀티비타민 파우더 타입.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
-  {cat:'영양제',site:'딱펫',name:'딱좋은 관절케어 글루코사민 60정',brand:'딱좋은',desc:'글루코사민+콘드로이친 관절 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제 & 덴탈',site:'딱펫',name:'딱좋은 오메가3 피모영양제 60정',brand:'딱좋은',desc:'오메가3 함유 피부·모질 개선 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제 & 덴탈',site:'딱펫',name:'딱좋은 멀티비타민 강아지 30g',brand:'딱좋은',desc:'종합 멀티비타민 파우더 타입.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
+  {cat:'영양제 & 덴탈',site:'딱펫',name:'딱좋은 관절케어 글루코사민 60정',brand:'딱좋은',desc:'글루코사민+콘드로이친 관절 영양제.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'장난감',site:'딱펫',name:'딱좋은 삑삑 공 장난감 3종세트',brand:'딱좋은',desc:'삑삑 소리 나는 고무공 3개 세트.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'장난감',site:'딱펫',name:'딱좋은 노즈워크 매트 S',brand:'딱좋은',desc:'간식 숨기기 노즈워크 매트 소형.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
   {cat:'장난감',site:'딱펫',name:'딱좋은 로프 터그 장난감',brand:'딱좋은',desc:'면 로프 터그놀이 장난감. 치아건강.',img:'',link:'https://www.ddakpet.com/team3f/myshop/goodslist'},
