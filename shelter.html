@@ -6,7 +6,7 @@
 <title>보호소 관리자 · Wellipet</title>
 <meta name="robots" content="noindex, nofollow"/>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;} .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--pkbg);} .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;border:1px solid var(--bd);} .login-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);margin-bottom:4px;} .login-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:28px;} .fg{margin-bottom:14px;} .fg label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;} .fg input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;} .fg input:focus{border-color:var(--pk);} .login-box button{display:block!important;width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;} .login-err{font-size:12px;color:#e05050;margin-top:8px;display:none;}  /* 愿由??붾㈃ */ .admin-wrap{display:none;} header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;} .admin-logo{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pkl);} .admin-logo span{color:#fff;font-weight:300;font-size:13px;margin-left:10px;} .header-right{display:flex;align-items:center;gap:16px;} .header-right a{font-size:12px;color:#a08090;text-decoration:none;cursor:pointer;} .header-right a:hover{color:var(--pkl);} .main{padding:32px 40px;} .page-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:8px;} .page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300;} .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;} .btn-primary{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;} .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;} table{width:100%;border-collapse:collapse;} th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);} td{padding:14px 16px;font-size:13px;border-bottom:1px solid #fafafa;vertical-align:middle;} tr:last-child td{border-bottom:none;} tr:hover td{background:#fafafa;} .dog-thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--bd);} .dog-thumb-placeholder{width:56px;height:56px;background:var(--pkbg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--bd);} .status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;} .s-wait{background:#fff3e0;color:#e65100;} .s-new{background:var(--pkp);color:var(--pk);} .s-urgent{background:#fce4ec;color:#c62828;} .s-done{background:#e8f5e9;color:#2e7d32;}  /* 紐⑤떖 */ .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;} .modal-overlay.open{display:flex;} .modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;} .modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;} .form-group{margin-bottom:14px;} .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;} .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;} .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--pk);} .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;} .img-upload-area{border:2px dashed var(--bd);border-radius:12px;padding:20px;text-align:center;cursor:pointer;position:relative;transition:all .2s;} .img-upload-area:hover{border-color:var(--pk);background:var(--pkbg);} .img-upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;} .img-preview{width:100%;height:140px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:none;} .upload-progress{font-size:12px;color:var(--pk);margin-top:6px;display:none;} .empty-state{text-align:center;padding:60px;color:var(--muted);} .empty-state .icon{font-size:48px;margin-bottom:16px;} </style>
+<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;} .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--pkbg);} .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;border:1px solid var(--bd);} .login-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);margin-bottom:4px;} .login-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:28px;} .fg{margin-bottom:14px;} .fg label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;} .fg input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;} .fg input:focus{border-color:var(--pk);} .login-box button{display:block!important;width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:6px;} .login-err{font-size:12px;color:#e05050;margin-top:8px;display:none;}  /* 愿由??붾㈃ */ .admin-wrap{display:none;} header{background:#2a1220;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;} .admin-logo{font-family:'Nunito',sans-serif;font-size:20px;font-weight:800;color:var(--pkl);} .admin-logo span{color:#fff;font-weight:300;font-size:13px;margin-left:10px;} .header-right{display:flex;align-items:center;gap:16px;} .header-right a{font-size:12px;color:#a08090;text-decoration:none;cursor:pointer;} .header-right a:hover{color:var(--pkl);} .main{padding:32px 40px;} .page-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:8px;} .page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300;} .toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;} .btn-primary{background:var(--pk);color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;} .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:10px 20px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-danger{background:#ff6b6b;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-edit{background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .table-wrap{background:#fff;border-radius:14px;border:1px solid var(--bd);overflow:hidden;} table{width:100%;border-collapse:collapse;} th{background:var(--pkbg);padding:12px 16px;font-size:12px;color:var(--muted);font-weight:600;text-align:left;border-bottom:1px solid var(--bd);} td{padding:14px 16px;font-size:13px;border-bottom:1px solid #fafafa;vertical-align:middle;} tr:last-child td{border-bottom:none;} tr:hover td{background:#fafafa;} .dog-thumb{width:56px;height:56px;object-fit:cover;border-radius:10px;border:1px solid var(--bd);} .dog-thumb-placeholder{width:56px;height:56px;background:var(--pkbg);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--bd);} .status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;} .s-wait{background:#fff3e0;color:#e65100;} .s-new{background:var(--pkp);color:var(--pk);} .s-urgent{background:#fce4ec;color:#c62828;} .s-done{background:#e8f5e9;color:#2e7d32;}  /* 紐⑤떖 */ .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;} .modal-overlay.open{display:flex;} .modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;} .modal-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;} .form-group{margin-bottom:14px;} .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;} .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;} .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--pk);} .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;} .multi-img-row{display:flex;gap:8px;flex-wrap:wrap;} .img-slot{width:82px;height:82px;border:2px dashed var(--bd);border-radius:10px;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--pkbg);transition:border-color .15s;flex-shrink:0;} .img-slot:hover{border-color:var(--pk);} .img-slot img{width:100%;height:100%;object-fit:cover;display:block;} .img-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2;} .slot-add{font-size:22px;color:var(--muted);pointer-events:none;} .slot-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;z-index:3;line-height:1;} .slot-label{font-size:9px;color:var(--pk);position:absolute;bottom:3px;left:0;right:0;text-align:center;font-weight:600;} .upload-progress{font-size:12px;color:var(--pk);margin-top:6px;display:none;} .empty-state{text-align:center;padding:60px;color:var(--muted);} .empty-state .icon{font-size:48px;margin-bottom:16px;} </style>
 </head>
 <body>
 
@@ -85,15 +85,8 @@
   <div class="modal">
     <div class="modal-title" id="dogModalTitle">강아지 등록</div>
     <div class="form-group">
-      <label>📷 사진</label>
-      <div class="img-upload-area">
-        <input type="file" id="dogImageFile" accept="image/*" onchange="previewDogImage(this)"/>
-        <img loading="lazy" id="dogImgPreview" class="img-preview"/>
-        <div id="dogImgPlaceholder">
-          <div style="font-size:28px;margin-bottom:6px;">📷</div>
-          <div style="font-size:12px;color:var(--muted);">클릭하거나 드래그해서 올려줘요</div>
-        </div>
-      </div>
+      <label>📷 사진 (최대 5장, 첫 번째가 대표 이미지)</label>
+      <div class="multi-img-row" id="multiImgRow"></div>
       <div class="upload-progress" id="dogUploadProgress">⏳ 업로드 중...</div>
     </div>
     <div class="form-row">
@@ -145,7 +138,36 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 let editingDogId = null;
-let currentDogImageUrl = null;
+let _dogImgSlots = [null,null,null,null,null]; // {url, file} or null
+
+function initMultiImg(existingUrls=[]){
+  _dogImgSlots=[null,null,null,null,null];
+  existingUrls.forEach((url,i)=>{if(i<5&&url)_dogImgSlots[i]={url,file:null};});
+  renderMultiImg();
+}
+function renderMultiImg(){
+  const row=document.getElementById('multiImgRow');
+  row.innerHTML=_dogImgSlots.map((img,i)=>`
+    <div class="img-slot" id="imgslot${i}">
+      <input type="file" accept="image/*" onchange="onSlotFile(${i},this)"/>
+      ${img?`<img src="${img.url}" alt="사진${i+1}"/>`:`<span class="slot-add">+</span>`}
+      ${i===0?`<span class="slot-label">대표</span>`:''}
+      ${img?`<button class="slot-del" onclick="removeSlot(${i},event)">×</button>`:''}
+    </div>
+  `).join('');
+}
+function onSlotFile(i,input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{_dogImgSlots[i]={url:e.target.result,file};renderMultiImg();};
+  reader.readAsDataURL(file);
+}
+function removeSlot(i,e){
+  e.stopPropagation();
+  _dogImgSlots[i]=null;
+  _dogImgSlots=[..._dogImgSlots.filter(x=>x!==null),...Array(5).fill(null)].slice(0,5);
+  renderMultiImg();
+}
 
 // 로그인 확인
 _supabase.auth.getSession().then(({data:{session}})=>{
@@ -252,23 +274,21 @@ async function loadDogs(){
 }
 
 function openDogModal(){
-  editingDogId=null;currentDogImageUrl=null;
+  editingDogId=null;
   document.getElementById('dogModalTitle').textContent='강아지 등록';
+  initMultiImg([]);
   document.getElementById('dName').value='';document.getElementById('dBreed').value='';
   document.getElementById('dAge').value='';document.getElementById('dGender').value='수컷';
   document.getElementById('dSize').value='소형';document.getElementById('dLocation').value='';
   document.getElementById('dDesc').value='';document.getElementById('dTags').value='';
   document.getElementById('dStatus').value='신규';
-  document.getElementById('dogImageFile').value='';
-  document.getElementById('dogImgPreview').style.display='none';
-  document.getElementById('dogImgPlaceholder').style.display='block';
   document.getElementById('dogModal').classList.add('open');
 }
 
 async function editDog(id){
   const {data}=await _supabase.from('dogs').select('*').eq('id',id).single();
   if(!data) return;
-  editingDogId=id;currentDogImageUrl=data.image_url||null;
+  editingDogId=id;
   document.getElementById('dogModalTitle').textContent='강아지 수정';
   document.getElementById('dName').value=data.name||'';
   document.getElementById('dBreed').value=data.breed||'';
@@ -279,43 +299,38 @@ async function editDog(id){
   document.getElementById('dDesc').value=data.description||'';
   document.getElementById('dTags').value=data.tags||'';
   document.getElementById('dStatus').value=data.status||'대기중';
-  if(data.image_url){
-    document.getElementById('dogImgPreview').src=data.image_url;
-    document.getElementById('dogImgPreview').style.display='block';
-    document.getElementById('dogImgPlaceholder').style.display='none';
-  } else {
-    document.getElementById('dogImgPreview').style.display='none';
-    document.getElementById('dogImgPlaceholder').style.display='block';
-  }
+  // 기존 이미지 로드
+  let existingUrls=[];
+  try{existingUrls=JSON.parse(data.image_urls||'[]');}catch(e){}
+  if(existingUrls.length===0&&data.image_url)existingUrls=[data.image_url];
+  initMultiImg(existingUrls);
+  if(false){// legacy dead code below, kept for reference
+  }// end legacy
   document.getElementById('dogModal').classList.add('open');
 }
 
-function previewDogImage(input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    document.getElementById('dogImgPreview').src=e.target.result;
-    document.getElementById('dogImgPreview').style.display='block';
-    document.getElementById('dogImgPlaceholder').style.display='none';
-  };
-  reader.readAsDataURL(file);
-}
-
-async function uploadDogImage(file){
+async function uploadDogImageFile(file){
   const ext=file.name.split('.').pop();
-  const fileName=`dog_${Date.now()}.${ext}`;
-  document.getElementById('dogUploadProgress').style.display='block';
+  const fileName=`dog_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
   const {error}=await _supabase.storage.from('products').upload(fileName,file,{upsert:true});
-  document.getElementById('dogUploadProgress').style.display='none';
   if(error){alert('업로드 실패: '+error.message);return null;}
-  const {data:{publicUrl}}=_supabase.storage.from('products').getPublicUrl(fileName);
-  return publicUrl;
+  return _supabase.storage.from('products').getPublicUrl(fileName).data.publicUrl;
 }
 
 async function saveDog(){
-  let imageUrl=currentDogImageUrl;
-  const file=document.getElementById('dogImageFile').files[0];
-  if(file){imageUrl=await uploadDogImage(file);if(!imageUrl)return;}
+  if(!document.getElementById('dName').value){alert('이름은 필수예요!');return;}
+  document.getElementById('dogUploadProgress').style.display='block';
+  const finalUrls=[];
+  for(const slot of _dogImgSlots){
+    if(!slot)continue;
+    if(slot.file){
+      const url=await uploadDogImageFile(slot.file);
+      if(url)finalUrls.push(url);
+    } else if(slot.url&&!slot.url.startsWith('data:')){
+      finalUrls.push(slot.url);
+    }
+  }
+  document.getElementById('dogUploadProgress').style.display='none';
   const dog={
     name:document.getElementById('dName').value,
     breed:document.getElementById('dBreed').value,
@@ -326,11 +341,11 @@ async function saveDog(){
     description:document.getElementById('dDesc').value,
     tags:document.getElementById('dTags').value,
     status:document.getElementById('dStatus').value,
-    image_url:imageUrl,
-    shelter_user_id: _currentUserId,
-    shelter_name: _shelterProfile?.shelter_name||'',
+    image_url:finalUrls[0]||null,
+    image_urls:JSON.stringify(finalUrls),
+    shelter_user_id:_currentUserId,
+    shelter_name:_shelterProfile?.shelter_name||'',
   };
-  if(!dog.name){alert('이름은 필수예요!');return;}
   if(editingDogId){await _supabase.from('dogs').update(dog).eq('id',editingDogId);}
   else{await _supabase.from('dogs').insert(dog);}
   closeDogModal();loadDogs();
