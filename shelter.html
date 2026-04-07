@@ -32,6 +32,20 @@
     </div>
   </header>
   <div class="main">
+    <!-- 보호소 정보 카드 -->
+    <div id="shelterInfoCard" style="background:#fff;border:1px solid var(--bd);border-radius:14px;padding:20px 24px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="font-size:36px;">🏠</div>
+        <div>
+          <div id="siName" style="font-size:17px;font-weight:700;color:var(--tx);">보호소 이름 미입력</div>
+          <div id="siPhone" style="font-size:13px;color:var(--muted);margin-top:2px;">연락처 미입력</div>
+          <div id="siAddress" style="font-size:12px;color:var(--muted);margin-top:1px;"></div>
+          <div id="siSns" style="font-size:12px;color:var(--pk);margin-top:1px;"></div>
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="openShelterInfoModal()" style="font-size:12px;padding:8px 16px;">✏️ 보호소 정보 수정</button>
+    </div>
+
     <div class="page-title">🐾 강아지 입양 관리</div>
     <div class="page-sub">입양을 기다리는 강아지 정보를 등록하고 관리해요</div>
     <div class="toolbar">
@@ -47,6 +61,21 @@
           <tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- 보호소 정보 모달 -->
+<div class="modal-overlay" id="shelterInfoModal">
+  <div class="modal">
+    <div class="modal-title">🏠 보호소 정보 입력</div>
+    <div class="form-group"><label>보호소 / 단체명 *</label><input type="text" id="siInputName" placeholder="예: 다산유기견보호소"/></div>
+    <div class="form-group"><label>연락처 *</label><input type="tel" id="siInputPhone" placeholder="예: 031-000-0000 또는 010-0000-0000"/></div>
+    <div class="form-group"><label>주소</label><input type="text" id="siInputAddress" placeholder="예: 경기 남양주시 다산동"/></div>
+    <div class="form-group"><label>SNS 계정 (선택)</label><input type="text" id="siInputSns" placeholder="예: 인스타그램 @username"/></div>
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeShelterInfoModal()">취소</button>
+      <button class="btn-primary" onclick="saveShelterInfo()">저장</button>
     </div>
   </div>
 </div>
@@ -131,9 +160,14 @@ async function shelterLogin(){
   await checkRoleAndShow(data.user);
 }
 
+let _currentUserId = null;
+let _shelterProfile = null;
+
 async function checkRoleAndShow(user){
   if(!user) return;
-  const {data:profile}=await _supabase.from('profiles').select('role').eq('user_id',user.id).single();
+  _currentUserId = user.id;
+  const {data:profile}=await _supabase.from('profiles').select('role,shelter_name,shelter_phone,shelter_address,shelter_sns').eq('user_id',user.id).single();
+  _shelterProfile = profile;
   const role = profile?.role||'';
   if(role==='shelter'||role==='admin'){
     showAdmin();
@@ -147,7 +181,45 @@ async function checkRoleAndShow(user){
 function showAdmin(){
   document.getElementById('loginWrap').style.display='none';
   document.getElementById('adminWrap').style.display='block';
+  renderShelterInfo();
   loadDogs();
+}
+
+function renderShelterInfo(){
+  const p = _shelterProfile;
+  document.getElementById('siName').textContent = p?.shelter_name || '⚠️ 보호소 이름을 입력해주세요';
+  document.getElementById('siPhone').textContent = p?.shelter_phone ? '📞 ' + p.shelter_phone : '연락처 미입력';
+  document.getElementById('siAddress').textContent = p?.shelter_address ? '📍 ' + p.shelter_address : '';
+  document.getElementById('siSns').textContent = p?.shelter_sns ? '📱 ' + p.shelter_sns : '';
+}
+
+function openShelterInfoModal(){
+  const p = _shelterProfile;
+  document.getElementById('siInputName').value = p?.shelter_name||'';
+  document.getElementById('siInputPhone').value = p?.shelter_phone||'';
+  document.getElementById('siInputAddress').value = p?.shelter_address||'';
+  document.getElementById('siInputSns').value = p?.shelter_sns||'';
+  document.getElementById('shelterInfoModal').classList.add('open');
+}
+function closeShelterInfoModal(){ document.getElementById('shelterInfoModal').classList.remove('open'); }
+
+async function saveShelterInfo(){
+  const shelter_name = document.getElementById('siInputName').value.trim();
+  const shelter_phone = document.getElementById('siInputPhone').value.trim();
+  if(!shelter_name){ alert('보호소 이름을 입력해주세요.'); return; }
+  if(!shelter_phone){ alert('연락처를 입력해주세요.'); return; }
+  const updates = {
+    shelter_name,
+    shelter_phone,
+    shelter_address: document.getElementById('siInputAddress').value.trim(),
+    shelter_sns: document.getElementById('siInputSns').value.trim(),
+  };
+  const {error}=await _supabase.from('profiles').update(updates).eq('user_id',_currentUserId);
+  if(error){ alert('저장 실패: '+error.message); return; }
+  _shelterProfile = {..._shelterProfile, ...updates};
+  renderShelterInfo();
+  closeShelterInfoModal();
+  alert('보호소 정보가 저장됐어요!');
 }
 
 async function shelterLogout(){
@@ -255,6 +327,8 @@ async function saveDog(){
     tags:document.getElementById('dTags').value,
     status:document.getElementById('dStatus').value,
     image_url:imageUrl,
+    shelter_user_id: _currentUserId,
+    shelter_name: _shelterProfile?.shelter_name||'',
   };
   if(!dog.name){alert('이름은 필수예요!');return;}
   if(editingDogId){await _supabase.from('dogs').update(dog).eq('id',editingDogId);}
