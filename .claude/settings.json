@@ -6,7 +6,8 @@
       "Bash(ls C:/Users/lisa0/AppData/Local/Temp/*.json)",
       "mcp__claude_ai_n8n__execute_workflow",
       "WebSearch",
-      "WebFetch(domain:ksearch.k-startup.go.kr)"
+      "WebFetch(domain:ksearch.k-startup.go.kr)",
+      "Bash(git clone:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\lisa0\\AppData\\Local\\Temp"

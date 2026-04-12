@@ -1008,6 +1008,15 @@ async function saveAll(){
 
 function uid(){return Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7);}
 
+// 슬롯 렌더 캐시 — 데이터 변경 없으면 DOM 업데이트 건너뜀
+let _slotsCache = '';
+function _slotsHashKey(){
+  const items = products.filter(p=>p.cat===currentCat);
+  return currentCat + '|' + _bulkMode + '|' + JSON.stringify(
+    items.map(p=>({id:p.id,n:p.name,i:p.img?p.img.slice(0,30):'',w:p.wholesale,pub:!!publishedMap[p.id]}))
+  );
+}
+
 // 렌더 배치 — 연속 호출 시 한 번만 실행
 let _renderFrame = null;
 function scheduleRender(){
@@ -1099,11 +1108,19 @@ function selectCat(catId){
 function renderSlots(){
   const cat = CATS.find(c=>c.id===currentCat);
   if(!cat) return;
+
+  // 데이터 변경 없으면 grid innerHTML 재생성 스킵 (클릭 반응성 개선)
+  const newKey = _slotsHashKey();
+  const skipGrid = (newKey === _slotsCache);
+
   document.getElementById('secEmoji').textContent = cat.emoji;
   document.getElementById('secName').textContent = cat.name;
   document.getElementById('secDesc').textContent = cat.desc;
   const items = products.filter(p=>p.cat===currentCat);
   document.getElementById('slotCount').textContent = `${items.length} / ${cat.max}개`;
+
+  if(skipGrid) return;
+  _slotsCache = newKey;
 
   const grid = document.getElementById('slotsGrid');
   let html = '';
@@ -1117,7 +1134,7 @@ function renderSlots(){
     const profit = w&&wPrice ? wPrice-w : null;
     const mc = margin===null?'none':margin>=35?'good':margin>=20?'ok':'low';
     const imgHtml = p.img
-      ? `<img src="${esc(p.img)}" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
+      ? `<img src="${esc(p.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
       : `<div class="no-img">🐾</div>`;
     const siteColor = SITE_COLORS[p.site]||'#999';
     const isSelected = _bulkSelected.has(p.id);
