@@ -252,14 +252,19 @@ async function loadOrders(email){
   list.innerHTML=data.map(o=>{
     const st=o.status||'결제완료';
     const statusClass=st==='배송완료'?'s-done':st==='배송중'?'s-ship':st==='배송준비'?'s-ready':'s-complete';
-    const canCancel=(st==='결제완료'||st==='배송준비')&&st!=='취소완료'&&st!=='환불완료';
-    const canRefund=(st==='배송중'||st==='배송완료')&&st!=='반품신청'&&st!=='반품완료';
-    const btnHtml=canCancel
+    const isSending=(st==='주문취소 신청중'||st==='환불 신청중'||st==='반품 신청중'||st==='교환 신청중');
+    const isDone=(st==='주문취소'||st==='취소완료'||st==='환불완료'||st==='반품신청'||st==='반품완료'||st==='교환완료');
+    const canCancel=(st==='결제완료'||st==='배송준비')&&!isSending&&!isDone;
+    const canRefund=(st==='배송중'||st==='배송완료')&&!isSending&&!isDone;
+    const btnHtml=isSending
+      ?`<span class="btn-order-done" style="background:#fff3cd;color:#856404;border:1px solid #ffc107;">${st}</span>`
+      :isDone
+      ?`<span class="btn-order-done">${st}</span>`
+      :canCancel
       ?`<button class="btn-order-action btn-cancel" onclick="openRequestModal('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}','cancel')">주문 취소</button>`
       :canRefund
       ?`<button class="btn-order-action btn-refund" onclick="openRequestModal('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}','refund')">반품/교환 신청</button>`
-      :(st==='취소완료'||st==='환불완료'||st==='반품신청'||st==='반품완료')
-      ?`<span class="btn-order-done">${st}</span>`:'';
+      :'';'';
     return `
       <div class="order-card">
         <div class="order-header">
@@ -367,6 +372,9 @@ async function submitRequest(){
     return;
   }
   if(!currentUser||!_reqOrderId)return;
+  // 버튼 즉시 비활성화 (중복 클릭 방지)
+  const submitBtn=document.querySelector('#requestModal button:last-of-type');
+  if(submitBtn){submitBtn.disabled=true;submitBtn.textContent='처리 중...';}
   const {error}=await _supabase.from('refund_requests').insert({
     order_id:_reqOrderId,
     user_email:currentUser.email,
@@ -375,18 +383,14 @@ async function submitRequest(){
     status:'접수',
     created_at:new Date().toISOString()
   });
-  if(error){
-    // 테이블이 없을 경우 이메일 안내로 대체
-    msgBox.style.display='block';
-    msgBox.style.background='#f0faf5';msgBox.style.color='#2a7a5a';msgBox.style.border='1px solid #b8e8d0';
-    msgBox.textContent='✅ 신청이 접수됐어요! wellypet1209@gmail.com 으로 확인 메일을 보내드릴게요.';
-    setTimeout(()=>closeRequestModal(),2500);
-    return;
-  }
-  msgBox.style.display='block';
-  msgBox.style.background='#f0faf5';msgBox.style.color='#2a7a5a';msgBox.style.border='1px solid #b8e8d0';
-  msgBox.textContent='✅ '+type+' 신청이 완료됐어요! 1-2 영업일 내 이메일로 답변드릴게요.';
-  setTimeout(()=>{closeRequestModal();loadOrders(currentUser.email);},2500);
+  // orders 테이블 상태 업데이트
+  let newOrderStatus='주문취소 신청중';
+  if(type==='환불') newOrderStatus='환불 신청중';
+  else if(type==='반품') newOrderStatus='반품 신청중';
+  else if(type==='교환') newOrderStatus='교환 신청중';
+  await _supabase.from('orders').update({status:newOrderStatus}).eq('id',_reqOrderId);
+  closeRequestModal();
+  loadOrders(currentUser.email);
 }
 
 function showLoginModal(){document.getElementById('authModal').style.display='flex';}
