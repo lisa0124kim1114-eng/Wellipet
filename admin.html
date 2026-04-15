@@ -349,17 +349,13 @@ function renderSourcingTable(){
 async function loadMembers(){
   const tbody=document.getElementById('memberTable');
   // profiles + orders에서 이메일 조인
-  const {data,error}=await _supabase.from('profiles').select('user_id,name,role,created_at,phone,shelter_name,shelter_phone').order('created_at',{ascending:false});
+  const {data,error}=await _supabase.from('profiles').select('user_id,email,name,role,created_at,phone,shelter_name,shelter_phone').order('created_at',{ascending:false});
   if(error||!data||data.length===0){
     tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">👤</div><p>가입 회원이 없어요.</p></div></td></tr>';
     return;
   }
-  // orders에서 user_id별 이메일 수집
-  const {data:orders}=await _supabase.from('orders').select('user_id,customer_email');
-  const emailMap={};
-  (orders||[]).forEach(o=>{if(o.user_id&&o.customer_email)emailMap[o.user_id]=o.customer_email;});
   tbody.innerHTML=data.map(p=>{
-    const email=emailMap[p.user_id]||'';
+    const email=p.email||'';
     const roleBadge = p.role==='admin'
       ? '<span style="background:#2a1220;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;">관리자</span>'
       : p.role==='shelter'
