@@ -94,6 +94,20 @@ async function init(){
       payment_id: paymentId,
     });
     if(orderErr) console.error('주문 저장 오류:', orderErr);
+
+    // 주문 확인 이메일 발송 (고객 + 관리자)
+    fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: pending.name,
+        customerEmail: userEmail,
+        productName: item.name,
+        amount: item.price*(item.qty||1),
+        address: (pending.address||'') + ' ' + (pending.addressDetail||''),
+        paymentId: paymentId,
+      })
+    }).catch(e=>console.warn('이메일 발송 오류:', e));
   }
 
   // 배송 주소를 profiles에도 저장
