@@ -105,8 +105,8 @@
       <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">💡 보호소 계정에 권한을 부여하면 <strong>shelter.html</strong>에 로그인할 수 있어요.</div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>가입일</th><th>이름</th><th>보호소명</th><th>연락처</th><th>권한</th><th>관리</th></tr></thead>
-          <tbody id="memberTable"><tr><td colspan="5"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
+          <thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>연락처</th><th>권한</th><th>관리</th></tr></thead>
+          <tbody id="memberTable"><tr><td colspan="6"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -348,12 +348,18 @@ function renderSourcingTable(){
 
 async function loadMembers(){
   const tbody=document.getElementById('memberTable');
-  const {data,error}=await _supabase.from('profiles').select('user_id,name,role,created_at,shelter_name,shelter_phone,shelter_address').order('created_at',{ascending:false});
+  // profiles + orders에서 이메일 조인
+  const {data,error}=await _supabase.from('profiles').select('user_id,name,role,created_at,phone,shelter_name,shelter_phone').order('created_at',{ascending:false});
   if(error||!data||data.length===0){
-    tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="icon">👤</div><p>가입 회원이 없어요.</p></div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">👤</div><p>가입 회원이 없어요.</p></div></td></tr>';
     return;
   }
+  // orders에서 user_id별 이메일 수집
+  const {data:orders}=await _supabase.from('orders').select('user_id,customer_email');
+  const emailMap={};
+  (orders||[]).forEach(o=>{if(o.user_id&&o.customer_email)emailMap[o.user_id]=o.customer_email;});
   tbody.innerHTML=data.map(p=>{
+    const email=emailMap[p.user_id]||'';
     const roleBadge = p.role==='admin'
       ? '<span style="background:#2a1220;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;">관리자</span>'
       : p.role==='shelter'
@@ -366,8 +372,8 @@ async function loadMembers(){
     return `<tr>
       <td style="font-size:12px;color:var(--muted);">${p.created_at?p.created_at.slice(0,10):'-'}</td>
       <td>${p.name||'(이름없음)'}</td>
-      <td style="font-size:12px;font-weight:${p.shelter_name?'600':'400'};color:${p.shelter_name?'var(--tx)':'#ccc'};">${p.shelter_name||'-'}</td>
-      <td style="font-size:12px;">${p.shelter_phone||'-'}</td>
+      <td style="font-size:12px;color:var(--muted);">${email||'-'}</td>
+      <td style="font-size:12px;">${p.phone||'-'}</td>
       <td>${roleBadge}</td>
       <td>${actionBtn}</td>
     </tr>`;
@@ -385,8 +391,10 @@ async function setShelterRole(userId, role){
 async function loadDashboard(){
   const {count:pc}=await _supabase.from('products').select('*',{count:'exact',head:true});
   const {count:oc}=await _supabase.from('orders').select('*',{count:'exact',head:true});
+  const {count:mc}=await _supabase.from('profiles').select('*',{count:'exact',head:true});
   document.getElementById('totalProducts').textContent=pc||0;
   document.getElementById('totalOrders').textContent=oc||0;
+  document.getElementById('totalMembers').textContent=mc||0;
   // 미처리 취소/환불 요청
   const {data:refunds}=await _supabase.from('refund_requests').select('*').in('status',['접수','처리중']).order('created_at',{ascending:false});
   const pending=refunds||[];
