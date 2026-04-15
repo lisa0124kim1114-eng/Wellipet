@@ -22,6 +22,7 @@
     <div class="nav-item" onclick="showPage('products',this)"><span class="nav-icon">📦</span> 상품 관리</div>
     <div class="nav-item" onclick="showPage('orders',this)"><span class="nav-icon">🛍️</span> 주문 관리</div>
     <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
+    <div class="nav-item" onclick="showPage('refunds',this)"><span class="nav-icon">🔄</span> 취소/환불 요청</div>
     <div class="nav-divider"></div>
     <div class="nav-item" onclick="showPage('sourcing',this)"><span class="nav-icon">🔍</span> 소싱 목록</div>
     <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-size:12px;color:#aaa;padding-left:40px;"><span class="nav-icon" style="font-size:12px;">↗</span> 소싱 툴 열기</a>
@@ -88,6 +89,16 @@
         <table>
           <thead><tr><th>가입일</th><th>이름</th><th>보호소명</th><th>연락처</th><th>권한</th><th>관리</th></tr></thead>
           <tbody id="memberTable"><tr><td colspan="5"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- 취소/환불 요청 -->
+    <div class="page" id="page-refunds">
+      <div class="page-title">🔄 취소/환불 요청</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>신청일</th><th>신청자</th><th>주문번호</th><th>유형</th><th>사유</th><th>상태</th><th>처리</th></tr></thead>
+          <tbody id="refundTable"><tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
@@ -268,6 +279,7 @@ function showPage(name,el){
   if(name==='dashboard')loadDashboard();
   if(name==='sourcing')loadSourcing();
   if(name==='members')loadMembers();
+  if(name==='refunds')loadRefunds();
 }
 
 let _sourcingAll = [];
@@ -764,6 +776,39 @@ async function loadOrders(){
 }
 
 async function updateOrderStatus(id,status){await _supabase.from('orders').update({status}).eq('id',id);}
+
+async function loadRefunds(){
+  const tbody=document.getElementById('refundTable');
+  tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr>';
+  const {data,error}=await _supabase.from('refund_requests').select('*').order('created_at',{ascending:false});
+  if(error||!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🔄</div><p>취소/환불 요청이 없어요</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML=data.map(r=>`
+    <tr>
+      <td>${new Date(r.created_at).toLocaleDateString('ko-KR')}</td>
+      <td>${r.user_email||'-'}</td>
+      <td style="font-size:11px;color:var(--muted);">${r.order_id||'-'}</td>
+      <td><span style="background:var(--pkp);color:var(--pk);padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.request_type||'-'}</span></td>
+      <td style="font-size:12px;max-width:200px;">${r.reason||'-'}</td>
+      <td>
+        <select class="status-select" onchange="updateRefundStatus(${r.id},this.value)">
+          <option value="접수" ${r.status==='접수'?'selected':''}>접수</option>
+          <option value="처리중" ${r.status==='처리중'?'selected':''}>처리중</option>
+          <option value="완료" ${r.status==='완료'?'selected':''}>완료</option>
+          <option value="반려" ${r.status==='반려'?'selected':''}>반려</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn-edit" onclick="updateRefundStatus(${r.id},'완료')">처리완료</button>
+      </td>
+    </tr>`).join('');
+}
+async function updateRefundStatus(id,status){
+  await _supabase.from('refund_requests').update({status}).eq('id',id);
+  loadRefunds();
+}
 async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
 
 function showAdminLogin(){
