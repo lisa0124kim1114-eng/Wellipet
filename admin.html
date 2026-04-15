@@ -793,7 +793,7 @@ async function loadRefunds(){
       <td><span style="background:var(--pkp);color:var(--pk);padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.request_type||'-'}</span></td>
       <td style="font-size:12px;max-width:200px;">${r.reason||'-'}</td>
       <td>
-        <select class="status-select" onchange="updateRefundStatus(${r.id},this.value)">
+        <select class="status-select" onchange="updateRefundStatus(${r.id},this.value,'${r.order_id}','${r.request_type}')">
           <option value="접수" ${r.status==='접수'?'selected':''}>접수</option>
           <option value="처리중" ${r.status==='처리중'?'selected':''}>처리중</option>
           <option value="완료" ${r.status==='완료'?'selected':''}>완료</option>
@@ -801,12 +801,20 @@ async function loadRefunds(){
         </select>
       </td>
       <td>
-        <button class="btn-edit" onclick="updateRefundStatus(${r.id},'완료')">처리완료</button>
+        <button class="btn-edit" onclick="updateRefundStatus(${r.id},'완료','${r.order_id}','${r.request_type}')">처리완료</button>
       </td>
     </tr>`).join('');
 }
-async function updateRefundStatus(id,status){
+async function updateRefundStatus(id,status,orderId,requestType){
   await _supabase.from('refund_requests').update({status}).eq('id',id);
+  // 완료 처리 시 orders 테이블 상태도 함께 업데이트
+  if(status==='완료' && orderId){
+    let orderStatus = '주문취소';
+    if(requestType==='환불') orderStatus='환불완료';
+    else if(requestType==='반품') orderStatus='반품완료';
+    else if(requestType==='교환') orderStatus='교환완료';
+    await _supabase.from('orders').update({status:orderStatus}).eq('id',orderId);
+  }
   loadRefunds();
 }
 async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
