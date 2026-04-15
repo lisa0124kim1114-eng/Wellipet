@@ -35,6 +35,24 @@
         <div class="dash-card"><div class="icon">🛍️</div><div class="num" id="totalOrders">0</div><div class="label">총 주문 수</div></div>
         <div class="dash-card"><div class="icon">👤</div><div class="num" id="totalMembers">-</div><div class="label">총 회원 수</div></div>
         <div class="dash-card"><div class="icon">🏠</div><div class="num">0원</div><div class="label">이번 달 기부금</div></div>
+        <div class="dash-card" style="cursor:pointer;" onclick="showPage('refunds',document.querySelector('[onclick*=refunds]'))">
+          <div class="icon">🔄</div>
+          <div class="num" id="totalRefunds">0</div>
+          <div class="label">미처리 취소/환불 요청</div>
+        </div>
+      </div>
+      <!-- 최근 취소/환불 요청 -->
+      <div style="margin-top:28px;">
+        <div style="font-size:14px;font-weight:600;color:#2a1220;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+          🔄 최근 취소/환불 요청
+          <button onclick="showPage('refunds',document.querySelector('[onclick*=refunds]'))" style="font-size:12px;background:none;border:1px solid var(--pk);color:var(--pk);padding:4px 12px;border-radius:8px;cursor:pointer;">전체 보기</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>신청일</th><th>신청자</th><th>유형</th><th>사유</th><th>상태</th></tr></thead>
+            <tbody id="dashRefundTable"><tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px;font-size:13px;">요청 없음</td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="page" id="page-products">
@@ -369,6 +387,25 @@ async function loadDashboard(){
   const {count:oc}=await _supabase.from('orders').select('*',{count:'exact',head:true});
   document.getElementById('totalProducts').textContent=pc||0;
   document.getElementById('totalOrders').textContent=oc||0;
+  // 미처리 취소/환불 요청
+  const {data:refunds}=await _supabase.from('refund_requests').select('*').in('status',['접수','처리중']).order('created_at',{ascending:false});
+  const pending=refunds||[];
+  document.getElementById('totalRefunds').textContent=pending.length;
+  const tbody=document.getElementById('dashRefundTable');
+  if(pending.length===0){
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px;font-size:13px;">미처리 요청 없음</td></tr>';
+  } else {
+    const statusColor={접수:'#fff3cd',처리중:'#cce5ff'};
+    const statusText={접수:'#856404',처리중:'#004085'};
+    tbody.innerHTML=pending.slice(0,5).map(r=>`
+      <tr>
+        <td style="font-size:12px;">${new Date(r.created_at).toLocaleDateString('ko-KR')}</td>
+        <td style="font-size:12px;">${r.user_email||'-'}</td>
+        <td><span style="background:var(--pkp);color:var(--pk);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.request_type||'-'}</span></td>
+        <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.reason||'-'}</td>
+        <td><span style="background:${statusColor[r.status]||'#f8f9fa'};color:${statusText[r.status]||'#333'};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${r.status}</span></td>
+      </tr>`).join('');
+  }
 }
 
 function previewMainImage(input){
