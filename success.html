@@ -35,61 +35,78 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 async function init(){
   const params=new URLSearchParams(window.location.search);
-  // 포트원 V2: paymentId로 리다이렉트됨
   const paymentId=params.get('paymentId')||params.get('orderId')||'';
-
   document.getElementById('orderId').textContent=paymentId;
 
   // localStorage에서 주문 정보 가져오기
   const pending=JSON.parse(localStorage.getItem('pendingOrder')||'{}');
 
-  if(pending.items){
-    document.getElementById('orderName').textContent=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;
-    document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
-    document.getElementById('orderAmount').textContent=Number(pending.amount||0).toLocaleString()+'원';
+  if(!pending.items || pending.items.length===0){
+    // pendingOrder가 없으면 이미 처리됐거나 잘못된 접근
+    return;
+  }
 
-    // 기부금 계산
-    const totalDon=pending.items.reduce((sum,item)=>(sum+Math.floor((item.price||0)*0.03)*(item.qty||1)),0);
-    document.getElementById('donationAmt').textContent=Number(totalDon).toLocaleString()+'원';
+  // UI 표시
+  document.getElementById('orderName').textContent=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;
+  document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
+  document.getElementById('orderAmount').textContent=Number(pending.amount||0).toLocaleString()+'원';
+  const totalDon=pending.items.reduce((sum,item)=>(sum+Math.floor((item.price||0)*0.03)*(item.qty||1)),0);
+  document.getElementById('donationAmt').textContent=Number(totalDon).toLocaleString()+'원';
 
-    // Supabase에 주문 저장
-    const {data:{session}} = await _supabase.auth.getSession();
-    const userId = session?.user?.id || null;
-    const userEmail = session?.user?.email || pending.email || '';
+  // 장바구니 & 임시 주문 먼저 삭제 (중복 저장 방지)
+  localStorage.removeItem('cart');
+  localStorage.removeItem('pendingOrder');
 
-    for(const item of pending.items){
-      const {error: orderErr} = await _supabase.from('orders').insert({
-        user_id: userId,
-        customer_name: pending.name,
-        customer_email: userEmail,
-        customer_phone: pending.phone,
-        zipcode: pending.zipcode,
-        address: pending.address,
-        address_detail: pending.addressDetail,
-        product_name: item.name,
-        amount: item.price*(item.qty||1),
-        status: '결제완료',
-        payment_id: params.get('paymentId')||'',
+  // 세션 확인 (최대 3초 대기)
+  let session = null;
+  try{
+    const res = await _supabase.auth.getSession();
+    session = res.data?.session;
+    // 세션 없으면 onAuthStateChange 잠깐 기다림
+    if(!session){
+      session = await new Promise(resolve=>{
+        const timeout=setTimeout(()=>resolve(null),3000);
+        const {data:{subscription}}=_supabase.auth.onAuthStateChange((_,s)=>{
+          clearTimeout(timeout);
+          subscription.unsubscribe();
+          resolve(s);
+        });
       });
-      if(orderErr) console.error('주문 저장 오류:', orderErr);
     }
+  }catch(e){console.warn('session err',e);}
 
-    // 배송 주소를 profiles에도 저장 (다음 주문 자동 입력용)
-    if(userId){
-      await _supabase.from('profiles').upsert({
-        user_id: userId,
-        name: pending.name,
-        phone: pending.phone,
-        zipcode: pending.zipcode,
-        address: pending.address,
-        address_detail: pending.addressDetail,
-        ...(pending.discount_applied ? {first_order_used: true} : {}),
-      },{onConflict:'user_id'});
-    }
+  const userId = session?.user?.id || null;
+  const userEmail = session?.user?.email || pending.email || '';
 
-    // 장바구니 & 임시 주문 정보 삭제
-    localStorage.removeItem('cart');
-    localStorage.removeItem('pendingOrder');
+  // Supabase에 주문 저장
+  for(const item of pending.items){
+    const {error: orderErr} = await _supabase.from('orders').insert({
+      user_id: userId,
+      customer_name: pending.name,
+      customer_email: userEmail,
+      customer_phone: pending.phone,
+      zipcode: pending.zipcode,
+      address: pending.address,
+      address_detail: pending.addressDetail,
+      product_name: item.name,
+      amount: item.price*(item.qty||1),
+      status: '결제완료',
+      payment_id: paymentId,
+    });
+    if(orderErr) console.error('주문 저장 오류:', orderErr);
+  }
+
+  // 배송 주소를 profiles에도 저장
+  if(userId){
+    await _supabase.from('profiles').upsert({
+      user_id: userId,
+      name: pending.name,
+      phone: pending.phone,
+      zipcode: pending.zipcode,
+      address: pending.address,
+      address_detail: pending.addressDetail,
+      ...(pending.discount_applied ? {first_order_used: true} : {}),
+    },{onConflict:'user_id'});
   }
 }
 
