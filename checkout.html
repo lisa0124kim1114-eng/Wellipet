@@ -240,7 +240,7 @@ async function requestPayment(){
     return;
   }
 
-  const paymentId='order-'+Date.now();
+  const paymentId='order'+Date.now();
 
   const shipping=totalPrice>=50000?0:3000;
   const finalPrice=totalPrice+shipping-discountAmount;
@@ -278,7 +278,7 @@ async function requestPayment(){
       email: email,
       phoneNumber: phone.replace(/-/g,''),
     },
-    redirectUrl: window.location.origin+'/success.html',
+    redirectUrl: 'https://wellypet.co.kr/success.html',
   };
 
   if(isEasyPay){
