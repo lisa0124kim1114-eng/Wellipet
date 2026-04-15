@@ -18,17 +18,30 @@
 <div class="container">
   <div>
     <div class="section">
-      <div class="section-title">배송 정보</div>
-      <div style="font-size:12px;color:#a08090;background:#fff5f9;border:1px solid #f0d8e6;border-radius:10px;padding:10px 14px;margin-bottom:16px;">💡 처음 주문 시 입력한 주소는 다음부터 자동으로 채워져요. 변경이 필요하면 수정 후 결제하세요.</div>
-      <div class="form-group"><label>받는 분</label><input type="text" id="customerName" placeholder="홍길동"/></div>
-      <div class="form-group"><label>연락처</label><input type="tel" id="customerPhone" placeholder="010-0000-0000"/></div>
-      <div class="form-group"><label>이메일</label><input type="email" id="customerEmail" placeholder="wellypet1209@gmail.com"/></div>
-      <div class="form-row">
-        <div class="form-group"><label>우편번호</label><input type="text" id="zipcode" placeholder="12345"/></div>
-        <div class="form-group"><label>&nbsp;</label><button onclick="searchAddress()" style="width:100%;padding:11px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">주소 검색</button></div>
+      <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+        배송 정보
+        <button id="btnEditAddr" onclick="toggleAddrEdit()" style="display:none;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✏️ 주소 변경</button>
       </div>
-      <div class="form-group"><label>주소</label><input type="text" id="address" placeholder="기본 주소"/></div>
-      <div class="form-group"><label>상세 주소</label><input type="text" id="addressDetail" placeholder="상세 주소 (동/호수)"/></div>
+      <!-- 저장된 주소 미리보기 (잠금 상태) -->
+      <div id="addrPreview" style="display:none;background:var(--pkbg);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.8;color:var(--tx);">
+        <div id="addrPreviewText"></div>
+      </div>
+      <!-- 입력 폼 -->
+      <div id="addrForm">
+        <div class="form-group"><label>받는 분</label><input type="text" id="customerName" placeholder="홍길동"/></div>
+        <div class="form-group"><label>연락처</label><input type="tel" id="customerPhone" placeholder="010-0000-0000"/></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="customerEmail" placeholder="wellypet1209@gmail.com"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>우편번호</label><input type="text" id="zipcode" placeholder="12345"/></div>
+          <div class="form-group"><label>&nbsp;</label><button onclick="searchAddress()" style="width:100%;padding:11px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">주소 검색</button></div>
+        </div>
+        <div class="form-group"><label>주소</label><input type="text" id="address" placeholder="기본 주소"/></div>
+        <div class="form-group"><label>상세 주소</label><input type="text" id="addressDetail" placeholder="상세 주소 (동/호수)"/></div>
+        <div id="addrSaveRow" style="display:none;margin-bottom:4px;">
+          <button onclick="confirmAddrEdit()" style="background:var(--pk);color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">주소 확인</button>
+          <button onclick="cancelAddrEdit()" style="background:#fff;color:var(--muted);border:1px solid var(--bd);padding:9px 18px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-left:8px;">취소</button>
+        </div>
+      </div>
     </div>
     <div class="section">
       <div class="section-title">결제 수단</div>
@@ -156,6 +169,10 @@ function loadCartItems(){
         if(profile.zipcode)document.getElementById('zipcode').value=profile.zipcode;
         if(profile.address)document.getElementById('address').value=profile.address;
         if(profile.address_detail)document.getElementById('addressDetail').value=profile.address_detail;
+        // 저장된 주소가 있으면 미리보기 잠금 모드로 전환
+        if(profile.address){
+          lockAddrView();
+        }
       }
       // 첫 주문 10% 할인 적용 (미사용 회원만)
       if(!profile||!profile.first_order_used){
@@ -169,6 +186,34 @@ function loadCartItems(){
       }
     }
   });
+}
+
+// 주소 잠금/편집 모드
+function lockAddrView(){
+  const name=document.getElementById('customerName').value;
+  const phone=document.getElementById('customerPhone').value;
+  const zip=document.getElementById('zipcode').value;
+  const addr=document.getElementById('address').value;
+  const detail=document.getElementById('addressDetail').value;
+  if(!addr)return;
+  document.getElementById('addrPreviewText').innerHTML=
+    `<strong>${name}</strong> · ${phone}<br>${zip} ${addr} ${detail}`;
+  document.getElementById('addrPreview').style.display='block';
+  document.getElementById('addrForm').style.display='none';
+  document.getElementById('btnEditAddr').style.display='inline-block';
+  document.getElementById('addrSaveRow').style.display='none';
+}
+function toggleAddrEdit(){
+  document.getElementById('addrPreview').style.display='none';
+  document.getElementById('addrForm').style.display='block';
+  document.getElementById('addrSaveRow').style.display='block';
+  document.getElementById('btnEditAddr').style.display='none';
+}
+function confirmAddrEdit(){
+  lockAddrView();
+}
+function cancelAddrEdit(){
+  lockAddrView();
 }
 
 function selectMethod(el,method){
@@ -293,6 +338,9 @@ async function requestPayment(){
       if(response.code !== 'USER_CANCEL'){
         alert('결제 오류: '+response.message);
       }
+    } else {
+      // 결제 성공 → success.html로 이동
+      location.href = '/success.html?paymentId=' + paymentId;
     }
   } catch(error){
     alert('결제 오류: '+error.message);

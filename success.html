@@ -55,11 +55,13 @@ async function init(){
     // Supabase에 주문 저장
     const {data:{session}} = await _supabase.auth.getSession();
     const userId = session?.user?.id || null;
+    const userEmail = session?.user?.email || pending.email || '';
+
     for(const item of pending.items){
-      await _supabase.from('orders').insert({
+      const {error: orderErr} = await _supabase.from('orders').insert({
         user_id: userId,
         customer_name: pending.name,
-        customer_email: pending.email,
+        customer_email: userEmail,
         customer_phone: pending.phone,
         zipcode: pending.zipcode,
         address: pending.address,
@@ -67,14 +69,21 @@ async function init(){
         product_name: item.name,
         amount: item.price*(item.qty||1),
         status: '결제완료',
+        payment_id: params.get('paymentId')||'',
       });
+      if(orderErr) console.error('주문 저장 오류:', orderErr);
     }
 
-    // 첫 주문 할인 사용 처리
-    if(pending.discount_applied && userId){
+    // 배송 주소를 profiles에도 저장 (다음 주문 자동 입력용)
+    if(userId){
       await _supabase.from('profiles').upsert({
         user_id: userId,
-        first_order_used: true,
+        name: pending.name,
+        phone: pending.phone,
+        zipcode: pending.zipcode,
+        address: pending.address,
+        address_detail: pending.addressDetail,
+        ...(pending.discount_applied ? {first_order_used: true} : {}),
       },{onConflict:'user_id'});
     }
 
