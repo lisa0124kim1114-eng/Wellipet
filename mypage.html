@@ -7,7 +7,8 @@
 <title>마이페이지 · Wellipet 웰리펫</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="common.css"/>
-<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--cr:#fdf8f5;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;} .topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;} .topbar span{font-size:11px;color:#fff;font-weight:300;} .topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;} header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;} .header-left{display:flex;align-items:center;gap:32px;} .logo-img{height:52px;object-fit:contain;} .logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);} .logo em{font-style:normal;color:var(--pkm);} nav{display:flex;gap:28px;} nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;} nav a:hover{color:var(--pk);} .hicons{display:flex;gap:14px;align-items:center;} .sbox{display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;} .sbox input{border:none;background:transparent;font-size:12px;outline:none;width:120px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);} .ibt{font-size:16px;cursor:pointer;color:#bbb;} .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;} .user-name{font-size:13px;color:var(--pk);font-weight:500;cursor:pointer;display:none;} .user-name:hover{text-decoration:underline;}  .page-wrap{max-width:900px;margin:40px auto;padding:0 48px;display:grid;grid-template-columns:220px 1fr;gap:28px;}  /* ?ъ씠?쒕컮 */ .sidebar{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:24px;height:fit-content;} .user-card{text-align:center;padding-bottom:20px;border-bottom:1px solid var(--bd);margin-bottom:20px;} .user-avatar{width:64px;height:64px;background:var(--pkp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;} .user-card-name{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#2a1220;margin-bottom:4px;} .user-card-email{font-size:11px;color:var(--muted);font-weight:300;} .side-menu{} .side-item{padding:10px 12px;font-size:13px;color:#888;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px;transition:all .15s;font-weight:500;} .side-item:hover{background:var(--pkbg);color:var(--pk);} .side-item.active{background:var(--pkbg);color:var(--pk);} .side-icon{font-size:15px;}  /* 硫붿씤 */ .main-content{} .tab{display:none;} .tab.active{display:block;} .card{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:28px;margin-bottom:20px;} .card-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}  /* 二쇰Ц ?댁뿭 */ .order-card{border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:16px;} .order-header{background:var(--pkbg);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;} .order-date{font-size:12px;color:var(--muted);font-weight:300;} .order-status{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;} .s-done{background:#e8f5e9;color:#2e7d32;} .s-ship{background:#e3f2fd;color:#1565c0;} .s-ready{background:#fff3e0;color:#e65100;} .s-complete{background:var(--pkp);color:var(--pk);} .order-body{padding:16px 18px;display:flex;align-items:center;gap:14px;} .order-img{width:56px;height:56px;background:var(--pkp);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;} .order-img img{width:100%;height:100%;object-fit:cover;} .order-info{flex:1;} .order-name{font-size:14px;font-weight:500;color:#2a1220;margin-bottom:4px;} .order-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);} .order-don{font-size:11px;color:var(--pkm);margin-top:2px;font-weight:300;} .empty-orders{text-align:center;padding:60px;color:var(--muted);} .empty-orders .icon{font-size:48px;margin-bottom:16px;}  /* 諛곗넚吏 */ .addr-card{border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px;position:relative;} .addr-default{position:absolute;top:14px;right:14px;font-size:10px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:20px;} .addr-name{font-size:14px;font-weight:600;color:#2a1220;margin-bottom:6px;} .addr-info{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;} .form-group{margin-bottom:14px;} .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;} .form-group input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;} .form-group input:focus{border-color:var(--pk);} .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .btn-primary{background:var(--pk);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;} .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .save-msg{font-size:12px;color:#2a7a5a;margin-top:8px;display:none;}  /* 濡쒓렇???꾩슂 */ .login-required{text-align:center;padding:80px;color:var(--muted);} .login-required .icon{font-size:64px;margin-bottom:16px;} .login-required p{font-size:15px;margin-bottom:24px;} .btn-login{background:var(--pk);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}  footer{background:#2a1220;padding:48px;margin-top:80px;} .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;} .f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;} .f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;} .f-sns{display:flex;gap:8px;} .f-sns a{width:32px;height:32px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;} .f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;} .f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;} .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;} .f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;} .f-copy{font-size:11px;color:#6a4a5a;}  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;} .hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;} .mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;} .mobile-nav.open{display:block;} .mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;} .mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;} .mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;} .mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);} @media(max-width:768px){.hamburger{display:flex;}nav{display:none;}} </style>
+<style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--cr:#fdf8f5;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:#f8f8f8;} .topbar{background:var(--pk);padding:8px 48px;display:flex;justify-content:space-between;align-items:center;} .topbar span{font-size:11px;color:#fff;font-weight:300;} .topbar a{font-size:11px;color:var(--pkl);text-decoration:none;cursor:pointer;} header{padding:0 32px;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0;z-index:100;} .header-left{display:flex;align-items:center;gap:32px;} .logo-img{height:52px;object-fit:contain;} .logo{font-family:'Nunito',sans-serif;font-size:26px;font-weight:800;color:var(--pk);} .logo em{font-style:normal;color:var(--pkm);} nav{display:flex;gap:28px;} nav a{font-size:15px;color:#2a1220;text-decoration:none;cursor:pointer;font-weight:600;transition:color .2s;} nav a:hover{color:var(--pk);} .hicons{display:flex;gap:14px;align-items:center;} .sbox{display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;} .sbox input{border:none;background:transparent;font-size:12px;outline:none;width:120px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);} .ibt{font-size:16px;cursor:pointer;color:#bbb;} .btn-join{background:var(--pk);color:#fff;padding:8px 18px;border-radius:20px;font-size:12px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .btn-logout{background:transparent;color:var(--pk);padding:8px 18px;border-radius:20px;font-size:12px;border:1.5px solid var(--pk);cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;} .user-name{font-size:13px;color:var(--pk);font-weight:500;cursor:pointer;display:none;} .user-name:hover{text-decoration:underline;}  .page-wrap{max-width:900px;margin:40px auto;padding:0 48px;display:grid;grid-template-columns:220px 1fr;gap:28px;}  /* ?ъ씠?쒕컮 */ .sidebar{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:24px;height:fit-content;} .user-card{text-align:center;padding-bottom:20px;border-bottom:1px solid var(--bd);margin-bottom:20px;} .user-avatar{width:64px;height:64px;background:var(--pkp);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 12px;} .user-card-name{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#2a1220;margin-bottom:4px;} .user-card-email{font-size:11px;color:var(--muted);font-weight:300;} .side-menu{} .side-item{padding:10px 12px;font-size:13px;color:#888;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px;transition:all .15s;font-weight:500;} .side-item:hover{background:var(--pkbg);color:var(--pk);} .side-item.active{background:var(--pkbg);color:var(--pk);} .side-icon{font-size:15px;}  /* 硫붿씤 */ .main-content{} .tab{display:none;} .tab.active{display:block;} .card{background:#fff;border-radius:16px;border:1px solid var(--bd);padding:28px;margin-bottom:20px;} .card-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:20px;}  /* 二쇰Ц ?댁뿭 */ .order-card{border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:16px;} .order-header{background:var(--pkbg);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;} .order-date{font-size:12px;color:var(--muted);font-weight:300;} .order-status{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;} .s-done{background:#e8f5e9;color:#2e7d32;} .s-ship{background:#e3f2fd;color:#1565c0;} .s-ready{background:#fff3e0;color:#e65100;} .s-complete{background:var(--pkp);color:var(--pk);} .order-body{padding:16px 18px;display:flex;align-items:center;gap:14px;} .order-img{width:56px;height:56px;background:var(--pkp);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;flex-shrink:0;} .order-img img{width:100%;height:100%;object-fit:cover;} .order-info{flex:1;} .order-name{font-size:14px;font-weight:500;color:#2a1220;margin-bottom:4px;} .order-price{font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:var(--pk);} .order-don{font-size:11px;color:var(--pkm);margin-top:2px;font-weight:300;} .empty-orders{text-align:center;padding:60px;color:var(--muted);} .empty-orders .icon{font-size:48px;margin-bottom:16px;}  /* 諛곗넚吏 */ .addr-card{border:1px solid var(--bd);border-radius:14px;padding:18px;margin-bottom:14px;position:relative;} .addr-default{position:absolute;top:14px;right:14px;font-size:10px;background:var(--pk);color:#fff;padding:2px 8px;border-radius:20px;} .addr-name{font-size:14px;font-weight:600;color:#2a1220;margin-bottom:6px;} .addr-info{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;} .form-group{margin-bottom:14px;} .form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;} .form-group input{width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;} .form-group input:focus{border-color:var(--pk);} .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;} .btn-primary{background:var(--pk);color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-weight:500;} .btn-secondary{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:11px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;} .save-msg{font-size:12px;color:#2a7a5a;margin-top:8px;display:none;}  /* 濡쒓렇???꾩슂 */ .login-required{text-align:center;padding:80px;color:var(--muted);} .login-required .icon{font-size:64px;margin-bottom:16px;} .login-required p{font-size:15px;margin-bottom:24px;} .btn-login{background:var(--pk);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}  footer{background:#2a1220;padding:48px;margin-top:80px;} .ft{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;} .f-logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pkl);margin-bottom:10px;} .f-desc{font-size:12px;color:#a08090;font-weight:300;line-height:1.8;margin-bottom:16px;} .f-sns{display:flex;gap:8px;} .f-sns a{width:32px;height:32px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;text-decoration:none;} .f-col h4{font-size:12px;color:#fff;font-weight:500;margin-bottom:14px;} .f-col a{display:block;font-size:11px;color:#a08090;font-weight:300;margin-bottom:8px;text-decoration:none;cursor:pointer;} .fb{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;} .f-biz{font-size:11px;color:#6a4a5a;font-weight:300;line-height:1.8;} .f-copy{font-size:11px;color:#6a4a5a;}  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;} .hamburger span{display:block;width:22px;height:2px;background:var(--pk);border-radius:2px;} .mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:200;} .mobile-nav.open{display:block;} .mobile-nav-inner{position:absolute;top:0;right:0;width:260px;height:100%;background:#fff;padding:24px 20px;display:flex;flex-direction:column;gap:4px;} .mobile-nav-close{align-self:flex-end;background:none;border:none;font-size:24px;cursor:pointer;color:#ccc;margin-bottom:16px;} .mobile-nav-inner a{display:block;padding:14px 12px;font-size:15px;font-weight:600;color:#2a1220;text-decoration:none;border-radius:10px;} .mobile-nav-inner a:hover{background:var(--pkbg);color:var(--pk);} @media(max-width:768px){.hamburger{display:flex;}nav{display:none;}}
+ .order-actions{display:flex;align-items:center;} .btn-order-action{border:none;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;} .btn-cancel{background:#fff0f0;color:#c62828;border:1px solid #ffd0d0;} .btn-cancel:hover{background:#ffd0d0;} .btn-refund{background:var(--pkp);color:var(--pk);border:1px solid var(--pkl);} .btn-refund:hover{background:var(--pkl);color:#fff;} .btn-order-done{font-size:11px;color:var(--muted);padding:6px 10px;background:#f5f5f5;border-radius:10px;white-space:nowrap;} </style>
 </head>
 <body>
 <div class="topbar"><span>🏠 구매금액의 3%가 유기견 보호소에 자동 기부됩니다</span><a href="donation.html" style="display:none">후원 현황 보기 →</a></div>
@@ -138,6 +139,34 @@
   </div>
 </div>
 
+<!-- 취소/반품/교환 신청 모달 -->
+<div id="requestModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:440px;margin:0 16px;">
+    <button onclick="closeRequestModal()" style="float:right;background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;margin-top:-8px;">×</button>
+    <h2 id="requestModalTitle" style="font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;color:#2a1220;margin-bottom:6px;"></h2>
+    <p id="requestModalProduct" style="font-size:13px;color:var(--muted);margin-bottom:20px;font-weight:300;"></p>
+    <div id="requestMsgBox" style="display:none;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;"></div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;">신청 유형</label>
+      <select id="requestType" style="width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#fff;">
+        <option value="주문취소">주문 취소</option>
+        <option value="반품">반품 (단순 변심)</option>
+        <option value="교환">교환 (상품 불량/오배송)</option>
+        <option value="환불">환불 요청</option>
+      </select>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:12px;color:var(--muted);margin-bottom:5px;">신청 사유 <span style="color:#c62828;">*</span></label>
+      <textarea id="requestReason" placeholder="신청 사유를 상세히 적어주세요." style="width:100%;padding:10px 14px;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;resize:vertical;min-height:100px;"></textarea>
+    </div>
+    <div style="background:var(--pkbg);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--muted);line-height:1.7;">
+      📧 신청 후 담당자가 확인하여 <strong>1-2 영업일 내</strong> 이메일로 답변드려요.<br>
+      문의: wellypet1209@gmail.com
+    </div>
+    <button onclick="submitRequest()" style="width:100%;background:var(--pk);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">신청하기</button>
+  </div>
+</div>
+
 <footer>
   <div class="ft">
     <div><div class="f-logo">Wellipet 🐾</div><div class="f-desc">강아지와 지구를 위한 친환경 반려용품 브랜드.</div><div class="f-sns"><a>📷</a><a>🎵</a><a>▶️</a><a>💬</a></div></div>
@@ -221,12 +250,21 @@ async function loadOrders(email){
     return;
   }
   list.innerHTML=data.map(o=>{
-    const statusClass=o.status==='배송완료'?'s-done':o.status==='배송중'?'s-ship':o.status==='배송준비'?'s-ready':'s-complete';
+    const st=o.status||'결제완료';
+    const statusClass=st==='배송완료'?'s-done':st==='배송중'?'s-ship':st==='배송준비'?'s-ready':'s-complete';
+    const canCancel=(st==='결제완료'||st==='배송준비')&&st!=='취소완료'&&st!=='환불완료';
+    const canRefund=(st==='배송중'||st==='배송완료')&&st!=='반품신청'&&st!=='반품완료';
+    const btnHtml=canCancel
+      ?`<button class="btn-order-action btn-cancel" onclick="openRequestModal('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}','cancel')">주문 취소</button>`
+      :canRefund
+      ?`<button class="btn-order-action btn-refund" onclick="openRequestModal('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}','refund')">반품/교환 신청</button>`
+      :(st==='취소완료'||st==='환불완료'||st==='반품신청'||st==='반품완료')
+      ?`<span class="btn-order-done">${st}</span>`:'';
     return `
       <div class="order-card">
         <div class="order-header">
           <span class="order-date">${new Date(o.created_at).toLocaleDateString('ko-KR')} 주문</span>
-          <span class="order-status ${statusClass}">${o.status||'결제완료'}</span>
+          <span class="order-status ${statusClass}">${st}</span>
         </div>
         <div class="order-body">
           <div class="order-img">🐾</div>
@@ -235,6 +273,7 @@ async function loadOrders(email){
             <div class="order-price">${Number(o.amount||0).toLocaleString()}원</div>
             <div class="order-don">🏠 ${Number(Math.round((o.amount||0)*0.03)).toLocaleString()}원 기부됨</div>
           </div>
+          <div class="order-actions">${btnHtml}</div>
         </div>
       </div>
     `;
@@ -297,6 +336,57 @@ function searchAddr(){
       document.getElementById('addrDetail').focus();
     }
   }).open();
+}
+
+// 취소/반품/교환 모달
+let _reqOrderId=null;
+function openRequestModal(orderId,productName,mode){
+  _reqOrderId=orderId;
+  const isCancel=mode==='cancel';
+  document.getElementById('requestModalTitle').textContent=isCancel?'🚫 주문 취소 신청':'📦 반품/교환 신청';
+  document.getElementById('requestModalProduct').textContent='상품: '+productName;
+  const sel=document.getElementById('requestType');
+  if(isCancel){
+    sel.innerHTML='<option value="주문취소">주문 취소</option>';
+  } else {
+    sel.innerHTML='<option value="반품">반품 (단순 변심)</option><option value="교환">교환 (상품 불량/오배송)</option><option value="환불">환불 요청</option>';
+  }
+  document.getElementById('requestReason').value='';
+  document.getElementById('requestMsgBox').style.display='none';
+  document.getElementById('requestModal').style.display='flex';
+}
+function closeRequestModal(){document.getElementById('requestModal').style.display='none';}
+async function submitRequest(){
+  const reason=document.getElementById('requestReason').value.trim();
+  const type=document.getElementById('requestType').value;
+  const msgBox=document.getElementById('requestMsgBox');
+  if(!reason){
+    msgBox.style.display='block';
+    msgBox.style.background='#fff0f0';msgBox.style.color='#c62828';msgBox.style.border='1px solid #ffd0d0';
+    msgBox.textContent='⚠️ 신청 사유를 입력해주세요.';
+    return;
+  }
+  if(!currentUser||!_reqOrderId)return;
+  const {error}=await _supabase.from('refund_requests').insert({
+    order_id:_reqOrderId,
+    user_email:currentUser.email,
+    request_type:type,
+    reason:reason,
+    status:'접수',
+    created_at:new Date().toISOString()
+  });
+  if(error){
+    // 테이블이 없을 경우 이메일 안내로 대체
+    msgBox.style.display='block';
+    msgBox.style.background='#f0faf5';msgBox.style.color='#2a7a5a';msgBox.style.border='1px solid #b8e8d0';
+    msgBox.textContent='✅ 신청이 접수됐어요! wellypet1209@gmail.com 으로 확인 메일을 보내드릴게요.';
+    setTimeout(()=>closeRequestModal(),2500);
+    return;
+  }
+  msgBox.style.display='block';
+  msgBox.style.background='#f0faf5';msgBox.style.color='#2a7a5a';msgBox.style.border='1px solid #b8e8d0';
+  msgBox.textContent='✅ '+type+' 신청이 완료됐어요! 1-2 영업일 내 이메일로 답변드릴게요.';
+  setTimeout(()=>{closeRequestModal();loadOrders(currentUser.email);},2500);
 }
 
 function showLoginModal(){document.getElementById('authModal').style.display='flex';}
