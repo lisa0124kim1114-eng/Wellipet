@@ -563,7 +563,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           </div>
           <div>
             <label style="white-space:nowrap;">🚚 택배비 (원)</label>
-            <input id="f-shipping" type="number" min="0" value="3000" style="width:90px;" oninput="calcAllPrices()" placeholder="3000"/>
+            <input id="f-shipping" type="number" min="0" value="2000" style="width:90px;" oninput="calcAllPrices()" placeholder="2000"/>
           </div>
         </div>
 
@@ -1299,7 +1299,7 @@ function renderSlots(){
   // 채워진 슬롯
   items.forEach((p, i)=>{
     const w = Number(p.wholesale)||0;
-    const sf = p.shipping_fee!=null ? Number(p.shipping_fee) : 3000;
+    const sf = p.shipping_fee!=null ? Number(p.shipping_fee) : 2000;
     const cp = calcPrices(w, sf);
     const wPrice = cp ? cp.wellipet : 0;
     const cost = cp ? cp.cost : w;
@@ -1548,7 +1548,7 @@ async function saveProduct(){
   const imgUrl=document.getElementById('f-img-url').value.trim();
   const img=currentImgData||(imgUrl||'');
   const w = document.getElementById('f-wholesale').value;
-  const sf = Number(document.getElementById('f-shipping')?.value)||3000;
+  const sf = Number(document.getElementById('f-shipping')?.value)||2000;
   const manualRetail = document.getElementById('f-retail').value;
   const cp = calcPrices(Number(w), sf);
   // 판매가: 직접 입력 > 선택된 채널 자동계산
@@ -1638,7 +1638,7 @@ function selectChannel(ch){
 // 도매가 입력 시 3채널 가격 자동 계산
 function calcAllPrices(){
   const w = Number(document.getElementById('f-wholesale').value)||0;
-  const sf = Number(document.getElementById('f-shipping')?.value)||3000;
+  const sf = Number(document.getElementById('f-shipping')?.value)||2000;
   const area = document.getElementById('priceCalcArea');
   const retailWrap = document.getElementById('retailManualWrap');
   if(!w){ area.style.display='none'; retailWrap.style.display='none'; return; }
