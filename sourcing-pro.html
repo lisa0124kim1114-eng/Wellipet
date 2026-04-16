@@ -634,14 +634,20 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           <textarea id="f-desc" placeholder="예) 부드러운 퓨레 타입, 사은품으로도 인기. 당일 오전11시 주문마감."></textarea>
         </div>
 
-        <!-- 옵션 -->
+        <!-- 옵션 (최대 9개) -->
         <div class="fg form-full">
-          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 종류가 여러 개일 때 입력 (예: 소형/중형/대형, 핑크/블루)</span></label>
-          <div style="display:flex;gap:6px;margin-bottom:6px;">
-            <input id="f-opt-input" type="text" placeholder="옵션값 입력 후 Enter 또는 추가 클릭" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();addOption();}"/>
-            <button type="button" class="btn btn-gray btn-sm" onclick="addOption()" style="white-space:nowrap;">+ 추가</button>
+          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 최대 9개 (예: 소형/중형/대형, 닭고기/오리/연어)</span></label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+            <input class="opt-slot" type="text" placeholder="옵션 1"/>
+            <input class="opt-slot" type="text" placeholder="옵션 2"/>
+            <input class="opt-slot" type="text" placeholder="옵션 3"/>
+            <input class="opt-slot" type="text" placeholder="옵션 4"/>
+            <input class="opt-slot" type="text" placeholder="옵션 5"/>
+            <input class="opt-slot" type="text" placeholder="옵션 6"/>
+            <input class="opt-slot" type="text" placeholder="옵션 7"/>
+            <input class="opt-slot" type="text" placeholder="옵션 8"/>
+            <input class="opt-slot" type="text" placeholder="옵션 9"/>
           </div>
-          <div id="f-opt-tags" style="display:flex;flex-wrap:wrap;gap:5px;min-height:24px;"></div>
         </div>
 
         <div class="fg">
@@ -1315,26 +1321,18 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeOnOverlay(e,id){if(e.target===e.currentTarget)closeModal(id);}
 
 let _options = [];
-function renderOptionTags(){
-  const wrap=document.getElementById('f-opt-tags');
-  wrap.innerHTML=_options.map((o,i)=>`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--pkp);border:1px solid var(--pkl);border-radius:20px;padding:3px 10px;font-size:12px;">${esc(o)}<button type="button" onclick="_options.splice(${i},1);renderOptionTags();" style="background:none;border:none;color:#c45c8a;cursor:pointer;font-size:13px;line-height:1;padding:0 0 0 2px;">×</button></span>`).join('');
-}
-function addOption(){
-  const inp=document.getElementById('f-opt-input');
-  const v=inp.value.trim();
-  if(!v)return;
-  if(!_options.includes(v)) _options.push(v);
-  inp.value='';
-  renderOptionTags();
-  inp.focus();
+function getOptSlots(){ return Array.from(document.querySelectorAll('.opt-slot')); }
+function readOptions(){ return getOptSlots().map(i=>i.value.trim()).filter(Boolean); }
+function writeOptions(arr){
+  const slots=getOptSlots();
+  slots.forEach((s,i)=>{ s.value=arr[i]||''; });
 }
 
 function resetForm(){
-  ['f-name','f-site','f-cat','f-wholesale','f-retail','f-img-url','f-desc','f-brand','f-link','f-opt-input'].forEach(id=>{
+  ['f-name','f-site','f-cat','f-wholesale','f-retail','f-img-url','f-desc','f-brand','f-link'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
-  _options=[];
-  renderOptionTags();
+  writeOptions([]);
   document.getElementById('priceCalcArea').style.display='none';
   document.getElementById('retailManualWrap').style.display='none';
   document.getElementById('img-preview-area').style.display='none';
@@ -1377,8 +1375,8 @@ function openEditModal(id){
   document.getElementById('f-desc').value=p.desc||'';
   document.getElementById('f-brand').value=p.brand||'';
   document.getElementById('f-link').value=p.link||'';
-  _options=Array.isArray(p.options)?[...p.options]:(p.options?p.options.split(',').map(s=>s.trim()).filter(Boolean):[]);
-  renderOptionTags();
+  const _optArr=Array.isArray(p.options)?[...p.options]:(p.options?p.options.split(',').map(s=>s.trim()).filter(Boolean):[]);
+  writeOptions(_optArr);
   if(p.img){
     if(p.img.startsWith('data:')){
       switchImgTab('file');
@@ -1430,7 +1428,7 @@ async function saveProduct(){
     img, desc:document.getElementById('f-desc').value.trim(),
     brand:document.getElementById('f-brand').value.trim(),
     link:document.getElementById('f-link').value.trim(),
-    options:[..._options],
+    options: readOptions(),
     pet_type: currentPet,
     updatedAt:new Date().toISOString(),
   };
@@ -1946,6 +1944,7 @@ async function openPublishModal(id, updateMode = false){
   document.getElementById('pubDonation').value = Math.floor(pubPrice*0.03);
   document.getElementById('pubDesc').value = p.desc||'';
   document.getElementById('pubScrapeUrl').value = p.link||'';
+  [0,1,2,3,4,5,6,7,8].forEach(i=>{ const el=document.getElementById('pubOptImg'+i); if(el) el.value=''; });
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
   initManualImgSlots();
@@ -1961,7 +1960,7 @@ async function openPublishModal(id, updateMode = false){
   if(updateMode){
     const shopId = publishedMap[id];
     if(shopId){
-      _supabase.from('products').select('price,original_price,badge,pet_type,donation_amount,description').eq('id',shopId).single().then(({data:sd})=>{
+      _supabase.from('products').select('price,original_price,badge,pet_type,donation_amount,description,option_images').eq('id',shopId).single().then(({data:sd})=>{
         if(!sd) return;
         if(sd.price) document.getElementById('pubPrice').value = sd.price;
         if(sd.original_price) document.getElementById('pubOrigPrice').value = sd.original_price;
@@ -1969,6 +1968,12 @@ async function openPublishModal(id, updateMode = false){
         if(sd.pet_type) document.getElementById('pubPetType').value = sd.pet_type;
         if(sd.donation_amount) document.getElementById('pubDonation').value = sd.donation_amount;
         if(sd.description) document.getElementById('pubDesc').value = sd.description;
+        if(sd.option_images){
+          try{
+            const imgs = JSON.parse(sd.option_images);
+            imgs.forEach((url,i)=>{ const el=document.getElementById('pubOptImg'+i); if(el) el.value=url; });
+          }catch(e){}
+        }
       });
     }
   }
@@ -2086,7 +2091,7 @@ async function confirmPublish(){
   const petType = document.getElementById('pubPetType').value;
   const donation = Number(document.getElementById('pubDonation').value)||0;
   const desc = document.getElementById('pubDesc').value||p.desc||'';
-  const optImgs=[0,1,2].map(i=>document.getElementById('pubOptImg'+i).value.trim()).filter(Boolean);
+  const optImgs=[0,1,2,3,4,5,6,7,8].map(i=>document.getElementById('pubOptImg'+i)?.value.trim()||'').filter(Boolean);
   const optionImages=optImgs.length>0?JSON.stringify(optImgs):null;
 
   const btn = document.getElementById('pubConfirmBtn');
@@ -2262,11 +2267,17 @@ setTimeout(()=>loadProducts(), 0);
         <input type="text" id="pubDesc" placeholder="간단한 상품 설명"/>
       </div>
       <div>
-        <label>🎨 옵션 이미지 URL (최대 3장, 선택)</label>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px;">
-          <input type="url" id="pubOptImg0" placeholder="옵션 이미지 URL 1 (색상/사이즈별)" style="font-size:11px;"/>
-          <input type="url" id="pubOptImg1" placeholder="옵션 이미지 URL 2" style="font-size:11px;"/>
-          <input type="url" id="pubOptImg2" placeholder="옵션 이미지 URL 3" style="font-size:11px;"/>
+        <label>🎨 옵션 이미지 URL (최대 9장, 선택)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:4px;">
+          <input type="url" id="pubOptImg0" placeholder="옵션1 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg1" placeholder="옵션2 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg2" placeholder="옵션3 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg3" placeholder="옵션4 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg4" placeholder="옵션5 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg5" placeholder="옵션6 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg6" placeholder="옵션7 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg7" placeholder="옵션8 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg8" placeholder="옵션9 이미지 URL" style="font-size:11px;"/>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:3px;">도매 사이트에서 이미지 우클릭 → 이미지 주소 복사 → 붙여넣기</div>
       </div>
