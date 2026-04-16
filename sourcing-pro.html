@@ -1062,10 +1062,23 @@ let _bulkSelected = new Set();
 let _moveMode = false;
 let _moveSelected = new Set();
 
+// 강아지↔고양이 카테고리 대응표
+const _CAT_MAP = {
+  '배변/위생': '모래/화장실',
+  '모래/화장실': '배변/위생',
+  '미용': '고양이그루밍',
+  '고양이그루밍': '미용',
+  '홈&침대': '고양이홈',
+  '고양이홈': '홈&침대',
+  '옷/패션': '고양이그루밍',
+};
 function remapCatForPet(currentCatId, targetPet){
   const srcCat = CATS.find(c=>c.id===currentCatId);
   if(!srcCat) return CATS.find(c=>c.pet===targetPet).id;
-  // 같은 display name의 대상 펫 카테고리 찾기 (간식→간식, 사료→사료 등)
+  // 1. 명시적 매핑 테이블 먼저 확인
+  const explicit = _CAT_MAP[currentCatId];
+  if(explicit && CATS.find(c=>c.id===explicit && c.pet===targetPet)) return explicit;
+  // 2. 같은 display name의 대상 펫 카테고리 찾기 (간식→고양이간식, 사료→고양이사료 등)
   const match = CATS.find(c=>c.pet===targetPet && c.name===srcCat.name);
   return match ? match.id : CATS.find(c=>c.pet===targetPet).id;
 }
