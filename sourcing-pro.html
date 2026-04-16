@@ -556,9 +556,15 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           </select>
         </div>
 
-        <div class="fg form-full">
-          <label>도매가 (원) — 부가세 포함</label>
-          <input id="f-wholesale" type="number" min="0" placeholder="도매가를 입력하면 판매가가 자동 계산됩니다" oninput="calcAllPrices()"/>
+        <div class="fg form-full" style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;">
+          <div>
+            <label>도매가 (원) — 부가세 포함</label>
+            <input id="f-wholesale" type="number" min="0" placeholder="도매가를 입력하면 판매가가 자동 계산됩니다" oninput="calcAllPrices()"/>
+          </div>
+          <div>
+            <label style="white-space:nowrap;">🚚 택배비 (원)</label>
+            <input id="f-shipping" type="number" min="0" value="3000" style="width:90px;" oninput="calcAllPrices()" placeholder="3000"/>
+          </div>
         </div>
 
         <!-- 3채널 자동 가격 계산 -->
@@ -968,6 +974,7 @@ function dbToLocal(r){
     link: r.link||'',
     options: Array.isArray(r.options)?r.options:[],
     pet_type: r.pet_type||'dog',
+    shipping_fee: r.shipping_fee!=null ? Number(r.shipping_fee) : 3000,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -992,6 +999,7 @@ function localToDb(p){
     link: p.link||'',
     options: Array.isArray(p.options)?p.options:[],
     pet_type: p.pet_type||'dog',
+    shipping_fee: p.shipping_fee!=null ? Number(p.shipping_fee) : 3000,
     updated_at: new Date().toISOString(),
   };
 }
@@ -1291,10 +1299,12 @@ function renderSlots(){
   // 채워진 슬롯
   items.forEach((p, i)=>{
     const w = Number(p.wholesale)||0;
-    const cp = calcPrices(w);
+    const sf = p.shipping_fee!=null ? Number(p.shipping_fee) : 3000;
+    const cp = calcPrices(w, sf);
     const wPrice = cp ? cp.wellipet : 0;
-    const margin = w&&wPrice ? Math.round((wPrice-w)/wPrice*100) : null;
-    const profit = w&&wPrice ? wPrice-w : null;
+    const cost = cp ? cp.cost : w;
+    const margin = w&&wPrice ? Math.round((wPrice-cost)/wPrice*100) : null;
+    const profit = w&&wPrice ? wPrice-cost : null;
     const mc = margin===null?'none':margin>=35?'good':margin>=20?'ok':'low';
     const imgHtml = p.img
       ? `<img src="${esc(p.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
@@ -1495,6 +1505,7 @@ function openEditModal(id){
   document.getElementById('f-site').value=p.site||'';
   document.getElementById('f-cat').value=p.cat||'';
   document.getElementById('f-wholesale').value=p.wholesale||'';
+  document.getElementById('f-shipping').value=p.shipping_fee!=null?p.shipping_fee:3000;
   document.getElementById('f-retail').value=p.retail||'';
   document.getElementById('f-desc').value=p.desc||'';
   document.getElementById('f-brand').value=p.brand||'';
@@ -1537,8 +1548,9 @@ async function saveProduct(){
   const imgUrl=document.getElementById('f-img-url').value.trim();
   const img=currentImgData||(imgUrl||'');
   const w = document.getElementById('f-wholesale').value;
+  const sf = Number(document.getElementById('f-shipping')?.value)||3000;
   const manualRetail = document.getElementById('f-retail').value;
-  const cp = calcPrices(Number(w));
+  const cp = calcPrices(Number(w), sf);
   // 판매가: 직접 입력 > 선택된 채널 자동계산
   const retail = manualRetail || (cp ? String(selectedChannel==='coupang'?cp.coupang:selectedChannel==='smart'?cp.smart:cp.wellipet) : '');
   const data={
@@ -1554,6 +1566,7 @@ async function saveProduct(){
     link:document.getElementById('f-link').value.trim(),
     options: readOptions(),
     pet_type: currentPet,
+    shipping_fee: sf,
     updatedAt:new Date().toISOString(),
   };
   if(editingId){
@@ -1598,17 +1611,19 @@ async function delProduct(id){
 }
 
 // ── 가격 자동 계산 공식 ──
-// 웰리펫: 카드수수료4% + 유기견기부3% + 마진25% = 32% → 판매가 = 도매가 ÷ 0.68
-// 쿠팡:   플랫폼수수료25% + 마진20% = 45% → 판매가 = 도매가 ÷ 0.55
-// 스마트: 플랫폼수수료20% + 마진20% = 40% → 판매가 = 도매가 ÷ 0.60
-function calcPrices(wholesale){
+// 웰리펫: 카드수수료4% + 유기견기부3% + 마진25% = 32% → 판매가 = 도매가÷0.68 + 택배비
+// 쿠팡:   플랫폼수수료25% + 마진20% = 45% → 판매가 = 도매가÷0.55 + 택배비
+// 스마트: 플랫폼수수료20% + 마진20% = 40% → 판매가 = 도매가÷0.60 + 택배비
+function calcPrices(wholesale, shippingFee){
   const w = Number(wholesale)||0;
   if(!w) return null;
+  const sf = Number(shippingFee)||0;
   const round100 = v => Math.ceil(v/100)*100; // 100원 단위 올림
-  const wellipet = round100(w/0.68);
-  const coupang  = round100(w/0.55);
-  const smart    = round100(w/0.60);
-  return {wellipet, coupang, smart};
+  const wellipet = round100(w/0.68) + sf;
+  const coupang  = round100(w/0.55) + sf;
+  const smart    = round100(w/0.60) + sf;
+  const cost = w + sf; // 실제 원가 (마진 계산용)
+  return {wellipet, coupang, smart, cost, shippingFee: sf};
 }
 
 // 선택된 채널 저장
@@ -1623,15 +1638,16 @@ function selectChannel(ch){
 // 도매가 입력 시 3채널 가격 자동 계산
 function calcAllPrices(){
   const w = Number(document.getElementById('f-wholesale').value)||0;
+  const sf = Number(document.getElementById('f-shipping')?.value)||3000;
   const area = document.getElementById('priceCalcArea');
   const retailWrap = document.getElementById('retailManualWrap');
   if(!w){ area.style.display='none'; retailWrap.style.display='none'; return; }
   area.style.display='block';
   retailWrap.style.display='block';
-  const cp = calcPrices(w);
+  const cp = calcPrices(w, sf);
 
   // 웰리펫
-  const wProfit = cp.wellipet-w;
+  const wProfit = cp.wellipet-cp.cost;
   document.getElementById('pcc-w-card').textContent    = Math.round(cp.wellipet*0.04).toLocaleString()+'원';
   document.getElementById('pcc-w-donate').textContent  = Math.round(cp.wellipet*0.03).toLocaleString()+'원';
   document.getElementById('pcc-w-margin').textContent  = Math.round(cp.wellipet*0.25).toLocaleString()+'원';
@@ -1639,14 +1655,14 @@ function calcAllPrices(){
   document.getElementById('pcc-w-profit').textContent  = `마진 +${wProfit.toLocaleString()}원 (${Math.round(wProfit/cp.wellipet*100)}%)`;
 
   // 쿠팡
-  const cProfit = cp.coupang-w;
+  const cProfit = cp.coupang-cp.cost;
   document.getElementById('pcc-c-fee').textContent     = Math.round(cp.coupang*0.25).toLocaleString()+'원';
   document.getElementById('pcc-c-margin').textContent  = Math.round(cp.coupang*0.20).toLocaleString()+'원';
   document.getElementById('pcc-c-price').textContent   = cp.coupang.toLocaleString()+'원';
   document.getElementById('pcc-c-profit').textContent  = `마진 +${cProfit.toLocaleString()}원 (${Math.round(cProfit/cp.coupang*100)}%)`;
 
   // 스마트스토어
-  const sProfit = cp.smart-w;
+  const sProfit = cp.smart-cp.cost;
   document.getElementById('pcc-s-fee').textContent     = Math.round(cp.smart*0.20).toLocaleString()+'원';
   document.getElementById('pcc-s-margin').textContent  = Math.round(cp.smart*0.20).toLocaleString()+'원';
   document.getElementById('pcc-s-price').textContent   = cp.smart.toLocaleString()+'원';
