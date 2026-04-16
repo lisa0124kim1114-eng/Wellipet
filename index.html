@@ -222,7 +222,7 @@ footer{background:linear-gradient(180deg,#321626 0%,#201018 100%);padding:56px 4
     </nav>
   </div>
   <div class="hicons">
-    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <div class="sbox"><input id="searchInput" placeholder="상품 검색" onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q)location.href='shop.html?q='+encodeURIComponent(q);}"/><span style="cursor:pointer;" onclick="var q=document.getElementById('searchInput').value.trim();if(q)location.href='shop.html?q='+encodeURIComponent(q);">🔍</span></div>
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
     <button class="hamburger" onclick="openMobileNav()"><span></span><span></span><span></span></button>
     <span class="ibt" id="mobileUserIcon" onclick="handleUserIcon()" style="cursor:pointer;" title="마이페이지">👤</span>

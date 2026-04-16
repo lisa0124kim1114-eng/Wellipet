@@ -60,7 +60,7 @@
     </nav>
   </div>
   <div class="hicons">
-    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <div class="sbox"><input id="shopSearchInput" placeholder="상품 검색" onkeydown="if(event.key==='Enter'){currentSearch=this.value.trim();currentPage=1;applyFiltersWithSort();}"/><span style="cursor:pointer;" onclick="currentSearch=document.getElementById('shopSearchInput').value.trim();currentPage=1;applyFiltersWithSort();">🔍</span></div>
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
     <span class="ibt" onclick="location.href='mypage.html'" style="cursor:pointer;" title="마이페이지">👤</span>
     <span class="user-name" id="userNameDisplay" onclick="location.href='mypage.html'" style="cursor:pointer;"></span>
@@ -185,6 +185,7 @@ let currentCat = '전체';
 let currentPetType = 'dog';
 let currentPage = 1;
 let currentSort = 'default';
+let currentSearch = '';
 const PAGE_SIZE = 20;
 
 function saveShopState(){
@@ -345,6 +346,7 @@ async function loadProducts() {
 function applyFiltersWithSort(){
   let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
   if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
+  if(currentSearch) filtered = filtered.filter(p=>(p.name||'').toLowerCase().includes(currentSearch.toLowerCase())||(p.description||'').toLowerCase().includes(currentSearch.toLowerCase()));
   if(currentSort==='low') filtered.sort((a,b)=>a.price-b.price);
   else if(currentSort==='high') filtered.sort((a,b)=>b.price-a.price);
   else if(currentSort==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
@@ -416,6 +418,15 @@ function closeModal(){document.getElementById('authModal').classList.remove('ope
 function switchTab(tab){const sections=['formSignup','formLogin','formFindId','formFindPw','formDone'];sections.forEach(s=>document.getElementById(s).style.display='none');if(tab==='signup')document.getElementById('formSignup').style.display='block';else document.getElementById('formLogin').style.display='block';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
+// URL ?q= 파라미터로 검색어 전달 처리
+(function(){
+  const q = new URLSearchParams(location.search).get('q');
+  if(q){
+    currentSearch = q;
+    const inp = document.getElementById('shopSearchInput');
+    if(inp) inp.value = q;
+  }
+})();
 loadProducts();
 </script>
 
