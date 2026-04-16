@@ -346,7 +346,11 @@ async function loadProducts() {
 function applyFiltersWithSort(){
   let filtered = allProducts.filter(p=>p.pet_type===currentPetType||p.pet_type==='all'||p.pet_type==='both');
   if(currentCat!=='전체') filtered = filtered.filter(p=>p.category===currentCat);
-  if(currentSearch) filtered = filtered.filter(p=>(p.name||'').toLowerCase().includes(currentSearch.toLowerCase())||(p.description||'').toLowerCase().includes(currentSearch.toLowerCase()));
+  if(currentSearch) filtered = filtered.filter(p=>{
+    const q=currentSearch.toLowerCase();
+    const opts=Array.isArray(p.color_options)?p.color_options.join(' '):(p.color_options?JSON.parse(p.color_options).join(' '):'');
+    return (p.name||'').toLowerCase().includes(q)||(p.description||'').toLowerCase().includes(q)||opts.toLowerCase().includes(q);
+  });
   if(currentSort==='low') filtered.sort((a,b)=>a.price-b.price);
   else if(currentSort==='high') filtered.sort((a,b)=>b.price-a.price);
   else if(currentSort==='new') filtered.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
