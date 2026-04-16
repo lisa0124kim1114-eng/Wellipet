@@ -796,9 +796,12 @@ async function loadOrders(){
     tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🛍️</div><p>주문 내역이 없어요</p></div></td></tr>';
     return;
   }
+  _orderCache = {};
+  data.forEach(o => { _orderCache[o.id] = o; });
+  const fmt = d => { const t = new Date(d); return t.toLocaleDateString('ko-KR') + ' ' + t.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}); };
   tbody.innerHTML=data.map(o=>`
     <tr>
-      <td>${new Date(o.created_at).toLocaleDateString('ko-KR')}</td>
+      <td style="font-size:12px;white-space:nowrap;">${fmt(o.created_at)}</td>
       <td><strong>${o.customer_name}</strong></td>
       <td>${o.customer_phone||'-'}</td>
       <td style="font-size:12px;">${o.address||''} ${o.address_detail||''}<br><span style="color:var(--muted);">(${o.zipcode||''})</span></td>
@@ -807,6 +810,7 @@ async function loadOrders(){
       <td>
         <select class="status-select" onchange="updateOrderStatus(${o.id},this.value)">
           <option value="결제완료" ${o.status==='결제완료'?'selected':''}>결제완료</option>
+          <option value="발주확인" ${o.status==='발주확인'?'selected':''}>발주확인</option>
           <option value="배송준비" ${o.status==='배송준비'?'selected':''}>배송준비</option>
           <option value="배송중" ${o.status==='배송중'?'selected':''}>배송중</option>
           <option value="배송완료" ${o.status==='배송완료'?'selected':''}>배송완료</option>
@@ -816,7 +820,26 @@ async function loadOrders(){
     </tr>`).join('');
 }
 
-async function updateOrderStatus(id,status){await _supabase.from('orders').update({status}).eq('id',id);}
+let _orderCache = {};
+
+async function updateOrderStatus(id, status) {
+  await _supabase.from('orders').update({status}).eq('id', id);
+  if (['발주확인','배송준비','배송중'].includes(status)) {
+    const o = _orderCache[id] || {};
+    fetch('https://ai-lisa.duckdns.org/webhook/wellipet-order-status', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        status,
+        orderId: id,
+        customerName: o.customer_name || '',
+        customerEmail: o.customer_email || '',
+        productName: o.product_name || '',
+        amount: o.amount || 0
+      })
+    }).catch(()=>{});
+  }
+}
 
 async function loadRefunds(){
   const tbody=document.getElementById('refundTable');
