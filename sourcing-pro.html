@@ -456,7 +456,15 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <button class="btn btn-sm" style="background:#fff0f3;color:#e04040;border:1px solid #f0c0c0;" onclick="bulkDelete()">🗑 선택 삭제</button>
             <button class="btn btn-gray btn-sm" onclick="toggleBulkMode(false)">취소</button>
           </div>
+          <!-- 분류이동 모드 -->
+          <div id="moveModeBar" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span id="moveCount" style="font-size:12px;color:#7a5c9a;font-weight:700;">0개 선택</span>
+            <button class="btn btn-sm" style="background:#fff8f0;color:#c45c8a;border:1px solid var(--pkl);" onclick="moveTo('dog')">🐶 강아지로 이동</button>
+            <button class="btn btn-sm" style="background:#fff0fb;color:#7a5c9a;border:1px solid #d8b0f0;" onclick="moveTo('cat')">🐱 고양이로 이동</button>
+            <button class="btn btn-gray btn-sm" onclick="toggleMoveMode(false)">취소</button>
+          </div>
           <button id="bulkModeBtn" class="btn btn-gray btn-sm" onclick="toggleBulkMode(true)">☑ 선택 삭제</button>
+          <button id="moveModeBtn" class="btn btn-gray btn-sm" onclick="toggleMoveMode(true)" style="background:#f8f0ff;color:#7a5c9a;border-color:#d8b0f0;">✈️ 분류이동</button>
           <button class="btn btn-pk btn-sm" onclick="openAddModal(currentCat)">+ 추가</button>
         </div>
       </div>
@@ -1050,6 +1058,73 @@ function scheduleRender(){
 let _bulkMode = false;
 let _bulkSelected = new Set();
 
+// ── 분류이동 모드 ──
+let _moveMode = false;
+let _moveSelected = new Set();
+
+function remapCatForPet(currentCatId, targetPet){
+  const srcCat = CATS.find(c=>c.id===currentCatId);
+  if(!srcCat) return CATS.find(c=>c.pet===targetPet).id;
+  // 같은 display name의 대상 펫 카테고리 찾기 (간식→간식, 사료→사료 등)
+  const match = CATS.find(c=>c.pet===targetPet && c.name===srcCat.name);
+  return match ? match.id : CATS.find(c=>c.pet===targetPet).id;
+}
+
+function toggleMoveMode(on){
+  _moveMode = on;
+  _moveSelected.clear();
+  _bulkMode = false;
+  _bulkSelected.clear();
+  document.getElementById('moveModeBar').style.display = on ? 'flex' : 'none';
+  document.getElementById('moveModeBtn').style.display = on ? 'none' : '';
+  document.getElementById('bulkModeBtn').style.display = on ? 'none' : '';
+  document.getElementById('bulkDeleteBar').style.display = 'none';
+  document.getElementById('moveCount').textContent = '0개 선택';
+  // 이동 모드에서는 slotCount 숨기기
+  document.getElementById('slotCount').style.display = on ? 'none' : '';
+  renderSlots();
+}
+
+function onMoveCardClick(id, cardEl){
+  if(_moveSelected.has(id)) _moveSelected.delete(id);
+  else _moveSelected.add(id);
+  cardEl.classList.toggle('bulk-selected', _moveSelected.has(id));
+  const cb = cardEl.querySelector('input[type=checkbox]');
+  if(cb) cb.checked = _moveSelected.has(id);
+  document.getElementById('moveCount').textContent = `${_moveSelected.size}개 선택`;
+}
+
+async function moveTo(targetPet){
+  if(!_moveSelected.size){ showToast('이동할 상품을 선택해주세요','warn'); return; }
+  const ids = [..._moveSelected];
+  const label = targetPet==='dog'?'강아지':'고양이';
+  if(!confirm(`선택한 ${ids.length}개 상품을 ${label} 카테고리로 이동할까요?`)) return;
+
+  // 각 상품의 pet_type과 카테고리 업데이트
+  const updates = ids.map(id=>{
+    const p = products.find(q=>q.id===id);
+    const newCat = remapCatForPet(p.cat, targetPet);
+    return { id, pet_type: targetPet, cat: newCat };
+  });
+
+  // 로컬 업데이트
+  updates.forEach(u=>{
+    const idx = products.findIndex(p=>p.id===u.id);
+    if(idx!==-1){ products[idx].pet_type=u.pet_type; products[idx].cat=u.cat; }
+  });
+
+  // DB 업데이트 (병렬)
+  const promises = updates.map(u=>
+    _supabase.from('sourcing_products').update({pet_type:u.pet_type, cat:u.cat}).eq('id',u.id)
+  );
+  const results = await Promise.all(promises);
+  const failed = results.filter(r=>r.error).length;
+  if(failed) showToast(`${failed}개 업데이트 실패. 나머지는 완료.`,'warn');
+  else showToast(`${ids.length}개 → ${label} 카테고리로 이동 완료!`,'success');
+
+  toggleMoveMode(false);
+}
+
 function toggleBulkMode(on){
   _bulkMode = on;
   _bulkSelected.clear();
@@ -1145,6 +1220,40 @@ function selectCat(catId){
 
 // ── 슬롯 렌더 ──
 function renderSlots(){
+  // ── 분류이동 모드: 전체 상품 표시 ──
+  if(_moveMode){
+    document.getElementById('secEmoji').textContent = '✈️';
+    document.getElementById('secName').textContent = '분류이동 모드 — 전체 상품';
+    document.getElementById('secDesc').textContent = '이동할 상품을 선택 후 강아지/고양이 버튼을 누르세요';
+    const grid = document.getElementById('slotsGrid');
+    const items = [...products].sort((a,b)=>((a.pet_type||'dog')+'_'+a.cat).localeCompare((b.pet_type||'dog')+'_'+b.cat));
+    let html = '';
+    items.forEach((p,i)=>{
+      const petBadge = (p.pet_type||'dog')==='cat'
+        ? `<span style="position:absolute;top:8px;right:8px;background:#9b59b6;color:#fff;font-size:9px;padding:2px 6px;border-radius:8px;z-index:5;">🐱 고양이</span>`
+        : `<span style="position:absolute;top:8px;right:8px;background:#c45c8a;color:#fff;font-size:9px;padding:2px 6px;border-radius:8px;z-index:5;">🐶 강아지</span>`;
+      const catInfo = CATS.find(c=>c.id===p.cat);
+      const catLabel = catInfo ? `${catInfo.emoji} ${catInfo.name}` : p.cat;
+      const isSelected = _moveSelected.has(p.id);
+      const imgHtml = p.img
+        ? `<img src="${esc(p.img)}" alt="" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"/><div class="no-img" style="display:none;">🐾</div>`
+        : `<div class="no-img">🐾</div>`;
+      html += `<div class="slot-card${isSelected?' bulk-selected':''}" data-id="${p.id}" onclick="onMoveCardClick('${p.id}',this)" style="cursor:pointer;">
+        <div style="position:absolute;top:8px;left:8px;z-index:10;pointer-events:none;"><input type="checkbox" ${isSelected?'checked':''} style="width:18px;height:18px;cursor:pointer;accent-color:var(--pk);pointer-events:none;"/></div>
+        ${petBadge}
+        <div class="slot-num">${i+1}</div>
+        <div class="card-img">${imgHtml}</div>
+        <div class="card-body">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:3px;">${catLabel}</div>
+          <div class="card-name">${esc(p.name)}</div>
+        </div>
+      </div>`;
+    });
+    if(!items.length) html = `<div style="grid-column:1/-1;text-align:center;color:var(--muted);padding:40px;">상품이 없습니다</div>`;
+    grid.innerHTML = html;
+    return;
+  }
+
   const cat = CATS.find(c=>c.id===currentCat);
   if(!cat) return;
 
