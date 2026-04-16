@@ -116,7 +116,9 @@
       "WebFetch(domain:pzzunxgbzkhdqemmgavd.supabase.co)",
       "WebFetch(domain:gang2.co.kr)",
       "Bash(API_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjZTIyM2NmMi0wYTU1LTQ4ZjItODBjYi0xN2I0MjNmMzUyMGEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMzEwYmY4NzItMDhkNS00NDhhLWEzMmUtNTE2NjJhYzIyNDI1IiwiaWF0IjoxNzc0ODY2MTM1fQ.aiiEF7RBrsFABi9JP5IzSm5rreW2aVDv75pHL4bitbA\" __NEW_LINE_6f85908e9cc4d844__ curl -s \"https://ai-lisa.duckdns.org/api/v1/executions/880?includeData=true\" -H \"X-N8N-API-KEY: $API_KEY\")",
-      "Bash(API_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjZTIyM2NmMi0wYTU1LTQ4ZjItODBjYi0xN2I0MjNmMzUyMGEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMzEwYmY4NzItMDhkNS00NDhhLWEzMmUtNTE2NjJhYzIyNDI1IiwiaWF0IjoxNzc0ODY2MTM1fQ.aiiEF7RBrsFABi9JP5IzSm5rreW2aVDv75pHL4bitbA\" __NEW_LINE_a6ac86ea3a6b0dc0__ curl -s -X PUT \"https://ai-lisa.duckdns.org/api/v1/workflows/uKGbxyVx2Wv39G9s\" -H \"X-N8N-API-KEY: $API_KEY\" -H \"Content-Type: application/json\" -d @\"C:/Users/lisa0/AppData/Local/Temp/wf_put4.json\")"
+      "Bash(API_KEY=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjZTIyM2NmMi0wYTU1LTQ4ZjItODBjYi0xN2I0MjNmMzUyMGEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMzEwYmY4NzItMDhkNS00NDhhLWEzMmUtNTE2NjJhYzIyNDI1IiwiaWF0IjoxNzc0ODY2MTM1fQ.aiiEF7RBrsFABi9JP5IzSm5rreW2aVDv75pHL4bitbA\" __NEW_LINE_a6ac86ea3a6b0dc0__ curl -s -X PUT \"https://ai-lisa.duckdns.org/api/v1/workflows/uKGbxyVx2Wv39G9s\" -H \"X-N8N-API-KEY: $API_KEY\" -H \"Content-Type: application/json\" -d @\"C:/Users/lisa0/AppData/Local/Temp/wf_put4.json\")",
+      "Bash(npx --yes puppeteer --version)",
+      "Bash(npm install:*)"
     ]
   }
 }
