@@ -35,7 +35,7 @@
     </nav>
   </div>
   <div class="hicons">
-    <div class="sbox"><input placeholder="상품 검색"/><span>🔍</span></div>
+    <div class="sbox"><input id="searchInput" placeholder="상품 검색" onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q)location.href='shop.html?q='+encodeURIComponent(q);}"/><span style="cursor:pointer;" onclick="var q=document.getElementById('searchInput').value.trim();if(q)location.href='shop.html?q='+encodeURIComponent(q);">🔍</span></div>
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span><span class="ibt">👤</span>
     <span class="user-name" id="userNameDisplay"></span>
     <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
@@ -85,6 +85,10 @@
       <div class="ship-info" style="margin-top:6px;color:#c45c8a;font-weight:600;">📦 배송기간 2-5일 (영업일 기준)</div>
       <button class="btn-buy" onclick="buyNow()">바로 구매하기</button>
       <button class="btn-cart" onclick="addToCart()">🛒 장바구니 담기</button>
+      <button id="shareBtn" onclick="shareProduct()" style="width:100%;margin-top:10px;background:#fff;color:var(--muted);border:1.5px solid var(--bd);padding:13px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        이 상품 공유하기
+      </button>
     </div>
   </div>
 
@@ -346,6 +350,24 @@ function selectOption(type, val, el){
 
 function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
 function saveCart(cart){localStorage.setItem('cart',JSON.stringify(cart));}
+
+function shareProduct(){
+  const name = currentProduct ? currentProduct.name : document.title;
+  const url = location.href;
+  const text = `🐾 웰리펫에서 발견한 상품이에요!\n${name}\n구매하면 유기동물 보호소에 기부됩니다 🏠`;
+  if(navigator.share){
+    navigator.share({ title: name, text, url }).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn = document.getElementById('shareBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✅ 링크가 복사되었어요!';
+      btn.style.color = 'var(--pk)';
+      btn.style.borderColor = 'var(--pk)';
+      setTimeout(()=>{ btn.innerHTML = orig; btn.style.color=''; btn.style.borderColor=''; }, 2000);
+    }).catch(()=>{ alert('링크: '+url); });
+  }
+}
 
 function addToCart(){
   if(!currentProduct)return;
