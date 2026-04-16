@@ -62,7 +62,6 @@
   <div class="hicons">
     <div class="sbox"><input id="shopSearchInput" placeholder="상품 검색" onkeydown="if(event.key==='Enter'){currentSearch=this.value.trim();currentPage=1;applyFiltersWithSort();}"/><span style="cursor:pointer;" onclick="currentSearch=document.getElementById('shopSearchInput').value.trim();currentPage=1;applyFiltersWithSort();">🔍</span></div>
     <span class="ibt" onclick="location.href='cart.html'" style="cursor:pointer;">🛒</span>
-    <span class="ibt" onclick="location.href='mypage.html'" style="cursor:pointer;" title="마이페이지">👤</span>
     <span class="user-name" id="userNameDisplay" onclick="location.href='mypage.html'" style="cursor:pointer;"></span>
     <button class="btn-login" id="btnLogin" onclick="openModal('login')">로그인</button><button class="btn-join" id="btnJoin" onclick="openModal('signup')">가입하기</button>
     <button class="btn-logout" id="btnLogout" onclick="signOut()">로그아웃</button>
@@ -398,10 +397,13 @@ function updateHeader(user){
     const name=user.user_metadata?.name||user.email.split('@')[0];
     btnJoin.style.display='none';if(btnLogin)btnLogin.style.display='none';userNameDisplay.style.display='inline';userNameDisplay.textContent=name+'님 🐾';btnLogout.style.display='inline-block';
     if(mobileUserInfo){mobileUserInfo.style.display='block';mobileUserName.textContent=name+'님 🐾';}
-    if(mobileBtnLogin)mobileBtnLogin.style.display='none';if(mobileBtnLogout)mobileBtnLogout.style.display='block';
+    const ma=document.getElementById('mobileAuthBtns');const ml=document.getElementById('mobileLogoutBtn');
+    if(ma)ma.style.display='none';if(ml)ml.style.display='block';
   }else{
     btnJoin.style.display='inline-block';if(btnLogin)btnLogin.style.display='inline-block';userNameDisplay.style.display='none';btnLogout.style.display='none';
-    if(mobileUserInfo)mobileUserInfo.style.display='none';if(mobileBtnLogin)mobileBtnLogin.style.display='block';if(mobileBtnLogout)mobileBtnLogout.style.display='none';
+    if(mobileUserInfo)mobileUserInfo.style.display='none';
+    const ma2=document.getElementById('mobileAuthBtns');const ml2=document.getElementById('mobileLogoutBtn');
+    if(ma2)ma2.style.display='flex';if(ml2)ml2.style.display='none';
   }
 }
 _supabase.auth.getSession().then(({data:{session}})=>{if(session)updateHeader(session.user);});
@@ -453,8 +455,13 @@ loadProducts();
     <a href="faq.html">💬 고객센터</a>
     <a href="mypage.html">👤 마이페이지</a>
     <a href="cart.html">🛒 장바구니</a>
-    <a href="#" id="mobileBtnLogin" onclick="closeMobileNav();openModal('login');" style="color:var(--pk);">🔑 로그인</a>
-    <a href="#" id="mobileBtnLogout" onclick="signOut();" style="display:none;color:#a08090;">🚪 로그아웃</a>
+    <div id="mobileAuthBtns" style="display:flex;flex-direction:column;gap:8px;margin-top:8px;padding-top:12px;border-top:1px solid var(--bd);">
+      <button onclick="closeMobileNav();openModal('login');" style="width:100%;padding:13px;border:1.5px solid var(--pk);background:#fff;color:var(--pk);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🔑 로그인</button>
+      <button onclick="closeMobileNav();openModal('signup');" style="width:100%;padding:13px;border:none;background:var(--pk);color:#fff;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✍️ 가입하기</button>
+    </div>
+    <div id="mobileLogoutBtn" style="display:none;margin-top:8px;padding-top:12px;border-top:1px solid var(--bd);">
+      <button onclick="signOut();" style="width:100%;padding:13px;border:1px solid var(--bd);background:#fff;color:var(--muted);border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🚪 로그아웃</button>
+    </div>
   </div>
 </div>
 <script>
