@@ -644,8 +644,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 
         <!-- 옵션 (최대 9개) -->
         <div class="fg form-full">
-          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 최대 9개 (예: 소형/중형/대형, 닭고기/오리/연어)</span></label>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 최대 10개 (예: 소형/중형/대형, 닭고기/오리/연어)</span></label>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">
             <input class="opt-slot" type="text" placeholder="옵션 1"/>
             <input class="opt-slot" type="text" placeholder="옵션 2"/>
             <input class="opt-slot" type="text" placeholder="옵션 3"/>
@@ -655,6 +655,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <input class="opt-slot" type="text" placeholder="옵션 7"/>
             <input class="opt-slot" type="text" placeholder="옵션 8"/>
             <input class="opt-slot" type="text" placeholder="옵션 9"/>
+            <input class="opt-slot" type="text" placeholder="옵션 10"/>
           </div>
         </div>
 
@@ -2080,7 +2081,7 @@ async function openPublishModal(id, updateMode = false){
   document.getElementById('pubDonation').value = Math.floor(pubPrice*0.03);
   document.getElementById('pubDesc').value = p.desc||'';
   document.getElementById('pubScrapeUrl').value = p.link||'';
-  [0,1,2,3,4,5,6,7,8].forEach(i=>{ const el=document.getElementById('pubOptImg'+i); if(el) el.value=''; });
+  [0,1,2,3,4,5,6,7,8,9].forEach(i=>{ const el=document.getElementById('pubOptImg'+i); if(el) el.value=''; });
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
   initManualImgSlots();
@@ -2227,7 +2228,7 @@ async function confirmPublish(){
   const petType = document.getElementById('pubPetType').value;
   const donation = Number(document.getElementById('pubDonation').value)||0;
   const desc = document.getElementById('pubDesc').value||p.desc||'';
-  const optImgs=[0,1,2,3,4,5,6,7,8].map(i=>document.getElementById('pubOptImg'+i)?.value.trim()||'').filter(Boolean);
+  const optImgs=[0,1,2,3,4,5,6,7,8,9].map(i=>document.getElementById('pubOptImg'+i)?.value.trim()||'').filter(Boolean);
   const optionImages=optImgs.length>0?JSON.stringify(optImgs):null;
 
   const btn = document.getElementById('pubConfirmBtn');
@@ -2403,8 +2404,8 @@ setTimeout(()=>loadProducts(), 0);
         <input type="text" id="pubDesc" placeholder="간단한 상품 설명"/>
       </div>
       <div>
-        <label>🎨 옵션 이미지 URL (최대 9장, 선택)</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:4px;">
+        <label>🎨 옵션 이미지 URL (최대 10장, 선택)</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:4px;">
           <input type="url" id="pubOptImg0" placeholder="옵션1 이미지 URL" style="font-size:11px;"/>
           <input type="url" id="pubOptImg1" placeholder="옵션2 이미지 URL" style="font-size:11px;"/>
           <input type="url" id="pubOptImg2" placeholder="옵션3 이미지 URL" style="font-size:11px;"/>
@@ -2414,6 +2415,7 @@ setTimeout(()=>loadProducts(), 0);
           <input type="url" id="pubOptImg6" placeholder="옵션7 이미지 URL" style="font-size:11px;"/>
           <input type="url" id="pubOptImg7" placeholder="옵션8 이미지 URL" style="font-size:11px;"/>
           <input type="url" id="pubOptImg8" placeholder="옵션9 이미지 URL" style="font-size:11px;"/>
+          <input type="url" id="pubOptImg9" placeholder="옵션10 이미지 URL" style="font-size:11px;"/>
         </div>
         <div style="font-size:10px;color:var(--muted);margin-top:3px;">도매 사이트에서 이미지 우클릭 → 이미지 주소 복사 → 붙여넣기</div>
       </div>
