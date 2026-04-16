@@ -2298,6 +2298,7 @@ async function confirmPublish(){
     if(error){ alert('오류: '+error.message); return; }
     publishedMap[publishingId] = data.id;
     savePublished();
+    localStorage.removeItem('wellipet_products_cache');
     closePublishModal();
     renderSlots();
     showToast('쇼핑몰에 올라갔어요! 🎉','success');
