@@ -138,7 +138,7 @@ function loadCartItems(){
 
   orderName=cartItems.length===1?cartItems[0].name:`${cartItems[0].name} 외 ${cartItems.length-1}건`;
 
-  const shipping=totalPrice>=50000?0:3000;
+  const shipping=totalPrice>=100000?0:3000;
   const finalBase=totalPrice+shipping;
 
   document.getElementById('orderItems').innerHTML=itemsHtml;
@@ -289,7 +289,7 @@ async function requestPayment(){
 
   const paymentId='order'+Date.now();
 
-  const shipping=totalPrice>=50000?0:3000;
+  const shipping=totalPrice>=100000?0:3000;
   const finalPrice=totalPrice+shipping-discountAmount;
 
   // 결제 전에 배송 정보 localStorage에 임시 저장

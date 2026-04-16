@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>웰리펫 쇼핑 · 강아지·고양이 용품, 간식, 사료 | Wellipet</title>
-<meta name="description" content="강아지·고양이 사료, 간식, 장난감, 그루밍 용품을 한눈에. 웰리펫에서 구매할 때마다 유기동물 보호소에 자동 기부됩니다. 5만원 이상 무료배송."/>
+<meta name="description" content="강아지·고양이 사료, 간식, 장난감, 그루밍 용품을 한눈에. 웰리펫에서 구매할 때마다 유기동물 보호소에 자동 기부됩니다. 10만원 이상 무료배송."/>
 <link rel="canonical" href="https://wellipet.shop/shop.html"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://wellipet.shop/shop.html"/>
@@ -275,7 +275,7 @@ function renderProducts(products) {
         <div class="pname" onclick="goToProduct(${p.id})" style="cursor:pointer;">${p.name}</div>
         <div class="pprice">${Number(p.price).toLocaleString()}원 ${p.original_price?`<s>${Number(p.original_price).toLocaleString()}원</s>`:''}</div>
         <div class="pdon">🏠 ${Number(Math.floor(p.price*0.03)).toLocaleString()}원 기부 &nbsp;·&nbsp; 📦 배송기간 2-5일</div>
-        <div class="pship">🚚 배송비 3,000원 &nbsp;·&nbsp; <span>5만원 이상 무료배송</span></div>
+        <div class="pship">🚚 배송비 3,000원 &nbsp;·&nbsp; <span>10만원 이상 무료배송</span></div>
         <div class="pbtns">
           <button class="pbtn-detail" onclick="goToProduct(${p.id})">자세히 보기</button>
           <button class="pbtn-cart" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})">🛒 담기</button>

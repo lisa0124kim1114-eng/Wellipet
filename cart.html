@@ -211,7 +211,7 @@ function updateSummary(){
       don += Math.floor((cart[i].price||0)*0.03) * cart[i].qty;
     }
   });
-  const shipping = total >= 50000 ? 0 : (total > 0 ? 3000 : 0);
+  const shipping = total >= 100000 ? 0 : (total > 0 ? 3000 : 0);
   document.getElementById('sumProducts').textContent = Number(total).toLocaleString()+'원';
   document.getElementById('sumShipping').textContent = shipping === 0 ? '무료' : '3,000원';
   document.getElementById('sumShipping').style.color = shipping === 0 ? 'var(--pk)' : 'var(--tx)';
