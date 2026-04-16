@@ -353,6 +353,16 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
   </div>
 </header>
 
+<!-- 펫 탭 -->
+<div style="display:flex;gap:8px;padding:10px 20px 0;background:#fff;border-bottom:1px solid #f0d8e6;">
+  <button class="pet-tab-btn on" onclick="selectPet('dog',this)" style="display:flex;align-items:center;gap:6px;padding:8px 20px;border-radius:20px;border:2px solid #c45c8a;background:#c45c8a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🐶 강아지</button>
+  <button class="pet-tab-btn" onclick="selectPet('cat',this)" style="display:flex;align-items:center;gap:6px;padding:8px 20px;border-radius:20px;border:2px solid #e0d0f0;background:#fff;color:#7c3aed;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🐱 고양이</button>
+</div>
+<style>
+.pet-tab-btn.on{background:#c45c8a!important;color:#fff!important;border-color:#c45c8a!important;}
+.pet-tab-btn:not(.on){background:#fff!important;color:#888!important;border-color:#ddd!important;}
+.pet-tab-btn.on[onclick*="cat"]{background:#7c3aed!important;border-color:#7c3aed!important;color:#fff!important;}
+</style>
 <!-- 카테고리 진행 바 -->
 <div class="progress-bar-wrap" id="progressBar"></div>
 
@@ -534,14 +544,6 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           <label>카테고리 *</label>
           <select id="f-cat">
             <option value="">선택</option>
-            <option value="간식">🍖 간식</option>
-            <option value="사료">🍽 사료</option>
-            <option value="배변/위생">🧻 배변/위생</option>
-            <option value="장난감">🎮 장난감</option>
-            <option value="영양제 & 덴탈">💊 영양제 & 덴탈</option>
-            <option value="옷/패션">👕 옷/패션</option>
-            <option value="미용">✂️ 미용</option>
-            <option value="홈&침대">🛏️ 홈&침대</option>
           </select>
         </div>
 
@@ -788,14 +790,23 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 <script>
 // ── 카테고리 정의 ──
 const CATS = [
-  {id:'간식',    emoji:'🍖', name:'간식',    desc:'강아지·고양이 간식, 츄르, 져키, 껌', max:50},
-  {id:'사료',    emoji:'🍽', name:'사료',    desc:'건식/습식 사료, 주식캔, 분유', max:50},
-  {id:'배변/위생',emoji:'🧻', name:'배변/위생',desc:'배변패드, 배변봉투, 위생용품', max:50},
-  {id:'장난감',  emoji:'🎮', name:'장난감',  desc:'스크래쳐, 공, 인형, 낚시대', max:50},
-  {id:'영양제 & 덴탈', emoji:'💊', name:'영양제 & 덴탈', desc:'관절, 피부, 소화, 멀티비타민, 덴탈껌, 구강세정제', max:50},
-  {id:'옷/패션', emoji:'👕', name:'옷/패션', desc:'의류, 하네스, 리드줄, 악세사리', max:50},
-  {id:'미용',    emoji:'✂️', name:'미용',    desc:'샴푸, 브러시, 이동장, 식기', max:50},
-  {id:'홈&침대', emoji:'🛏️', name:'홈&침대', desc:'침대, 하우스, 방석, 켄넬', max:50},
+  // 강아지
+  {id:'간식',         pet:'dog', emoji:'🍖', name:'간식',         desc:'져키, 껌, 퓨레, 사사미, 소시지', max:50},
+  {id:'사료',         pet:'dog', emoji:'🍽', name:'사료',         desc:'건식/습식 사료, 주식캔, 분유', max:50},
+  {id:'배변/위생',    pet:'dog', emoji:'🧻', name:'배변/위생',    desc:'배변패드, 배변봉투, 위생용품', max:50},
+  {id:'장난감',       pet:'dog', emoji:'🎮', name:'장난감',       desc:'공, 인형, 로프, 노즈워크', max:50},
+  {id:'영양제 & 덴탈',pet:'dog', emoji:'💊', name:'영양제 & 덴탈',desc:'관절, 피부, 소화, 멀티비타민, 덴탈껌', max:50},
+  {id:'옷/패션',      pet:'dog', emoji:'👕', name:'옷/패션',      desc:'의류, 하네스, 리드줄, 악세사리', max:50},
+  {id:'미용',         pet:'dog', emoji:'✂️', name:'미용/케어',    desc:'샴푸, 브러시, 이동장, 식기', max:50},
+  {id:'홈&침대',      pet:'dog', emoji:'🛏️', name:'홈&침대',      desc:'침대, 하우스, 방석, 켄넬', max:50},
+  // 고양이
+  {id:'고양이간식',   pet:'cat', emoji:'🐟', name:'간식',         desc:'츄르, 사사미, 스낵, 퓨레', max:50},
+  {id:'고양이사료',   pet:'cat', emoji:'🍽', name:'사료',         desc:'드라이/습식 사료, 주식캔', max:50},
+  {id:'모래/화장실',  pet:'cat', emoji:'🪣', name:'모래/화장실',  desc:'모래, 화장실, 삽, 탈취제', max:50},
+  {id:'고양이장난감', pet:'cat', emoji:'🎮', name:'장난감',       desc:'낚시대, 터널, 인형, 캣닙', max:50},
+  {id:'고양이영양제', pet:'cat', emoji:'💊', name:'영양제 & 헤어볼',desc:'헤어볼, 영양제, 관절', max:50},
+  {id:'고양이그루밍', pet:'cat', emoji:'✂️', name:'그루밍/케어',  desc:'샴푸, 브러시, 발톱깎이', max:50},
+  {id:'고양이홈',     pet:'cat', emoji:'🏠', name:'홈 & 캣타워',  desc:'캣타워, 방석, 하우스, 스크래쳐', max:50},
 ];
 
 // ── 사이트 색상 ──
@@ -940,6 +951,7 @@ function dbToLocal(r){
     brand: r.brand||'',
     link: r.link||'',
     options: Array.isArray(r.options)?r.options:[],
+    pet_type: r.pet_type||'dog',
     createdAt: r.created_at,
     updatedAt: r.updated_at,
   };
@@ -963,6 +975,7 @@ function localToDb(p){
     brand: p.brand||'',
     link: p.link||'',
     options: Array.isArray(p.options)?p.options:[],
+    pet_type: p.pet_type||'dog',
     updated_at: new Date().toISOString(),
   };
 }
@@ -1023,7 +1036,7 @@ function scheduleRender(){
   if(_renderFrame) return;
   _renderFrame = requestAnimationFrame(()=>{
     _renderFrame = null;
-    renderProgress(); renderSlots(); renderSideStats();
+    renderCatOptions(); renderProgress(); renderSlots(); renderSideStats();
   });
 }
 
@@ -1059,16 +1072,36 @@ async function bulkDelete(){
   toggleBulkMode(false);
 }
 
+let currentPet = 'dog';
 let currentCat = '간식';
 let editingId = null;
 let currentImgData = null;
 let viewTab = 'grid';
 
+// ── 펫 탭 전환 ──
+function selectPet(pet, el){
+  currentPet = pet;
+  document.querySelectorAll('.pet-tab-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  currentCat = CATS.find(c=>c.pet===pet).id;
+  renderProgress();
+  if(viewTab==='grid') renderSlots();
+  // 카테고리 폼 옵션 업데이트
+  renderCatOptions();
+}
+
+function renderCatOptions(){
+  const sel = document.getElementById('f-cat');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">선택</option>' +
+    CATS.filter(c=>c.pet===currentPet).map(c=>`<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+}
+
 // ── 진행 바 렌더 ──
 function renderProgress(){
   const pb = document.getElementById('progressBar');
-  pb.innerHTML = CATS.map(c=>{
-    const items = products.filter(p=>p.cat===c.id);
+  pb.innerHTML = CATS.filter(c=>c.pet===currentPet).map(c=>{
+    const items = products.filter(p=>p.cat===c.id&&(p.pet_type||'dog')===currentPet);
     const pct = Math.min(100, Math.round(items.length/c.max*100));
     const full = items.length>=c.max;
     return `<div class="prog-item${currentCat===c.id?' active':''}" onclick="selectCat('${c.id}')">
@@ -1116,7 +1149,7 @@ function renderSlots(){
   document.getElementById('secEmoji').textContent = cat.emoji;
   document.getElementById('secName').textContent = cat.name;
   document.getElementById('secDesc').textContent = cat.desc;
-  const items = products.filter(p=>p.cat===currentCat);
+  const items = products.filter(p=>p.cat===currentCat&&(p.pet_type||'dog')===currentPet);
   document.getElementById('slotCount').textContent = `${items.length} / ${cat.max}개`;
 
   if(skipGrid) return;
@@ -1316,6 +1349,7 @@ function resetForm(){
 
 function openAddModal(cat){
   resetForm();
+  renderCatOptions();
   if(cat) document.getElementById('f-cat').value=cat;
   document.getElementById('addModalTitle').textContent='상품 추가';
   openModal('addModal');
@@ -1325,6 +1359,14 @@ function openEditModal(id){
   const p=products.find(x=>x.id===id);
   if(!p) return;
   resetForm();
+  // 수정 시 해당 상품의 pet_type으로 탭 전환
+  if(p.pet_type && p.pet_type !== currentPet){
+    currentPet = p.pet_type;
+    document.querySelectorAll('.pet-tab-btn').forEach(b=>{
+      b.classList.toggle('on', b.getAttribute('onclick').includes(`'${currentPet}'`));
+    });
+  }
+  renderCatOptions();
   editingId=id;
   document.getElementById('addModalTitle').textContent='상품 수정';
   document.getElementById('f-name').value=p.name||'';
@@ -1389,6 +1431,7 @@ async function saveProduct(){
     brand:document.getElementById('f-brand').value.trim(),
     link:document.getElementById('f-link').value.trim(),
     options:[..._options],
+    pet_type: currentPet,
     updatedAt:new Date().toISOString(),
   };
   if(editingId){
