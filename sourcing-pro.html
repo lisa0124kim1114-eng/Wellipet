@@ -1437,6 +1437,20 @@ async function saveProduct(){
     if(idx!==-1) products[idx]={...products[idx],...data};
     const {error} = await _supabase.from('sourcing_products').upsert(localToDb(data));
     if(error){ showToast('저장 실패: '+error.message,'warn'); return; }
+
+    // 이미 쇼핑몰에 올라간 상품이면 products 테이블도 동기화
+    const shopId = publishedMap[editingId];
+    if(shopId){
+      const syncData = {
+        name: data.name,
+        category: data.cat,
+        pet_type: data.pet_type || currentPet,
+        color_options: data.options&&data.options.length ? JSON.stringify(data.options) : null,
+      };
+      if(data.img && !data.img.startsWith('data:')) syncData.image_url = data.img;
+      await _supabase.from('products').update(syncData).eq('id', shopId);
+    }
+
     showToast('수정되었습니다','success');
   } else {
     data.createdAt=data.updatedAt;
