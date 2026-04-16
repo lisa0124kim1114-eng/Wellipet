@@ -523,6 +523,10 @@ loadReviews();
 <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
   <div class="mobile-nav-inner">
     <button class="mobile-nav-close" onclick="closeMobileNav()">x</button>
+    <div style="display:flex;align-items:center;background:var(--pkbg);border:1.5px solid var(--bd);border-radius:20px;padding:8px 14px;margin-bottom:8px;gap:8px;">
+      <input id="mobileSearchInput" placeholder="상품 검색" style="border:none;background:transparent;font-size:14px;outline:none;flex:1;font-family:'Noto Sans KR',sans-serif;color:var(--tx);" onkeydown="if(event.key==='Enter'){var q=this.value.trim();if(q){closeMobileNav();location.href='shop.html?q='+encodeURIComponent(q);}}"/>
+      <span style="cursor:pointer;font-size:16px;" onclick="var q=document.getElementById('mobileSearchInput').value.trim();if(q){closeMobileNav();location.href='shop.html?q='+encodeURIComponent(q);}">🔍</span>
+    </div>
     <a href="/">홈</a>
     <a href="shop.html">Products</a>
     <a href="adoption.html" style="display:none">입양 스토리</a>
