@@ -77,17 +77,7 @@
   <button class="pet-tab" onclick="switchPet(this,'cat')"><span class="tab-icon">🐱</span>고양이</button>
 </div>
 <div class="shop-wrap">
-  <div class="cat-grid">
-    <div class="cat-btn on" onclick="filterCat(this,'전체')"><div class="cat-icon">🐾</div><div class="cat-name">전체</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'간식')"><div class="cat-icon">🦴</div><div class="cat-name">간식</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'사료')"><div class="cat-icon">🍽</div><div class="cat-name">사료</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'배변/위생')"><div class="cat-icon">🧻</div><div class="cat-name">배변/위생</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'장난감')"><div class="cat-icon">🎾</div><div class="cat-name">장난감</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'영양제 & 덴탈')"><div class="cat-icon">💊</div><div class="cat-name">영양제 & 덴탈</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'옷/패션')"><div class="cat-icon">👕</div><div class="cat-name">옷/패션</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'미용')"><div class="cat-icon">✂️</div><div class="cat-name">미용</div></div>
-    <div class="cat-btn" onclick="filterCat(this,'홈&침대')"><div class="cat-icon">🛏️</div><div class="cat-name">홈&침대</div></div>
-  </div>
+  <div class="cat-grid" id="catGrid"></div>
   <div class="shop-top">
     <div class="shop-count">총 <strong id="productCount">0</strong>개 상품</div>
     <div class="shop-sort">
@@ -299,13 +289,14 @@ function restoreShopState(){
       document.querySelectorAll('.pet-tab').forEach(b=>{
         if((s.petType==='dog'&&b.textContent.includes('강아지'))||(s.petType==='cat'&&b.textContent.includes('고양이'))) b.classList.add('on');
       });
+      renderCatButtons(s.petType);
     }
     // 카테고리 복원
     if(s.cat){
       currentCat=s.cat;
       document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
       document.querySelectorAll('.cat-btn').forEach(b=>{
-        if(b.querySelector('.cat-name')&&b.querySelector('.cat-name').textContent===s.cat) b.classList.add('on');
+        if(b.querySelector('.cat-name')&&b.dataset.catId===s.cat) b.classList.add('on');
       });
     }
     // 정렬 복원
@@ -357,13 +348,41 @@ function applyFiltersWithSort(){
   renderProducts(filtered);
 }
 
+const DOG_CATS = [
+  {id:'전체',       emoji:'🐾', name:'전체'},
+  {id:'간식',       emoji:'🦴', name:'간식'},
+  {id:'사료',       emoji:'🍽', name:'사료'},
+  {id:'배변/위생',  emoji:'🧻', name:'배변/위생'},
+  {id:'장난감',     emoji:'🎾', name:'장난감'},
+  {id:'영양제 & 덴탈',emoji:'💊',name:'영양제 & 덴탈'},
+  {id:'옷/패션',    emoji:'👕', name:'옷/패션'},
+  {id:'미용',       emoji:'✂️', name:'미용'},
+  {id:'홈&침대',    emoji:'🛏️', name:'홈&침대'},
+];
+const CAT_CATS = [
+  {id:'전체',         emoji:'🐾', name:'전체'},
+  {id:'고양이간식',   emoji:'🐟', name:'간식'},
+  {id:'고양이사료',   emoji:'🍽', name:'사료'},
+  {id:'모래/화장실',  emoji:'🪣', name:'모래/화장실'},
+  {id:'고양이장난감', emoji:'🎮', name:'장난감'},
+  {id:'고양이그루밍', emoji:'✂️', name:'그루밍'},
+  {id:'고양이홈',     emoji:'🏠', name:'홈 & 캣타워'},
+];
+
+function renderCatButtons(petType) {
+  const cats = petType === 'cat' ? CAT_CATS : DOG_CATS;
+  const grid = document.getElementById('catGrid');
+  grid.innerHTML = cats.map(c =>
+    `<div class="cat-btn${c.id==='전체'?' on':''}" data-cat-id="${c.id}" onclick="filterCat(this,'${c.id}')"><div class="cat-icon">${c.emoji}</div><div class="cat-name">${c.name}</div></div>`
+  ).join('');
+}
+
 function switchPet(el, petType) {
   document.querySelectorAll('.pet-tab').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
   currentPetType = petType;
   currentCat = '전체';
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelector('.cat-btn').classList.add('on');
+  renderCatButtons(petType);
   applyFilters();
 }
 
@@ -433,6 +452,7 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
     if(inp) inp.value = q;
   }
 })();
+renderCatButtons('dog');
 loadProducts();
 </script>
 
