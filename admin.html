@@ -23,6 +23,7 @@
     <div class="nav-item" onclick="showPage('orders',this)"><span class="nav-icon">🛍️</span> 주문 관리</div>
     <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
     <div class="nav-item" onclick="showPage('refunds',this)"><span class="nav-icon">🔄</span> 취소/환불 요청</div>
+    <div class="nav-item" onclick="showPage('shelters',this)"><span class="nav-icon">🏠</span> 보호소 현황</div>
     <div class="nav-divider"></div>
     <div class="nav-item" onclick="showPage('sourcing',this)"><span class="nav-icon">🔍</span> 소싱 목록</div>
     <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-size:12px;color:#aaa;padding-left:40px;"><span class="nav-icon" style="font-size:12px;">↗</span> 소싱 툴 열기</a>
@@ -118,6 +119,13 @@
           <thead><tr><th>신청일</th><th>신청자</th><th>주문번호</th><th>유형</th><th>사유</th><th>상태</th><th>처리</th></tr></thead>
           <tbody id="refundTable"><tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
         </table>
+      </div>
+    </div>
+    <!-- 보호소 현황 -->
+    <div class="page" id="page-shelters">
+      <div class="page-title">🏠 보호소 현황</div>
+      <div id="shelterStatusList" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="text-align:center;padding:40px;color:var(--muted);">불러오는 중...</div>
       </div>
     </div>
     <!-- 소싱 목록 -->
@@ -298,6 +306,7 @@ function showPage(name,el){
   if(name==='sourcing')loadSourcing();
   if(name==='members')loadMembers();
   if(name==='refunds')loadRefunds();
+  if(name==='shelters')loadShelters();
 }
 
 let _sourcingAll = [];
@@ -881,6 +890,73 @@ async function updateRefundStatus(id,status,orderId,requestType){
   }
   loadRefunds();
 }
+async function loadShelters(){
+  const wrap = document.getElementById('shelterStatusList');
+  wrap.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">불러오는 중...</div>';
+
+  // 보호소 프로필 목록
+  const {data:shelters} = await _supabase.from('profiles')
+    .select('user_id,name,email,shelter_name,shelter_phone,last_login')
+    .eq('role','shelter')
+    .order('last_login',{ascending:false});
+
+  if(!shelters||shelters.length===0){
+    wrap.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);">등록된 보호소가 없어요.</div>';
+    return;
+  }
+
+  // 보호소별 마지막 등록일 + 총 마리수
+  const {data:dogs} = await _supabase.from('dogs').select('shelter_user_id,created_at');
+
+  wrap.innerHTML = shelters.map(s => {
+    const myDogs = (dogs||[]).filter(d=>d.shelter_user_id===s.user_id);
+    const lastPost = myDogs.length > 0
+      ? myDogs.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0].created_at
+      : null;
+
+    const now = Date.now();
+    const loginAt = s.last_login ? new Date(s.last_login) : null;
+    const diffMin = loginAt ? Math.floor((now - loginAt.getTime()) / 60000) : null;
+    let loginBadge, loginBadgeStyle;
+    if(!loginAt){
+      loginBadge='미접속'; loginBadgeStyle='background:#f0f0f0;color:#aaa;';
+    } else if(diffMin < 30){
+      loginBadge='접속중'; loginBadgeStyle='background:#e8f8ee;color:#1a9e4a;';
+    } else if(diffMin < 60*24){
+      loginBadge='오늘 접속'; loginBadgeStyle='background:#fff3cd;color:#856404;';
+    } else {
+      loginBadge='오프라인'; loginBadgeStyle='background:#f0f0f0;color:#888;';
+    }
+
+    const fmtDate = d => d ? new Date(d).toLocaleDateString('ko-KR') + ' ' + new Date(d).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}) : '-';
+
+    return `<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:32px;">🏠</div>
+        <div>
+          <div style="font-weight:700;font-size:15px;color:var(--tx);">${s.shelter_name||s.name||'(이름없음)'}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">${s.email||''} ${s.shelter_phone?'· '+s.shelter_phone:''}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">접속 상태</div>
+          <span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;${loginBadgeStyle}">${loginBadge}</span>
+          ${loginAt ? `<div style="font-size:10px;color:var(--muted);margin-top:3px;">${fmtDate(s.last_login)}</div>` : ''}
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">등록 강아지</div>
+          <div style="font-size:20px;font-weight:700;color:var(--pk);">${myDogs.length}<span style="font-size:12px;font-weight:400;color:var(--muted);">마리</span></div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">마지막 등록</div>
+          <div style="font-size:12px;color:var(--tx);">${lastPost ? fmtDate(lastPost) : '없음'}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
 
 function showAdminLogin(){

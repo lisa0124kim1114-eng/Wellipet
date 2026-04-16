@@ -192,6 +192,7 @@ async function checkRoleAndShow(user){
   _shelterProfile = profile;
   const role = profile?.role||'';
   if(role==='shelter'||role==='admin'){
+    _supabase.from('profiles').update({last_login: new Date().toISOString()}).eq('user_id', user.id).then(()=>{});
     showAdmin();
   } else {
     await _supabase.auth.signOut();
