@@ -47,9 +47,7 @@
       <div class="section-title">결제 수단</div>
       <div class="pay-methods">
         <div class="pay-method active" onclick="selectMethod(this,'카드')"><div class="pm-icon">💳</div><div class="pm-name">신용/체크카드</div></div>
-        <!-- NHN KCP: 사이트코드/채널키 발급 후 활성화
-        <div class="pay-method" onclick="selectMethod(this,'NHKCP')"><div class="pm-icon">🏦</div><div class="pm-name">농협카드(KCP)</div></div>
-        -->
+        <div class="pay-method" onclick="selectMethod(this,'카카오페이')"><div class="pm-icon">🟡</div><div class="pm-name">카카오페이</div></div>
       </div>
       <button class="btn-pay" id="btnPay" onclick="requestPayment()">결제하기</button>
       <div class="safe-badge">🔒 SSL 보안 결제 · 개인정보 안전 보호</div>
@@ -94,6 +92,7 @@ const CHANNEL_KEYS = {
   카드: TEST_MODE
     ? 'channel-key-b2f5eea2-04dd-4061-8157-17f4f2c70ed1'   // KG이니시스 테스트
     : 'channel-key-3bd3ca7b-4661-4d13-9f48-4574915626c5',  // KG이니시스 실연동
+  카카오페이: 'channel-key-d0152e31-420c-4dac-8d82-0441fae15494',
   NHKCP: 'channel-key-c029bef5-2cfb-4eef-aea5-d0b842ca3696', // NHN KCP (농협카드)
 };
 
