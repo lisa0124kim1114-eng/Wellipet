@@ -325,9 +325,6 @@ async function requestPayment(){
     redirectUrl: 'https://wellypet.co.kr/success.html',
   };
 
-  if(selectedMethod === '토스페이'){
-    paymentRequest.easyPay = { easyPayProvider: 'EASY_PAY_PROVIDER_TOSSPAY' };
-  }
 
   try{
     const response = await PortOne.requestPayment(paymentRequest);
