@@ -307,11 +307,6 @@ async function requestPayment(){
 
   const channelKey = CHANNEL_KEYS[selectedMethod];
   const isEasyPay = selectedMethod !== '카드' && selectedMethod !== 'NHKCP';
-  const easyPayProviderMap = {
-    카카오페이: 'EASY_PAY_PROVIDER_KAKAOPAY',
-    네이버페이: 'EASY_PAY_PROVIDER_NAVERPAY',
-    토스페이:  'EASY_PAY_PROVIDER_TOSSPAY',
-  };
 
   const paymentRequest = {
     storeId: STORE_ID,
@@ -319,7 +314,7 @@ async function requestPayment(){
     paymentId: paymentId,
     orderName: orderName,
     totalAmount: finalPrice,
-    currency: 'CURRENCY_KRW',
+    currency: 'KRW',
     payMethod: isEasyPay ? 'EASY_PAY' : 'CARD',
     customer: {
       fullName: name,
@@ -328,10 +323,6 @@ async function requestPayment(){
     },
     redirectUrl: 'https://wellypet.co.kr/success.html',
   };
-
-  if(isEasyPay){
-    paymentRequest.easyPay = { easyPayProvider: easyPayProviderMap[selectedMethod] };
-  }
 
   try{
     const response = await PortOne.requestPayment(paymentRequest);
