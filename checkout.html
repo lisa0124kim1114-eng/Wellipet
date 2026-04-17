@@ -88,12 +88,12 @@ const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const STORE_ID = 'store-bbf389c9-e13e-4663-bae1-625fed767b5e';
 
 // 채널 키: 포트원 대시보드 → 결제연동 → 채널관리 → 각 PG 채널키
-const TEST_MODE = true; // 테스트 시 true, 실오픈 시 false
+const TEST_MODE = false; // 테스트 시 true, 실오픈 시 false
 
 const CHANNEL_KEYS = {
   카드: TEST_MODE
     ? 'channel-key-b2f5eea2-04dd-4061-8157-17f4f2c70ed1'   // KG이니시스 테스트
-    : 'channel-key-68cf7f37-3659-4e93-b653-b83a45fdf6f9',  // KG이니시스 실연동
+    : 'channel-key-3bd3ca7b-4661-4d13-9f48-4574915626c5',  // KG이니시스 실연동
   NHKCP: 'channel-key-c029bef5-2cfb-4eef-aea5-d0b842ca3696', // NHN KCP (농협카드)
 };
 
