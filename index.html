@@ -551,12 +551,42 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
     </div>
   </div>
 </div>
+<!-- 오픈 안내 팝업 -->
+<div id="openModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:24px;padding:36px 28px;max-width:340px;width:90%;text-align:center;position:relative;">
+    <div style="font-size:48px;margin-bottom:14px;">🐾</div>
+    <div style="font-size:19px;font-weight:800;color:#2a1a22;margin-bottom:10px;">웰리펫 오픈 안내</div>
+    <div style="font-size:13px;color:#a08090;line-height:1.8;margin-bottom:8px;">
+      현재 카드사 심사가 진행 중으로<br>일반 카드 결제가 준비 중이에요.
+    </div>
+    <div style="background:#fff5f9;border-radius:12px;padding:14px;margin:14px 0 20px;">
+      <div style="font-size:12px;color:#a08090;margin-bottom:4px;">정식 오픈</div>
+      <div style="font-size:20px;font-weight:800;color:#c45c8a;">4월 24일</div>
+    </div>
+    <div style="font-size:13px;color:#2a1a22;margin-bottom:20px;">
+      지금은 <strong style="color:#c45c8a;">카카오페이</strong>로 구매 가능해요!<br>
+      <span style="font-size:12px;color:#a08090;">정식 오픈 후 카드 결제도 이용하실 수 있어요</span>
+    </div>
+    <button onclick="document.getElementById('openModal').style.display='none'" style="width:100%;background:#c45c8a;color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">확인했어요!</button>
+  </div>
+</div>
+
 <script>
 function openMobileNav(){document.getElementById('mobileNav').classList.add('open');}
 function closeMobileNav(e){if(!e||e.target===document.getElementById('mobileNav'))document.getElementById('mobileNav').classList.remove('open');}
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js');
 }
+// 오픈 안내 팝업 - 하루에 한 번만 표시
+(function(){
+  const key='wellipet_open_notice';
+  const last=localStorage.getItem(key);
+  const today=new Date().toDateString();
+  if(last!==today){
+    document.getElementById('openModal').style.display='flex';
+    localStorage.setItem(key,today);
+  }
+})();
 </script>
 </body>
 </html>
