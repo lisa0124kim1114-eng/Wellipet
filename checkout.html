@@ -320,10 +320,12 @@ async function requestPayment(){
     orderName: orderName,
     totalAmount: finalPrice,
     currency: 'KRW',
-    payMethod: isEasyPay ? 'EASY_PAY' : 'CARD',
     customer,
     redirectUrl: 'https://wellypet.co.kr/success.html',
   };
+
+  // 카드만 payMethod 명시, 간편결제는 채널키로 자동 감지
+  if(selectedMethod === '카드') paymentRequest.payMethod = 'CARD';
 
 
   try{
