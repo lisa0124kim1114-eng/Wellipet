@@ -308,6 +308,11 @@ async function requestPayment(){
   const channelKey = CHANNEL_KEYS[selectedMethod];
   const isEasyPay = selectedMethod !== '카드' && selectedMethod !== 'NHKCP';
 
+  const cleanPhone = phone.replace(/[^0-9]/g,'');
+  const customer = { fullName: name };
+  if(email) customer.email = email;
+  if(cleanPhone) customer.phoneNumber = cleanPhone;
+
   const paymentRequest = {
     storeId: STORE_ID,
     channelKey: channelKey,
@@ -316,11 +321,7 @@ async function requestPayment(){
     totalAmount: finalPrice,
     currency: 'KRW',
     payMethod: isEasyPay ? 'EASY_PAY' : 'CARD',
-    customer: {
-      fullName: name,
-      email: email,
-      phoneNumber: phone.replace(/-/g,''),
-    },
+    customer,
     redirectUrl: 'https://wellypet.co.kr/success.html',
   };
 
