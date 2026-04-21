@@ -86,18 +86,6 @@
   </div>
 </div>
 
-<!-- 카드 결제 안내 모달 -->
-<div class="modal-overlay" id="cardModal">
-  <div class="modal-box">
-    <div class="modal-icon">🐾</div>
-    <div class="modal-title">카드 결제 준비 중이에요!</div>
-    <div class="modal-desc">현재 카드사 심사가 진행 중이라<br>일반 카드 결제가 아직 불가해요.</div>
-    <div class="modal-date">4월 24일 정식 오픈 후 이용 가능해요</div>
-    <div class="modal-desc" style="margin-bottom:20px;">지금은 <strong style="color:var(--pk);">카카오페이</strong>로 구매하실 수 있어요!</div>
-    <button class="modal-btn-kakao" onclick="switchToKakao()">카카오페이로 결제하기</button>
-    <button class="modal-btn-close" onclick="closeCardModal()">닫기</button>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -243,21 +231,9 @@ function cancelAddrEdit(){
 }
 
 function selectMethod(el,method){
-  if(method==='카드'){
-    document.getElementById('cardModal').classList.add('show');
-    return;
-  }
   document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('active'));
   el.classList.add('active');
   selectedMethod=method;
-}
-function closeCardModal(){
-  document.getElementById('cardModal').classList.remove('show');
-}
-function switchToKakao(){
-  closeCardModal();
-  const kakaoEl=document.querySelector('.pay-method:nth-child(2)');
-  if(kakaoEl) selectMethod(kakaoEl,'카카오페이');
 }
 
 function searchAddress(){
@@ -316,10 +292,6 @@ async function requestPayment(){
   const phone=document.getElementById('customerPhone').value;
   const address=document.getElementById('address').value;
 
-  if(selectedMethod==='카드'){
-    document.getElementById('cardModal').classList.add('show');
-    return;
-  }
   if(!name||!phone||!address){
     alert('배송 정보를 모두 입력해주세요.');
     return;
