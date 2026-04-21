@@ -35,7 +35,7 @@
         <div class="dash-card"><div class="icon">📦</div><div class="num" id="totalProducts">0</div><div class="label">등록 상품 수</div></div>
         <div class="dash-card"><div class="icon">🛍️</div><div class="num" id="totalOrders">0</div><div class="label">총 주문 수</div></div>
         <div class="dash-card"><div class="icon">👤</div><div class="num" id="totalMembers">-</div><div class="label">총 회원 수</div></div>
-        <div class="dash-card"><div class="icon">🏠</div><div class="num">0원</div><div class="label">이번 달 기부금</div></div>
+        <div class="dash-card"><div class="icon">🏠</div><div class="num" id="totalDonation">0원</div><div class="label">이번 달 기부금</div></div>
         <div class="dash-card" style="cursor:pointer;" onclick="showPage('refunds',document.querySelector('[onclick*=refunds]'))">
           <div class="icon">🔄</div>
           <div class="num" id="totalRefunds">0</div>
@@ -400,6 +400,12 @@ async function loadDashboard(){
   document.getElementById('totalProducts').textContent=pc||0;
   document.getElementById('totalOrders').textContent=oc||0;
   document.getElementById('totalMembers').textContent=mc||0;
+  // 이번 달 기부금 집계
+  const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+  const {data:donRows}=await _supabase.from('orders').select('donation_amount').eq('status','결제완료').gte('created_at',monthStart);
+  const monthDon=(donRows||[]).reduce((s,r)=>s+(r.donation_amount||0),0);
+  document.getElementById('totalDonation').textContent=Number(monthDon).toLocaleString()+'원';
   // 미처리 취소/환불 요청
   const {data:refunds}=await _supabase.from('refund_requests').select('*').in('status',['접수','처리중']).order('created_at',{ascending:false});
   const pending=refunds||[];
