@@ -24,6 +24,7 @@
     <div class="nav-item" onclick="showPage('members',this)"><span class="nav-icon">👤</span> 회원 관리</div>
     <div class="nav-item" onclick="showPage('refunds',this)"><span class="nav-icon">🔄</span> 취소/환불 요청</div>
     <div class="nav-item" onclick="showPage('shelters',this)"><span class="nav-icon">🏠</span> 보호소 현황</div>
+    <div class="nav-item" onclick="showPage('dogs',this)"><span class="nav-icon">🐕</span> 유기견 관리</div>
     <div class="nav-divider"></div>
     <div class="nav-item" onclick="showPage('sourcing',this)"><span class="nav-icon">🔍</span> 소싱 목록</div>
     <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-size:12px;color:#aaa;padding-left:40px;"><span class="nav-icon" style="font-size:12px;">↗</span> 소싱 툴 열기</a>
@@ -130,6 +131,30 @@
       </div>
       <div id="shelterStatusList" style="display:flex;flex-direction:column;gap:14px;">
         <div style="text-align:center;padding:40px;color:var(--muted);">불러오는 중...</div>
+      </div>
+    </div>
+    <!-- 유기견 관리 -->
+    <div class="page" id="page-dogs">
+      <div class="page-title">🐕 유기견 관리</div>
+      <div class="toolbar">
+        <div style="font-size:13px;color:var(--muted);">입양 스토리 페이지에 표시되는 유기견 프로필을 관리해요</div>
+        <button class="btn-primary" onclick="openDogEdit(null)">+ 유기견 추가</button>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" id="dogSearchInput" placeholder="이름, 품종, 보호소명 검색..." oninput="filterAdminDogs()"/>
+        <select class="status-select" id="dogStatusFilter" onchange="filterAdminDogs()">
+          <option value="">전체 상태</option>
+          <option value="대기중">대기중</option>
+          <option value="신규">신규</option>
+          <option value="긴급">긴급</option>
+          <option value="입양완료">입양완료</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>사진</th><th>이름</th><th>품종/나이/성별</th><th>보호소</th><th>상태</th><th>등록일</th><th>관리</th></tr></thead>
+          <tbody id="dogTable"><tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr></tbody>
+        </table>
       </div>
     </div>
     <!-- 소싱 목록 -->
@@ -311,6 +336,7 @@ function showPage(name,el){
   if(name==='members')loadMembers();
   if(name==='refunds')loadRefunds();
   if(name==='shelters')loadShelters();
+  if(name==='dogs')loadAdminDogs();
 }
 
 let _sourcingAll = [];
@@ -994,6 +1020,177 @@ async function deleteShelter(id, name){
   loadShelters();
 }
 
+/* ===== 유기견 관리 ===== */
+let _allAdminDogs = [];
+let _editingDogId = null;
+let _dogPhotos = [null,null,null,null,null];
+let _dogPhotoFiles = [null,null,null,null,null];
+
+function renderDogPhotoGrid(){
+  const grid = document.getElementById('dogPhotoGrid');
+  grid.innerHTML = _dogPhotos.map((url, i) => `
+    <div style="position:relative;aspect-ratio:1/1;border-radius:10px;overflow:hidden;border:2px dashed ${url?'var(--pk)':'var(--bd)'};background:${url?'#000':'var(--pkbg)'};cursor:pointer;" onclick="triggerDogPhotoInput(${i})">
+      ${url ? `<img src="${url}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:8px;"/>
+        <button onclick="removeDogPhoto(${i},event)" style="position:absolute;top:3px;right:3px;background:#ff6b6b;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:1;z-index:2;">×</button>` :
+        `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:4px;">
+          <div style="font-size:20px;">${i===0?'📷':'📸'}</div>
+          <div style="font-size:9px;color:var(--muted);">${i===0?'대표':'사진 '+(i+1)}</div>
+        </div>`}
+      <input type="file" accept="image/*" style="display:none;" id="dogPhotoFile${i}" onchange="handleDogPhotoFile(this,${i})"/>
+    </div>
+  `).join('');
+}
+
+function triggerDogPhotoInput(i){
+  document.getElementById('dogPhotoFile'+i).click();
+}
+
+function handleDogPhotoFile(input, i){
+  const file = input.files[0];
+  if(!file) return;
+  _dogPhotoFiles[i] = file;
+  const reader = new FileReader();
+  reader.onload = e => { _dogPhotos[i] = e.target.result; renderDogPhotoGrid(); };
+  reader.readAsDataURL(file);
+}
+
+function removeDogPhoto(i, e){
+  e.stopPropagation();
+  _dogPhotos[i] = null;
+  _dogPhotoFiles[i] = null;
+  renderDogPhotoGrid();
+}
+
+async function loadAdminDogs(){
+  const tbody = document.getElementById('dogTable');
+  tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">⏳</div><p>불러오는 중...</p></div></td></tr>';
+  const {data, error} = await _supabase.from('dogs').select('*').order('created_at',{ascending:false});
+  if(error){ tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">⚠️</div><p>불러오기 실패</p></div></td></tr>'; return; }
+  _allAdminDogs = data || [];
+  renderAdminDogTable(_allAdminDogs);
+}
+
+function filterAdminDogs(){
+  const q = (document.getElementById('dogSearchInput').value||'').toLowerCase();
+  const st = document.getElementById('dogStatusFilter').value;
+  const filtered = _allAdminDogs.filter(d =>
+    (!q || (d.name||'').toLowerCase().includes(q) || (d.breed||'').toLowerCase().includes(q) || (d.shelter_name||'').toLowerCase().includes(q)) &&
+    (!st || d.status===st)
+  );
+  renderAdminDogTable(filtered);
+}
+
+function renderAdminDogTable(dogs){
+  const tbody = document.getElementById('dogTable');
+  if(!dogs||dogs.length===0){
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🐾</div><p>등록된 유기견이 없어요</p></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = dogs.map(d => {
+    let imgs = [];
+    try { imgs = JSON.parse(d.image_urls||'[]'); } catch(e){}
+    if(!imgs.length && d.image_url) imgs = [d.image_url];
+    const thumb = imgs[0] ? `<img src="${imgs[0]}" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid var(--bd);"/>` : `<div style="width:52px;height:52px;background:var(--pkp);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--bd);">🐶</div>`;
+    const statusColor = d.status==='입양완료'?'#2a7a5a':d.status==='긴급'?'#ff6b6b':d.status==='신규'?'var(--pk)':'var(--muted)';
+    const photoCount = imgs.length;
+    return `<tr>
+      <td style="position:relative;">
+        ${thumb}
+        ${photoCount>1?`<span style="position:absolute;bottom:14px;right:14px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;">${photoCount}장</span>`:''}
+      </td>
+      <td><strong>${d.name||'-'}</strong></td>
+      <td><span style="font-size:12px;">${[d.breed,d.age,d.gender].filter(Boolean).join(' · ')||'-'}</span></td>
+      <td><span style="font-size:12px;color:var(--pk);">${d.shelter_name||'-'}</span></td>
+      <td><span style="background:${statusColor};color:#fff;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;">${d.status||'대기중'}</span></td>
+      <td style="font-size:11px;color:var(--muted);">${new Date(d.created_at).toLocaleDateString('ko-KR')}</td>
+      <td><button class="btn-edit" onclick='openDogEdit(${JSON.stringify(d).replace(/'/g,"&#39;")})'>✏️ 편집</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openDogEdit(d){
+  _editingDogId = d ? d.id : null;
+  document.getElementById('deId').value = d ? d.id : '';
+  document.getElementById('deName').value = d ? (d.name||'') : '';
+  document.getElementById('deStatus').value = d ? (d.status||'대기중') : '대기중';
+  document.getElementById('deBreed').value = d ? (d.breed||'') : '';
+  document.getElementById('deAge').value = d ? (d.age||'') : '';
+  document.getElementById('deGender').value = d ? (d.gender||'') : '';
+  document.getElementById('deSize').value = d ? (d.size||'') : '';
+  document.getElementById('deShelterName').value = d ? (d.shelter_name||'') : '';
+  document.getElementById('deLocation').value = d ? (d.location||'') : '';
+  document.getElementById('deDescription').value = d ? (d.description||'') : '';
+  document.getElementById('deTags').value = d ? (d.tags||'') : '';
+  document.getElementById('dogModalTitle').textContent = d ? '유기견 정보 편집' : '유기견 추가';
+  document.getElementById('deBtnDelete').style.display = d ? 'inline-block' : 'none';
+  _dogPhotos = [null,null,null,null,null];
+  _dogPhotoFiles = [null,null,null,null,null];
+  if(d){
+    let imgs = [];
+    try { imgs = JSON.parse(d.image_urls||'[]'); } catch(e){}
+    if(!imgs.length && d.image_url) imgs = [d.image_url];
+    imgs.slice(0,5).forEach((url,i) => { _dogPhotos[i] = url; });
+  }
+  renderDogPhotoGrid();
+  document.getElementById('dogModal').classList.add('open');
+}
+
+async function saveDog(){
+  const name = document.getElementById('deName').value.trim();
+  if(!name){ alert('이름을 입력해주세요.'); return; }
+  document.getElementById('dogUploadProgress').style.display = 'block';
+  const uploadedUrls = [..._dogPhotos];
+  for(let i=0;i<5;i++){
+    if(_dogPhotoFiles[i]){
+      const file = _dogPhotoFiles[i];
+      const ext = file.name.split('.').pop();
+      const fileName = `dogs/${Date.now()}_${i}.${ext}`;
+      const {error} = await _supabase.storage.from('products').upload(fileName, file, {upsert:true});
+      if(!error){
+        const {data:urlData} = _supabase.storage.from('products').getPublicUrl(fileName);
+        uploadedUrls[i] = urlData.publicUrl;
+      }
+    }
+  }
+  document.getElementById('dogUploadProgress').style.display = 'none';
+  const finalUrls = uploadedUrls.filter(Boolean);
+  const payload = {
+    name,
+    status: document.getElementById('deStatus').value,
+    breed: document.getElementById('deBreed').value.trim()||null,
+    age: document.getElementById('deAge').value.trim()||null,
+    gender: document.getElementById('deGender').value||null,
+    size: document.getElementById('deSize').value||null,
+    shelter_name: document.getElementById('deShelterName').value.trim()||null,
+    location: document.getElementById('deLocation').value.trim()||null,
+    description: document.getElementById('deDescription').value.trim()||null,
+    tags: document.getElementById('deTags').value.trim()||null,
+    image_url: finalUrls[0]||null,
+    image_urls: JSON.stringify(finalUrls),
+    updated_at: new Date().toISOString()
+  };
+  let error;
+  if(_editingDogId){
+    ({error} = await _supabase.from('dogs').update(payload).eq('id',_editingDogId));
+  } else {
+    ({error} = await _supabase.from('dogs').insert({...payload, created_at: new Date().toISOString()}));
+  }
+  if(error){ alert('저장 실패: '+error.message); return; }
+  document.getElementById('dogModal').classList.remove('open');
+  loadAdminDogs();
+}
+
+async function deleteDogFromModal(){
+  if(!_editingDogId) return;
+  const name = document.getElementById('deName').value||'이 유기견';
+  if(!confirm(`"${name}"을(를) 삭제할까요?`)) return;
+  const {error} = await _supabase.from('dogs').delete().eq('id',_editingDogId);
+  if(error){ alert('삭제 실패: '+error.message); return; }
+  document.getElementById('dogModal').classList.remove('open');
+  loadAdminDogs();
+}
+/* ===== 유기견 관리 끝 ===== */
+
 async function adminSignOut(){await _supabase.auth.signOut();location.href='/';}
 
 function showAdminLogin(){
@@ -1038,6 +1235,74 @@ async function adminLogin(){
     <div class="modal-btns">
       <button class="btn-secondary" onclick="document.getElementById('shelterEditModal').classList.remove('open')">취소</button>
       <button class="btn-primary" onclick="saveShelterEdit()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 유기견 추가/수정 모달 -->
+<div class="modal-overlay" id="dogModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:620px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="modal-title" style="margin:0;" id="dogModalTitle">유기견 추가</div>
+      <button onclick="document.getElementById('dogModal').classList.remove('open')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#ccc;">×</button>
+    </div>
+    <input type="hidden" id="deId"/>
+
+    <!-- 사진 5장 -->
+    <div class="form-group">
+      <label>📷 사진 (최대 5장 · 정사각형으로 표시돼요)</label>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:6px;" id="dogPhotoGrid">
+        <!-- JS로 렌더링 -->
+      </div>
+      <div style="font-size:11px;color:#bbb;margin-top:6px;">첫 번째 사진이 대표 사진이에요 · JPG, PNG, WEBP · 최대 5MB</div>
+      <div class="upload-progress" id="dogUploadProgress" style="display:none;">⏳ 업로드 중...</div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <div class="form-row">
+      <div class="form-group"><label>이름 *</label><input type="text" id="deName" placeholder="예) 보리"/></div>
+      <div class="form-group"><label>상태 *</label>
+        <select id="deStatus">
+          <option value="대기중">대기중</option>
+          <option value="신규">신규</option>
+          <option value="긴급">긴급</option>
+          <option value="입양완료">입양완료</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>품종</label><input type="text" id="deBreed" placeholder="예) 믹스견, 진돗개"/></div>
+      <div class="form-group"><label>나이</label><input type="text" id="deAge" placeholder="예) 2살, 추정 3~4세"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>성별</label>
+        <select id="deGender">
+          <option value="">선택 안함</option>
+          <option value="수컷">수컷</option>
+          <option value="암컷">암컷</option>
+        </select>
+      </div>
+      <div class="form-group"><label>크기</label>
+        <select id="deSize">
+          <option value="">선택 안함</option>
+          <option value="소형">소형</option>
+          <option value="중형">중형</option>
+          <option value="대형">대형</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>보호소명</label><input type="text" id="deShelterName" placeholder="예) 빅독포레스트"/></div>
+      <div class="form-group"><label>지역</label><input type="text" id="deLocation" placeholder="예) 경기도 파주시"/></div>
+    </div>
+    <div class="form-group"><label>소개글</label><textarea id="deDescription" placeholder="이 아이를 소개해주세요. 성격, 특징 등을 적어주세요." style="min-height:80px;"></textarea></div>
+    <div class="form-group"><label>태그 (쉼표로 구분)</label><input type="text" id="deTags" placeholder="예) 사람좋아, 순함, 중성화완료, 접종완료"/></div>
+
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="document.getElementById('dogModal').classList.remove('open')">취소</button>
+      <button class="btn-danger" id="deBtnDelete" style="display:none;" onclick="deleteDogFromModal()">삭제</button>
+      <button class="btn-primary" onclick="saveDog()">저장</button>
     </div>
   </div>
 </div>
