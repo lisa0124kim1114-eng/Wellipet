@@ -8,6 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>도매 소싱 관리 · 웰리펫</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style> *{box-sizing:border-box;margin:0;padding:0;} :root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--tx:#2a1a22;--muted:#a08090;--bd:#f0d8e6;} body{font-family:'Noto Sans KR',sans-serif;color:var(--tx);background:var(--pkbg);min-height:100vh;}  /* ?? ?ㅻ뜑 ?? */ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;} .logo{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--pk);} .logo em{font-style:normal;color:var(--pkm);} .logo span{font-size:13px;font-weight:400;color:var(--muted);margin-left:10px;font-family:'Noto Sans KR',sans-serif;} .hbtns{display:flex;gap:10px;} .btn{padding:8px 18px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all .2s;} .btn-pk{background:var(--pk);color:#fff;} .btn-pk:hover{background:var(--pkm);} .btn-out{background:#fff;color:var(--pk);border:1.5px solid var(--pk);} .btn-out:hover{background:var(--pkp);} .btn-gray{background:#f5f5f5;color:#666;border:1px solid #e0e0e0;} .btn-gray:hover{background:#ececec;} .btn-sm{padding:5px 12px;font-size:11px;border-radius:7px;} .btn-danger{background:#fff0f3;color:#e04040;border:1px solid #f0c0c0;} .btn-danger:hover{background:#ffe0e5;}  /* ?? ?꾪꽣諛??? */ .filterbar{background:#fff;border-bottom:1px solid var(--bd);padding:14px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;} .filter-label{font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap;} .filter-chips{display:flex;gap:8px;flex-wrap:wrap;} .chip{padding:5px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid var(--bd);background:#fff;color:var(--muted);transition:all .2s;white-space:nowrap;} .chip.active{background:var(--pk);color:#fff;border-color:var(--pk);} .chip:hover:not(.active){background:var(--pkbg);border-color:var(--pkl);} .filter-divider{width:1px;height:20px;background:var(--bd);} .search-box{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--pkbg);border:1px solid var(--bd);border-radius:20px;padding:6px 14px;} .search-box input{border:none;background:transparent;font-size:12px;outline:none;width:160px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);} .search-box input::placeholder{color:#ccc;}  /* ?? 硫붿씤 ?? */ .main{padding:24px 32px;} .stats-row{display:flex;gap:16px;margin-bottom:24px;} .stat-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px 22px;flex:1;min-width:140px;} .stat-card .num{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;color:var(--pk);} .stat-card .lbl{font-size:11px;color:var(--muted);margin-top:2px;} .stat-card .sub{font-size:10px;color:var(--pkl);margin-top:1px;}  /* ?? ?곹뭹 洹몃━???? */ .grid-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;} .grid-header h2{font-size:16px;font-weight:600;color:var(--tx);} .count-badge{background:var(--pkp);color:var(--pk);padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;margin-left:8px;} .view-toggle{display:flex;gap:4px;} .vbtn{width:32px;height:32px;border-radius:8px;border:1px solid var(--bd);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;} .vbtn.active{background:var(--pk);color:#fff;border-color:var(--pk);}  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;} .grid.list-view{grid-template-columns:1fr;}  /* ?? ?곹뭹 移대뱶 ?? */ .card{background:#fff;border:1px solid var(--bd);border-radius:16px;overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:default;} .card:hover{box-shadow:0 6px 24px rgba(196,92,138,.12);transform:translateY(-2px);} .card-img{width:100%;aspect-ratio:1;background:var(--pkbg);overflow:hidden;position:relative;} .card-img img{width:100%;height:100%;object-fit:cover;} .card-img .no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px;} .site-badge{position:absolute;top:8px;left:8px;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;color:#fff;} .card-body{padding:14px;} .card-name{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:6px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;} .card-cat{font-size:10px;color:var(--muted);margin-bottom:10px;} .price-row{display:flex;gap:8px;align-items:baseline;margin-bottom:6px;flex-wrap:wrap;} .price-wholesale{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--pk);} .price-retail{font-size:11px;color:var(--muted);text-decoration:line-through;} .margin-badge{background:var(--pkp);color:var(--pk);padding:2px 7px;border-radius:8px;font-size:10px;font-weight:600;} .card-memo{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;} .card-actions{display:flex;gap:6px;}  /* 由ъ뒪??酉?移대뱶 */ .grid.list-view .card{display:flex;align-items:center;border-radius:12px;} .grid.list-view .card-img{width:90px;height:90px;flex-shrink:0;aspect-ratio:unset;border-radius:0;} .grid.list-view .card-body{flex:1;display:flex;align-items:center;gap:16px;padding:12px 16px;} .grid.list-view .card-name{margin-bottom:0;-webkit-line-clamp:1;flex:1;min-width:0;} .grid.list-view .card-cat{margin-bottom:0;} .grid.list-view .price-row{margin-bottom:0;} .grid.list-view .card-memo{display:none;} .grid.list-view .card-actions{flex-shrink:0;margin-left:auto;} .grid.list-view .card-info{display:flex;align-items:center;gap:24px;flex:1;}  /* ?? ?ъ씠???됱긽 ?? */ .site-?섏쭊??background:#e07aaa;} .site-?ロ넗由?background:#7a9ee0;} .site-?ロ뿀洹퇑2B{background:#7abde0;} .site-?ル퉬?щ퉬{background:#e0a87a;} .site-?꾪쉶?녾컻B2B{background:#a07ae0;} .site-由ъ튂??background:#e07a7a;} .site-?ロ넗釉?background:#7ae0b8;} .site-湲고?{background:#90a090;}  /* ?? 鍮??곹깭 ?? */ .empty{text-align:center;padding:80px 20px;color:var(--muted);} .empty .icon{font-size:64px;margin-bottom:16px;} .empty p{font-size:14px;line-height:1.7;}  /* ?? 紐⑤떖 ?? */ .overlay{position:fixed;inset:0;background:rgba(42,26,34,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;} .overlay.open{display:flex;} .modal{background:#fff;border-radius:20px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(42,26,34,.2);} .modal-header{padding:22px 28px 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:10;border-bottom:1px solid var(--bd);padding-bottom:16px;} .modal-header h3{font-size:17px;font-weight:700;} .modal-close{width:32px;height:32px;border:none;background:var(--pkbg);border-radius:8px;cursor:pointer;font-size:16px;color:var(--muted);transition:all .2s;} .modal-close:hover{background:var(--pkl);color:var(--tx);} .modal-body{padding:24px 28px;} .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;} .form-full{grid-column:1/-1;} .form-group{display:flex;flex-direction:column;gap:6px;} .form-group label{font-size:12px;font-weight:600;color:var(--muted);} .form-group input,.form-group select,.form-group textarea{border:1.5px solid var(--bd);border-radius:10px;padding:10px 14px;font-size:13px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);outline:none;transition:border-color .2s;background:#fff;} .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--pkl);} .form-group textarea{resize:vertical;min-height:70px;} .img-preview-box{border:2px dashed var(--bd);border-radius:12px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;} .img-preview-box:hover{border-color:var(--pkl);background:var(--pkbg);} .img-preview-box img{width:100%;height:160px;object-fit:cover;border-radius:10px;} .img-preview-box .placeholder{font-size:28px;color:var(--pkl);} .img-preview-box .placeholder-text{font-size:11px;color:var(--muted);} .img-tabs{display:flex;gap:0;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:10px;} .img-tab{flex:1;padding:8px;font-size:12px;border:none;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--muted);transition:all .2s;} .img-tab.active{background:var(--pk);color:#fff;} .modal-footer{padding:16px 28px 24px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--bd);}  /* ?? 媛?몄삤湲?紐⑤떖 ?? */ .import-list{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;} .import-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1.5px solid var(--bd);border-radius:10px;cursor:pointer;transition:all .2s;} .import-item:hover{border-color:var(--pkl);background:var(--pkbg);} .import-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--pk);flex-shrink:0;} .import-item .iname{font-size:13px;font-weight:500;flex:1;} .import-item .isite{font-size:11px;color:var(--muted);} .import-item .icat{font-size:10px;background:var(--pkp);color:var(--pk);padding:2px 8px;border-radius:8px;} .import-sel-all{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--pkbg);border-radius:10px;margin-bottom:8px;cursor:pointer;} .import-sel-all label{font-size:12px;cursor:pointer;color:var(--muted);}  /* ?? ?좎뒪???? */ .toast{position:fixed;bottom:32px;right:32px;background:var(--tx);color:#fff;padding:12px 20px;border-radius:12px;font-size:13px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;} .toast.show{transform:translateY(0);opacity:1;} .toast.success{background:var(--pk);}  /* ?? ?ㅽ겕濡ㅻ컮 ?? */ ::-webkit-scrollbar{width:6px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--pkl);border-radius:3px;}  /* ?? 諛섏쓳???? */ @media(max-width:768px){   header{padding:0 16px;}   .filterbar{padding:12px 16px;}   .main{padding:16px;}   .stats-row{gap:10px;}   .stat-card{padding:12px 14px;}   .stat-card .num{font-size:22px;}   .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}   .form-grid{grid-template-columns:1fr;} } </style>
 </head>
 <body>
@@ -251,8 +252,13 @@ const COLLECTED_DATA = [
   {name:'[완피캣] 미트브로스 치킨&호박&당근 50g', site:'펫비투비', cat:'고양이 간식', brand:'완피캣', memo:'주간추천'},
 ];
 
+// ── Supabase ──
+const SUPA_URL = 'https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+
 // ── 상태 ──
-let products = JSON.parse(localStorage.getItem('welliSourcing') || '[]');
+let products = [];
 let editingId = null;
 let currentImgData = null;
 let filterSite = 'all';
@@ -260,8 +266,33 @@ let filterCat = 'all';
 let filterSearch = '';
 let viewMode = 'grid';
 
-// ── 저장 ──
-function save(){localStorage.setItem('welliSourcing', JSON.stringify(products));}
+// ── 초기 로드 ──
+async function init(){
+  document.getElementById('productGrid').innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="icon">⏳</div><p>데이터 불러오는 중...</p></div>';
+  const {data, error} = await supa.from('sourcing_products').select('*').order('created_at', {ascending: false});
+  if(error){
+    // 테이블 없으면 localStorage 폴백
+    products = JSON.parse(localStorage.getItem('welliSourcing') || '[]');
+    console.warn('Supabase 연결 실패, 로컬 데이터 사용:', error.message);
+  } else {
+    products = (data||[]).map(r=>({
+      id: r.id,
+      name: r.name,
+      site: r.site,
+      cat: r.cat,
+      wholesale: r.wholesale||'',
+      retail: r.retail||'',
+      img: r.img||'',
+      memo: r.memo||'',
+      link: r.link||'',
+      brand: r.brand||'',
+      createdAt: r.created_at,
+      updatedAt: r.updated_at,
+    }));
+  }
+  render();
+}
+init();
 
 // ── ID 생성 ──
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
@@ -455,7 +486,7 @@ function openEditModal(id){
   openModal('addModal');
 }
 
-function saveProduct(){
+async function saveProduct(){
   const name = document.getElementById('f-name').value.trim();
   const site = document.getElementById('f-site').value;
   const cat = document.getElementById('f-cat').value;
@@ -465,9 +496,11 @@ function saveProduct(){
 
   const imgUrl = document.getElementById('f-img-url').value.trim();
   const img = currentImgData || (imgUrl||'') || '';
+  const now = new Date().toISOString();
+  const id = editingId || uid();
 
-  const data = {
-    id: editingId || uid(),
+  const row = {
+    id,
     name,
     site,
     cat,
@@ -477,27 +510,32 @@ function saveProduct(){
     memo: document.getElementById('f-memo').value.trim(),
     link: document.getElementById('f-link').value.trim(),
     brand: document.getElementById('f-brand').value.trim(),
-    updatedAt: new Date().toISOString(),
+    updated_at: now,
+    ...(editingId ? {} : {created_at: now}),
   };
 
+  const {error} = await supa.from('sourcing_products').upsert(row);
+  if(error){ showToast('저장 실패: '+error.message,''); return; }
+
+  const localData = {...row, createdAt: row.created_at||now, updatedAt: now};
   if(editingId){
     const idx = products.findIndex(p=>p.id===editingId);
-    if(idx!==-1) products[idx]=data;
+    if(idx!==-1) products[idx]=localData;
     showToast('수정되었습니다','success');
   } else {
-    data.createdAt = data.updatedAt;
-    products.unshift(data);
+    localData.createdAt = now;
+    products.unshift(localData);
     showToast('상품이 추가되었습니다','success');
   }
-  save();
   closeModal('addModal');
   render();
 }
 
-function deleteProduct(id){
+async function deleteProduct(id){
   if(!confirm('이 상품을 삭제할까요?')) return;
+  const {error} = await supa.from('sourcing_products').delete().eq('id', id);
+  if(error){ showToast('삭제 실패: '+error.message,''); return; }
   products = products.filter(p=>p.id!==id);
-  save();
   render();
   showToast('삭제되었습니다','');
 }
@@ -590,17 +628,30 @@ function toggleAll(){
   updateSelCount();
 }
 
-function importSelected(){
+async function importSelected(){
   const selected = [];
   document.querySelectorAll('#importList input[type=checkbox]:checked').forEach(c=>{
     selected.push(COLLECTED_DATA[parseInt(c.dataset.idx)]);
   });
   if(selected.length===0){showToast('선택된 항목이 없어요',''); return;}
   const now = new Date().toISOString();
-  selected.forEach(d=>{
-    products.unshift({id:uid(), name:d.name, site:d.site, cat:d.cat, brand:d.brand||'', memo:d.memo||'', img:'', wholesale:'', retail:'', link:'', createdAt:now, updatedAt:now});
-  });
-  save();
+  const rows = selected.map(d=>({
+    id: uid(),
+    name: d.name,
+    site: d.site,
+    cat: d.cat,
+    brand: d.brand||'',
+    memo: d.memo||'',
+    img: '',
+    wholesale: '',
+    retail: '',
+    link: '',
+    created_at: now,
+    updated_at: now,
+  }));
+  const {error} = await supa.from('sourcing_products').insert(rows);
+  if(error){ showToast('가져오기 실패: '+error.message,''); return; }
+  rows.forEach(r=>products.unshift({...r, createdAt: r.created_at, updatedAt: r.updated_at}));
   closeModal('importModal');
   render();
   showToast(`${selected.length}개 상품을 가져왔어요!`,'success');
