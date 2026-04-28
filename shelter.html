@@ -55,7 +55,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>사진</th><th>이름</th><th>견종/나이/성별</th><th>크기/지역</th><th>상태</th><th>관리</th></tr>
+          <tr><th>사진</th><th>이름</th><th>보호소</th><th>견종/나이/성별</th><th>크기/지역</th><th>상태</th><th>관리</th></tr>
         </thead>
         <tbody id="dogTable">
           <tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>
@@ -250,19 +250,30 @@ async function shelterLogout(){
   location.reload();
 }
 
-// 강아지 목록 (자기 보호소 것만)
+// 강아지 목록 (admin은 전체, shelter는 본인 것만)
 async function loadDogs(){
-  const {data}=await _supabase.from('dogs').select('*').eq('shelter_user_id',_currentUserId).order('created_at',{ascending:false});
+  const role = _shelterProfile?.role||'';
+  let query = _supabase.from('dogs').select('*');
+  if(role !== 'admin'){
+    query = query.eq('shelter_user_id',_currentUserId);
+  }
+  const {data, error}=await query.order('created_at',{ascending:false});
   const tbody=document.getElementById('dogTable');
+  if(error){
+    tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="icon">⚠️</div><p style="color:#e04040;">데이터 불러오기 실패<br><small style="color:#999;">${error.message}</small></p></div></td></tr>`;
+    document.getElementById('dogCount').textContent='오류 발생';
+    return;
+  }
   document.getElementById('dogCount').textContent=`등록된 강아지: ${data?.length||0}마리`;
   if(!data||data.length===0){
-    tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>';
     return;
   }
   tbody.innerHTML=data.map(d=>`
     <tr>
       <td>${d.image_url?`<img loading="lazy" src="${d.image_url}" class="dog-thumb"/>`:`<div class="dog-thumb-placeholder">🐶</div>`}</td>
       <td><strong>${d.name}</strong></td>
+      <td><span style="font-size:12px;color:var(--pk);font-weight:500;">🏠 ${d.shelter_name||'-'}</span></td>
       <td>${d.breed||'-'} · ${d.age||'-'} · ${d.gender||'-'}</td>
       <td>${d.size||'-'} · ${d.location||'-'}</td>
       <td><span class="status-badge ${d.status==='신규'?'s-new':d.status==='긴급'?'s-urgent':d.status==='입양완료'?'s-done':'s-wait'}">${d.status||'대기중'}</span></td>
