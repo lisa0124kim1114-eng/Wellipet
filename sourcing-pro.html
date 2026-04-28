@@ -71,6 +71,27 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 .site-link{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd);font-size:12px;cursor:pointer;text-decoration:none;color:var(--tx);transition:all .2s;margin-bottom:6px;}
 .site-link:hover{border-color:var(--pk);background:var(--pkbg);}
 .site-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+/* 사이트 그룹 (펫비투비·수진펫 묶음) */
+.site-group{margin-bottom:6px;}
+.site-group-hd{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--bd);font-size:12px;cursor:pointer;color:var(--tx);transition:all .2s;user-select:none;}
+.site-group-hd:hover{border-color:var(--pk);background:var(--pkbg);}
+.site-group-hd .g-label{flex:1;font-weight:600;}
+.site-group-hd .g-arrow{font-size:10px;color:var(--muted);transition:transform .2s;}
+.site-group-hd.open .g-arrow{transform:rotate(180deg);}
+.site-group-links{padding-left:18px;margin-top:4px;display:flex;flex-direction:column;gap:3px;}
+.site-group-links.hidden{display:none;}
+.site-sublink{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:8px;font-size:11px;text-decoration:none;color:var(--muted);transition:all .2s;}
+.site-sublink:hover{color:var(--pk);background:var(--pkp);}
+/* 모달 사이트 바로가기 버튼 */
+.site-quickbtn{display:inline-flex;align-items:center;padding:4px 10px;border-radius:16px;font-size:11px;text-decoration:none;color:var(--pk);background:#fff;border:1.5px solid var(--pkl);transition:all .2s;white-space:nowrap;}
+.site-quickbtn:hover{background:var(--pk);color:#fff;border-color:var(--pk);}
+/* 탑바 드롭다운 */
+.topbar-dd{position:relative;display:inline-flex;}
+.topbar-dd>a{cursor:pointer;}
+.topbar-dd-menu{display:none;position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid var(--bd);border-radius:10px;box-shadow:0 8px 24px rgba(42,26,34,.12);min-width:160px;z-index:400;padding:6px;}
+.topbar-dd:hover .topbar-dd-menu{display:block;}
+.topbar-dd-menu a{display:block;padding:7px 12px;font-size:11px;color:var(--tx);text-decoration:none;border-radius:7px;white-space:nowrap;}
+.topbar-dd-menu a:hover{background:var(--pkp);color:var(--pk);}
 .side-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;border-bottom:1px solid var(--pkbg);}
 .side-stat .val{font-family:'Nunito',sans-serif;font-weight:700;color:var(--pk);}
 
@@ -311,6 +332,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
   header{padding:0 16px;}
   .content{padding:16px;}
   .slots-grid{grid-template-columns:repeat(2,1fr);}
+  .progress-bar-wrap{flex-wrap:wrap;gap:8px;padding:10px 12px;}
+  .prog-item{flex-shrink:1;}
 }
 </style>
 </head>
@@ -319,15 +342,28 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 <!-- 탑바 -->
 <div class="topbar">
   <div class="topbar-left">
-    <a href="https://pettory.com/product/list.html?cate_no=213&page=2" target="_blank">🛒 펫토리</a>
-    <a href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">🛒 펫비투비 베스트</a>
-    <a href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">🐶 펫비투비 강아지</a>
-    <a href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">🐱 펫비투비 고양이</a>
-    <a href="https://www.sujinpet.co.kr/" target="_blank">🛒 수진펫</a>
-    <a href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">🏷️ 수진펫 땡처리</a>
+    <a href="https://pettory.com/product/list.html?cate_no=4" target="_blank">🛒 펫토리</a>
+    <div class="topbar-dd">
+      <a>🛒 펫비투비 ▾</a>
+      <div class="topbar-dd-menu">
+        <a href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">🏆 베스트</a>
+        <a href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">🐶 강아지 입점사베스트</a>
+        <a href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">🐱 고양이 입점사베스트</a>
+        <a href="https://petbtob.co.kr/product/list.html?cate_no=472" target="_blank">🎖️ 입점사BEST</a>
+      </div>
+    </div>
     <a href="https://pethugb2b.co.kr/" target="_blank">🛒 펫허그B2B</a>
-    <a href="https://petdome.co.kr/index.php" target="_blank">🛒 펫도매</a>
-    <a href="https://www.ddakpet.com/team3f/myshop/info#info" target="_blank">🛒 딱펫</a>
+    <a href="https://www.levelly.co.kr/shop/list.php?code=001000000" target="_blank">🛒 레벨리</a>
+    <div class="topbar-dd">
+      <a>🛒 수진펫 ▾</a>
+      <div class="topbar-dd-menu">
+        <a href="https://www.sujinpet.co.kr/" target="_blank">🏠 메인</a>
+        <a href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">🏷️ 땡처리</a>
+      </div>
+    </div>
+    <a href="https://richpet.kr/" target="_blank">🛒 리치펫</a>
+    <a href="https://www.bizbite.me/" target="_blank">🛒 비즈바이트</a>
+    <a href="https://nonda.co.kr/" target="_blank">🛒 논다</a>
     <a href="shop.html" target="_blank">🐾 웰리펫 샵</a>
     <a href="/admin.html" style="background:rgba(255,255,255,.25);font-weight:700;">⚙️ 관리자 페이지</a>
   </div>
@@ -373,41 +409,47 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
   <aside class="side">
     <div class="side-section">
       <div class="side-label">도매사이트 바로가기</div>
-      <a class="site-link" href="https://pettory.com/product/list.html?cate_no=213&page=2" target="_blank">
-        <span class="site-dot" style="background:#7a9ee0;"></span>펫토리 (배변패드)
+      <a class="site-link" href="https://pettory.com/product/list.html?cate_no=4" target="_blank">
+        <span class="site-dot" style="background:#7a9ee0;"></span>펫토리
       </a>
-      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">
-        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🏆베스트
-      </a>
-      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">
-        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🐶강아지
-      </a>
-      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">
-        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🐱고양이
-      </a>
-      <a class="site-link" href="https://petbtob.co.kr/product/list.html?cate_no=472" target="_blank">
-        <span class="site-dot" style="background:#e0a87a;"></span>펫비투비 🎖️입점사BEST
-      </a>
-      <a class="site-link" href="https://www.sujinpet.co.kr/" target="_blank">
-        <span class="site-dot" style="background:#e07aaa;"></span>수진펫
-      </a>
-      <a class="site-link" href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">
-        <span class="site-dot" style="background:#e07aaa;"></span>수진펫 🏷️땡처리
-      </a>
+      <div class="site-group">
+        <div class="site-group-hd" onclick="toggleSiteGroup('petb2b')">
+          <span class="site-dot" style="background:#e0a87a;"></span>
+          <span class="g-label">펫비투비</span>
+          <span class="g-arrow" id="arr-petb2b">▾</span>
+        </div>
+        <div class="site-group-links" id="grp-petb2b">
+          <a class="site-sublink" href="https://petbtob.co.kr/product/list.html?cate_no=25" target="_blank">🏆 베스트</a>
+          <a class="site-sublink" href="https://petbtob.co.kr/product/list.html?cate_no=285" target="_blank">🐶 강아지 입점사베스트</a>
+          <a class="site-sublink" href="https://petbtob.co.kr/product/list.html?cate_no=286" target="_blank">🐱 고양이 입점사베스트</a>
+          <a class="site-sublink" href="https://petbtob.co.kr/product/list.html?cate_no=472" target="_blank">🎖️ 입점사BEST</a>
+        </div>
+      </div>
+      <div class="site-group">
+        <div class="site-group-hd" onclick="toggleSiteGroup('sujin')">
+          <span class="site-dot" style="background:#e07aaa;"></span>
+          <span class="g-label">수진펫</span>
+          <span class="g-arrow" id="arr-sujin">▾</span>
+        </div>
+        <div class="site-group-links" id="grp-sujin">
+          <a class="site-sublink" href="https://www.sujinpet.co.kr/" target="_blank">🏠 메인</a>
+          <a class="site-sublink" href="https://www.sujinpet.co.kr/front/product/product_list.php?pinid=25856" target="_blank">🏷️ 땡처리</a>
+        </div>
+      </div>
       <a class="site-link" href="https://pethugb2b.co.kr/" target="_blank">
         <span class="site-dot" style="background:#7abde0;"></span>펫허그B2B
       </a>
-      <a class="site-link" href="https://petdome.co.kr/index.php" target="_blank">
-        <span class="site-dot" style="background:#6dbf8a;"></span>펫도매
-      </a>
-      <a class="site-link" href="https://www.ddakpet.com/team3f/myshop/info#info" target="_blank">
-        <span class="site-dot" style="background:#f0a060;"></span>딱펫
+      <a class="site-link" href="https://www.levelly.co.kr/shop/list.php?code=001000000" target="_blank">
+        <span class="site-dot" style="background:#9b59b6;"></span>레벨리
       </a>
       <a class="site-link" href="https://richpet.kr/" target="_blank">
         <span class="site-dot" style="background:#e07a7a;"></span>리치펫
       </a>
-      <a class="site-link" href="https://pettob.co.kr/shop/main/index.php" target="_blank">
-        <span class="site-dot" style="background:#7ae0b8;"></span>펫토브
+      <a class="site-link" href="https://www.bizbite.me/" target="_blank">
+        <span class="site-dot" style="background:#5ba87c;"></span>비즈바이트
+      </a>
+      <a class="site-link" href="https://nonda.co.kr/" target="_blank">
+        <span class="site-dot" style="background:#e09050;"></span>논다
       </a>
     </div>
     <div class="side-section">
@@ -534,17 +576,26 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 
         <div class="fg">
           <label>도매사이트 *</label>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
+            <a href="https://pettory.com/product/list.html?cate_no=4" target="_blank" class="site-quickbtn">🛒 펫토리</a>
+            <a href="https://petbtob.co.kr/" target="_blank" class="site-quickbtn">🛒 펫비투비</a>
+            <a href="https://pethugb2b.co.kr/" target="_blank" class="site-quickbtn">🛒 펫허그B2B</a>
+            <a href="https://www.levelly.co.kr/shop/list.php?code=001000000" target="_blank" class="site-quickbtn">🛒 레벨리</a>
+            <a href="https://www.sujinpet.co.kr/" target="_blank" class="site-quickbtn">🛒 수진펫</a>
+            <a href="https://richpet.kr/" target="_blank" class="site-quickbtn">🛒 리치펫</a>
+            <a href="https://www.bizbite.me/" target="_blank" class="site-quickbtn">🛒 비즈바이트</a>
+            <a href="https://nonda.co.kr/" target="_blank" class="site-quickbtn">🛒 논다</a>
+          </div>
           <select id="f-site">
             <option value="">선택</option>
             <option value="펫토리">펫토리</option>
             <option value="펫비투비">펫비투비</option>
-            <option value="수진펫">수진펫</option>
             <option value="펫허그B2B">펫허그B2B</option>
-            <option value="후회없개B2B">후회없개B2B</option>
-            <option value="펫도매">펫도매</option>
-            <option value="딱펫">딱펫</option>
-            <option value="비투비몰">비투비몰</option>
+            <option value="레벨리">레벨리</option>
+            <option value="수진펫">수진펫</option>
             <option value="리치펫">리치펫</option>
+            <option value="비즈바이트">비즈바이트</option>
+            <option value="논다">논다</option>
             <option value="기타">기타</option>
           </select>
         </div>
@@ -833,8 +884,10 @@ const CATS = [
 
 // ── 사이트 색상 ──
 const SITE_COLORS = {
-  '펫토리':'#7a9ee0','펫비투비':'#e0a87a','수진펫':'#e07aaa',
-  '펫허그B2B':'#7abde0','후회없개B2B':'#a07ae0','펫도매':'#6dbf8a','딱펫':'#f0a060','비투비몰':'#60a0d0','리치펫':'#e06868','기타':'#90a090',
+  '펫토리':'#7a9ee0','펫비투비':'#e0a87a','펫허그B2B':'#7abde0',
+  '레벨리':'#9b59b6','수진펫':'#e07aaa','리치펫':'#e06868',
+  '비즈바이트':'#5ba87c','논다':'#e09050',
+  '기타':'#90a090',
 };
 
 // ── 초기 데이터 (수집된 상품) ──
@@ -1855,6 +1908,28 @@ function exportWellipet(){
   a.click();
   showToast('웰리펫용 JSON이 다운로드됐어요!','success');
 }
+
+// ── 사이드바 사이트 그룹 토글 ──
+function toggleSiteGroup(key){
+  const links = document.getElementById('grp-'+key);
+  const hd = links.previousElementSibling;
+  const arr = document.getElementById('arr-'+key);
+  const isHidden = links.classList.contains('hidden');
+  if(isHidden){
+    links.classList.remove('hidden');
+    hd.classList.add('open');
+  } else {
+    links.classList.add('hidden');
+    hd.classList.remove('open');
+  }
+}
+// 초기 상태: 펫비투비·수진펫 그룹 접힘
+document.addEventListener('DOMContentLoaded',()=>{
+  ['petb2b','sujin'].forEach(k=>{
+    const el = document.getElementById('grp-'+k);
+    if(el) el.classList.add('hidden');
+  });
+});
 
 // ── 초기화 ──
 function clearAll(){
