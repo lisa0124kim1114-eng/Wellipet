@@ -165,6 +165,7 @@
       </button>
       <div class="divider"><span>또는 이메일로 가입</span></div>
       <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
+      <div class="fg"><label>연락처</label><input type="tel" id="signupPhone" placeholder="010-0000-0000"/></div>
       <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="wellypet1209@gmail.com"/></div>
       <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
       <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기동물 보호 캠페인에 참여합니다</label></div>
@@ -457,12 +458,15 @@ function showSection(id){
 
 async function signUp(){
   const name=document.getElementById('signupName').value;
+  const phone=document.getElementById('signupPhone').value.trim();
   const email=document.getElementById('signupEmail').value;
   const pw=document.getElementById('signupPw').value;
-  if(!name||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}
+  if(!name||!phone||!email||!pw){showMsg('모든 항목을 입력해주세요.',true);return;}
   if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}
-  const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});
+  const{data,error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name,phone}}});
   if(error){showMsg('오류: '+error.message,true);return;}
+  if(data?.user?.id){await _supabase.from('profiles').upsert({user_id:data.user.id,phone},{onConflict:'user_id'});}
+  fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-welcome-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email})}).catch(()=>{});
   showSection('formDone');
   document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';
   document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';
@@ -485,7 +489,7 @@ async function signIn(){
 async function signInWithKakao(){
   const{error}=await _supabase.auth.signInWithOAuth({
     provider:'kakao',
-    options:{redirectTo:window.location.origin+'/index.html'}
+    options:{redirectTo:window.location.origin+window.location.pathname,scopes:'phone_number'}
   });
   if(error)showMsg('카카오 로그인 오류: '+error.message,true);
 }
