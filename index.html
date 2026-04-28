@@ -254,9 +254,9 @@ footer{background:linear-gradient(180deg,#321626 0%,#201018 100%);padding:56px 4
 
 <!-- 최신 상품 (Supabase에서 불러오기) -->
 <section class="sec" style="background:var(--pkbg);padding-top:32px;padding-bottom:40px;">
-  <div class="sl">BEST SELLERS</div>
-  <div class="st">베스트 상품 🏆</div>
-  <div class="ss">지금 가장 인기 있는 제품들이에요</div>
+  <div class="sl">NEW ARRIVALS</div>
+  <div class="st">새로운 상품 ✨</div>
+  <div class="ss">새롭게 입고된 따끈따끈한 신상품이에요</div>
   <div class="prod-grid" id="bestGrid">
     <div style="grid-column:span 4;text-align:center;padding:40px;color:var(--muted);font-size:13px;">상품을 불러오는 중...</div>
   </div>
@@ -303,10 +303,12 @@ footer{background:linear-gradient(180deg,#321626 0%,#201018 100%);padding:56px 4
         카카오로 시작하기
       </button>
       <div class="divider"><span>또는 이메일로 가입</span></div>
-      <div class="fg"><label>이름</label><input type="text" id="signupName" placeholder="홍길동"/></div>
-      <div class="fg"><label>이메일</label><input type="email" id="signupEmail" placeholder="wellypet1209@gmail.com"/></div>
-      <div class="fg"><label>비밀번호</label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
-      <div class="fg"><label>비밀번호 확인</label><input type="password" id="signupPwConfirm" placeholder="비밀번호를 한 번 더 입력해주세요"/></div>
+      <div class="fg"><label>이름 <span style="color:#e04040;">*</span></label><input type="text" id="signupName" placeholder="홍길동"/></div>
+      <div class="fg"><label>이메일 <span style="color:#e04040;">*</span></label><input type="email" id="signupEmail" placeholder="wellypet1209@gmail.com"/></div>
+      <div class="fg"><label>연락처 <span style="color:#e04040;">*</span></label><input type="tel" id="signupPhone" placeholder="010-0000-0000" oninput="this.value=this.value.replace(/[^0-9-]/g,'')"/></div>
+      <div class="fg"><label>주소 <span style="color:#e04040;">*</span></label><input type="text" id="signupAddress" placeholder="예) 서울시 강남구 테헤란로 123"/></div>
+      <div class="fg"><label>비밀번호 <span style="color:#e04040;">*</span></label><input type="password" id="signupPw" placeholder="8자 이상 입력해주세요"/></div>
+      <div class="fg"><label>비밀번호 확인 <span style="color:#e04040;">*</span></label><input type="password" id="signupPwConfirm" placeholder="비밀번호를 한 번 더 입력해주세요"/></div>
       <div class="dc"><input type="checkbox" id="dc1" checked/><label for="dc1">🏠 가입과 동시에 유기동물 보호 캠페인에 참여합니다</label></div>
       <button class="btn-submit" onclick="signUp()">가입하기</button>
     </div>
@@ -454,15 +456,25 @@ function showSection(id){
 }
 
 async function signUp(){
-  const name=document.getElementById('signupName').value;
-  const email=document.getElementById('signupEmail').value;
+  const name=document.getElementById('signupName').value.trim();
+  const email=document.getElementById('signupEmail').value.trim();
+  const phone=document.getElementById('signupPhone').value.trim();
+  const address=document.getElementById('signupAddress').value.trim();
   const pw=document.getElementById('signupPw').value;
   const pwConfirm=document.getElementById('signupPwConfirm').value;
-  if(!name||!email||!pw||!pwConfirm){showMsg('모든 항목을 입력해주세요.',true);return;}
+  if(!name){showMsg('이름을 입력해주세요.',true);return;}
+  if(!email){showMsg('이메일을 입력해주세요.',true);return;}
+  if(!phone){showMsg('연락처를 입력해주세요.',true);return;}
+  if(!address){showMsg('주소를 입력해주세요.',true);return;}
+  if(!pw||!pwConfirm){showMsg('비밀번호를 입력해주세요.',true);return;}
   if(pw.length<8){showMsg('비밀번호는 8자 이상이어야 해요.',true);return;}
   if(pw!==pwConfirm){showMsg('비밀번호가 일치하지 않아요. 다시 확인해주세요.',true);return;}
-  const{error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name}}});
+  const{data,error}=await _supabase.auth.signUp({email,password:pw,options:{data:{name,phone,address}}});
   if(error){showMsg('오류: '+error.message,true);return;}
+  // profiles 테이블에 연락처·주소 저장
+  if(data?.user){
+    await _supabase.from('profiles').upsert({user_id:data.user.id,email,name,phone,address},{onConflict:'user_id'});
+  }
   showSection('formDone');
   document.getElementById('doneTitle').textContent=name+'님, 가입 완료! 🎉';
   document.getElementById('doneDesc').textContent=email+'로 인증 메일을 보냈어요.';
