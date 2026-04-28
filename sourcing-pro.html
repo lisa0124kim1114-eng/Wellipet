@@ -1134,6 +1134,8 @@ const _CAT_MAP = {
   '홈&침대': '고양이홈',
   '고양이홈': '홈&침대',
   '옷/패션': '고양이그루밍',
+  '영양제 & 덴탈': '고양이영양제',
+  '고양이영양제': '영양제 & 덴탈',
 };
 function remapCatForPet(currentCatId, targetPet){
   const srcCat = CATS.find(c=>c.id===currentCatId);
@@ -1194,10 +1196,13 @@ async function moveTo(targetPet){
     _supabase.from('sourcing_products').update({pet_type:u.pet_type, cat:u.cat}).eq('id',u.id)
   );
   const results = await Promise.all(promises);
-  const failed = results.filter(r=>r.error).length;
-  if(failed) showToast(`${failed}개 업데이트 실패. 나머지는 완료.`,'warn');
-  else showToast(`${ids.length}개 → ${label} 카테고리로 이동 완료!`,'success');
+  const failed = results.filter(r=>r.error);
+  if(failed.length){
+    failed.forEach(r=>console.error('분류이동 실패:', r.error));
+    showToast(`${failed.length}개 업데이트 실패. 나머지는 완료.`,'warn');
+  } else showToast(`${ids.length}개 → ${label} 카테고리로 이동 완료!`,'success');
 
+  _slotsCache = '';
   toggleMoveMode(false);
 }
 
