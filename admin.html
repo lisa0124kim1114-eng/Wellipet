@@ -580,8 +580,11 @@ let _adminPet = 'all';
 
 function filterAdminPet(pet, el){
   _adminPet = pet;
+  _adminCat = '전체';
   document.querySelectorAll('#petTab-all,#petTab-dog,#petTab-cat,#petTab-both').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
+  document.querySelectorAll('#catTabs .cat-tab').forEach(b=>b.classList.remove('on'));
+  document.querySelector('#catTabs .cat-tab').classList.add('on');
   renderProductTable();
 }
 
@@ -606,8 +609,8 @@ async function loadProducts(){
 function renderProductTable(){
   const tbody=document.getElementById('productTable');
   let list = _productList;
-  if(_adminPet!=='all') list=list.filter(p=>p.pet_type===_adminPet||(p.pet_type==='both'&&_adminPet==='both'));
-  if(_adminCat!=='전체') list=list.filter(p=>p.category===_adminCat);
+  if(_adminPet!=='all') list=list.filter(p=>p.pet_type===_adminPet||p.pet_type==='both');
+  if(_adminCat!=='전체') list=list.filter(p=>(p.category||'').includes(_adminCat));
   if(!list.length){
     tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="icon">📦</div><p>이 카테고리에 상품이 없어요</p></div></td></tr>';
     return;
