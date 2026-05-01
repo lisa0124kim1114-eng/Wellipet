@@ -271,7 +271,7 @@ function renderDogs(dogs){
       <div class="dbody">
         <div class="dname">${d.name}</div>
         ${d.shelter_name?`<div class="dshelter">🏠 ${d.shelter_name}</div>`:''}
-        <div class="dmeta">${[d.breed,d.age,d.gender,d.size,d.location].filter(Boolean).map(v=>`<span class="dmeta-tag">${v}</span>`).join('')}</div>
+        <div class="dmeta">${[d.breed,d.age,d.weight,d.gender,d.size,d.location].filter(Boolean).map(v=>`<span class="dmeta-tag">${v}</span>`).join('')}</div>
         <div class="ddesc">${d.description||''}</div>
         <div class="dtags">${(d.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="dtag">${t.trim()}</span>`).join('')}</div>
         <button class="dbtn" ${d.status==='입양완료'?'disabled':''} onclick="applyAdoption('${(d.name||'').replace(/'/g,'')}','${(d.shelter_name||'').replace(/'/g,'')}')">${d.status==='입양완료'?'입양 완료':'🐾 입양 신청하기'}</button>

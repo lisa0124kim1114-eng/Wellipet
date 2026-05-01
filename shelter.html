@@ -55,7 +55,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>사진</th><th>이름</th><th>보호소</th><th>견종/나이/성별</th><th>크기/지역</th><th>상태</th><th>관리</th></tr>
+          <tr><th>사진</th><th>이름</th><th>보호소</th><th>견종/나이/성별</th><th>몸무게</th><th>크기/지역</th><th>상태</th><th>관리</th></tr>
         </thead>
         <tbody id="dogTable">
           <tr><td colspan="6"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>
@@ -95,13 +95,15 @@
     </div>
     <div class="form-row">
       <div class="form-group"><label>나이</label><input type="text" id="dAge" placeholder="3살"/></div>
+      <div class="form-group"><label>몸무게</label><input type="text" id="dWeight" placeholder="5.2kg"/></div>
+    </div>
+    <div class="form-row">
       <div class="form-group"><label>성별</label>
         <select id="dGender">
           <option value="수컷">수컷</option>
           <option value="암컷">암컷</option>
         </select>
       </div>
-    </div>
     <div class="form-row">
       <div class="form-group"><label>크기</label>
         <select id="dSize">
@@ -266,7 +268,7 @@ async function loadDogs(){
   }
   document.getElementById('dogCount').textContent=`등록된 강아지: ${data?.length||0}마리`;
   if(!data||data.length===0){
-    tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>';
+    tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">🐾</div><p>강아지를 등록해봐요!</p></div></td></tr>';
     return;
   }
   tbody.innerHTML=data.map(d=>`
@@ -275,6 +277,7 @@ async function loadDogs(){
       <td><strong>${d.name}</strong></td>
       <td><span style="font-size:12px;color:var(--pk);font-weight:500;">🏠 ${d.shelter_name||'-'}</span></td>
       <td>${d.breed||'-'} · ${d.age||'-'} · ${d.gender||'-'}</td>
+      <td>${d.weight||'-'}</td>
       <td>${d.size||'-'} · ${d.location||'-'}</td>
       <td><span class="status-badge ${d.status==='신규'?'s-new':d.status==='긴급'?'s-urgent':d.status==='입양완료'?'s-done':'s-wait'}">${d.status||'대기중'}</span></td>
       <td style="display:flex;gap:6px;">
@@ -290,7 +293,8 @@ function openDogModal(){
   document.getElementById('dogModalTitle').textContent='강아지 등록';
   initMultiImg([]);
   document.getElementById('dName').value='';document.getElementById('dBreed').value='';
-  document.getElementById('dAge').value='';document.getElementById('dGender').value='수컷';
+  document.getElementById('dAge').value='';document.getElementById('dWeight').value='';
+  document.getElementById('dGender').value='수컷';
   document.getElementById('dSize').value='소형';document.getElementById('dLocation').value='';
   document.getElementById('dDesc').value='';document.getElementById('dTags').value='';
   document.getElementById('dStatus').value='신규';
@@ -305,6 +309,7 @@ async function editDog(id){
   document.getElementById('dName').value=data.name||'';
   document.getElementById('dBreed').value=data.breed||'';
   document.getElementById('dAge').value=data.age||'';
+  document.getElementById('dWeight').value=data.weight||'';
   document.getElementById('dGender').value=data.gender||'수컷';
   document.getElementById('dSize').value=data.size||'소형';
   document.getElementById('dLocation').value=data.location||'';
@@ -347,6 +352,7 @@ async function saveDog(){
     name:document.getElementById('dName').value,
     breed:document.getElementById('dBreed').value,
     age:document.getElementById('dAge').value,
+    weight:document.getElementById('dWeight').value,
     gender:document.getElementById('dGender').value,
     size:document.getElementById('dSize').value,
     location:document.getElementById('dLocation').value,
