@@ -314,15 +314,15 @@ async function loadProduct(){
     }catch(e){}
   }
 
-  // 색상 옵션 렌더링 (옵션별 가격 지원)
+  // 색상 옵션 렌더링 (옵션별 판매가 지원)
   if(p.color_options){
     try{
       const colors=JSON.parse(p.color_options);
-      // option_prices에서 가격 매핑
+      // option_prices에서 판매가(retail) 매핑
       const priceMap={};
       if(p.option_prices){
         const ops=Array.isArray(p.option_prices)?p.option_prices:JSON.parse(p.option_prices);
-        ops.forEach(o=>{ if(o&&o.name&&o.price) priceMap[o.name]=Number(o.price); });
+        ops.forEach(o=>{ if(o&&o.name&&o.retail) priceMap[o.name]=Number(o.retail); });
       }
       if(colors&&colors.length>0){
         document.getElementById('colorWrap').style.display='block';
@@ -400,12 +400,12 @@ function addToCart(){
   const qty=parseInt(document.getElementById('qty').value)||1;
   const cart=getCart();
   const key=`${currentProduct.id}_${selectedColor||''}_${selectedSize||''}`;
-  // 옵션별 가격 적용
+  // 옵션별 판매가 적용
   let optPrice=null;
   if(selectedColor && currentProduct.option_prices){
     const ops=Array.isArray(currentProduct.option_prices)?currentProduct.option_prices:JSON.parse(currentProduct.option_prices||'[]');
     const match=ops.find(o=>o.name===selectedColor);
-    if(match&&match.price) optPrice=Number(match.price);
+    if(match&&match.retail) optPrice=Number(match.retail);
   }
   const existing=cart.find(i=>i._key===key);
   if(existing){existing.qty=(existing.qty||1)+qty;}
