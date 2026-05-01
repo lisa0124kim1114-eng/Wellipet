@@ -281,6 +281,11 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
 .fg input,.fg select,.fg textarea{border:1.5px solid var(--bd);border-radius:9px;padding:9px 12px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);outline:none;transition:border-color .2s;}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--pkl);}
 .fg textarea{resize:vertical;min-height:60px;}
+.opt-row{display:flex;gap:5px;align-items:center;}
+.opt-row .opt-name{flex:1;border:1.5px solid var(--bd);border-radius:9px;padding:8px 10px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--tx);outline:none;transition:border-color .2s;}
+.opt-row .opt-price{width:100px;border:1.5px solid var(--bd);border-radius:9px;padding:8px 10px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:var(--pk);font-weight:700;outline:none;transition:border-color .2s;text-align:right;}
+.opt-row .opt-name:focus,.opt-row .opt-price:focus{border-color:var(--pkl);}
+.opt-row .opt-price::placeholder{color:#dbb;font-weight:400;}
 .img-method-tabs{display:flex;border:1.5px solid var(--bd);border-radius:9px;overflow:hidden;margin-bottom:8px;}
 .imt{flex:1;padding:8px;font-size:11px;border:none;background:#fff;cursor:pointer;font-family:'Noto Sans KR',sans-serif;color:var(--muted);}
 .imt.active{background:var(--pk);color:#fff;}
@@ -362,6 +367,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
       </div>
     </div>
     <a href="https://richpet.kr/" target="_blank">🛒 리치펫</a>
+    <a href="https://pettob.co.kr/shop/member/login_ok.php" target="_blank">🛒 펫토브</a>
+    <a href="https://www.petsb2b.co.kr/" target="_blank">🛒 펫스B2B</a>
     <a href="https://www.bizbite.me/" target="_blank">🛒 비즈바이트</a>
     <a href="https://nonda.co.kr/" target="_blank">🛒 논다</a>
     <a href="shop.html" target="_blank">🐾 웰리펫 샵</a>
@@ -444,6 +451,12 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
       </a>
       <a class="site-link" href="https://richpet.kr/" target="_blank">
         <span class="site-dot" style="background:#e07a7a;"></span>리치펫
+      </a>
+      <a class="site-link" href="https://pettob.co.kr/shop/member/login_ok.php" target="_blank">
+        <span class="site-dot" style="background:#7ae0b8;"></span>펫토브
+      </a>
+      <a class="site-link" href="https://www.petsb2b.co.kr/" target="_blank">
+        <span class="site-dot" style="background:#e0c060;"></span>펫스B2B
       </a>
       <a class="site-link" href="https://www.bizbite.me/" target="_blank">
         <span class="site-dot" style="background:#5ba87c;"></span>비즈바이트
@@ -583,6 +596,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <a href="https://www.levelly.co.kr/shop/list.php?code=001000000" target="_blank" class="site-quickbtn">🛒 레벨리</a>
             <a href="https://www.sujinpet.co.kr/" target="_blank" class="site-quickbtn">🛒 수진펫</a>
             <a href="https://richpet.kr/" target="_blank" class="site-quickbtn">🛒 리치펫</a>
+            <a href="https://pettob.co.kr/shop/member/login_ok.php" target="_blank" class="site-quickbtn">🛒 펫토브</a>
+            <a href="https://www.petsb2b.co.kr/" target="_blank" class="site-quickbtn">🛒 펫스B2B</a>
             <a href="https://www.bizbite.me/" target="_blank" class="site-quickbtn">🛒 비즈바이트</a>
             <a href="https://nonda.co.kr/" target="_blank" class="site-quickbtn">🛒 논다</a>
           </div>
@@ -594,6 +609,8 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
             <option value="레벨리">레벨리</option>
             <option value="수진펫">수진펫</option>
             <option value="리치펫">리치펫</option>
+            <option value="펫토브">펫토브</option>
+            <option value="펫스B2B">펫스B2B</option>
             <option value="비즈바이트">비즈바이트</option>
             <option value="논다">논다</option>
             <option value="기타">기타</option>
@@ -700,20 +717,20 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
           <textarea id="f-desc" placeholder="예) 부드러운 퓨레 타입, 사은품으로도 인기. 당일 오전11시 주문마감."></textarea>
         </div>
 
-        <!-- 옵션 (최대 9개) -->
+        <!-- 옵션 (최대 10개, 이름+개별가격) -->
         <div class="fg form-full">
-          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 최대 10개 (예: 소형/중형/대형, 닭고기/오리/연어)</span></label>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">
-            <input class="opt-slot" type="text" placeholder="옵션 1"/>
-            <input class="opt-slot" type="text" placeholder="옵션 2"/>
-            <input class="opt-slot" type="text" placeholder="옵션 3"/>
-            <input class="opt-slot" type="text" placeholder="옵션 4"/>
-            <input class="opt-slot" type="text" placeholder="옵션 5"/>
-            <input class="opt-slot" type="text" placeholder="옵션 6"/>
-            <input class="opt-slot" type="text" placeholder="옵션 7"/>
-            <input class="opt-slot" type="text" placeholder="옵션 8"/>
-            <input class="opt-slot" type="text" placeholder="옵션 9"/>
-            <input class="opt-slot" type="text" placeholder="옵션 10"/>
+          <label>옵션 <span style="font-weight:400;color:var(--muted);">— 최대 10개 · 가격 비워두면 기본 판매가 적용</span></label>
+          <div style="display:flex;flex-direction:column;gap:5px;" id="opt-container">
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 1 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 2 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 3 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 4 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 5 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 6 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 7 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 8 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 9 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
+            <div class="opt-row"><input class="opt-name" type="text" placeholder="옵션 10 이름"/><input class="opt-price" type="number" placeholder="가격 (원)"/></div>
           </div>
         </div>
 
@@ -886,7 +903,7 @@ const CATS = [
 const SITE_COLORS = {
   '펫토리':'#7a9ee0','펫비투비':'#e0a87a','펫허그B2B':'#7abde0',
   '레벨리':'#9b59b6','수진펫':'#e07aaa','리치펫':'#e06868',
-  '비즈바이트':'#5ba87c','논다':'#e09050',
+  '펫토브':'#7ae0b8','펫스B2B':'#e0c060','비즈바이트':'#5ba87c','논다':'#e09050',
   '기타':'#90a090',
 };
 
@@ -1025,7 +1042,7 @@ function dbToLocal(r){
     desc: r.description||'',
     brand: r.brand||'',
     link: r.link||'',
-    options: Array.isArray(r.options)?r.options:[],
+    options: normalizeOptions(Array.isArray(r.options)?r.options:[]),
     pet_type: r.pet_type||'dog',
     shipping_fee: r.shipping_fee!=null ? Number(r.shipping_fee) : 3000,
     createdAt: r.created_at,
@@ -1050,7 +1067,7 @@ function localToDb(p){
     description: p.desc||'',
     brand: p.brand||'',
     link: p.link||'',
-    options: Array.isArray(p.options)?p.options:[],
+    options: Array.isArray(p.options)?p.options:[],  // 이미 {name,price} 객체 배열
     pet_type: p.pet_type||'dog',
     shipping_fee: p.shipping_fee!=null ? Number(p.shipping_fee) : 3000,
     updated_at: new Date().toISOString(),
@@ -1382,7 +1399,7 @@ function renderSlots(){
       </div>
       <div class="card-body">
         <div class="card-name">${p.link?`<a href="${esc(p.link)}" target="_blank" style="color:inherit;text-decoration:none;" onclick="event.stopPropagation();" title="도매처 상품 페이지 열기">${esc(p.name)}</a>`:esc(p.name)}</div>
-        ${p.options&&p.options.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px;">${p.options.map(o=>`<span style="background:var(--pkp);border:1px solid var(--pkl);border-radius:10px;padding:1px 7px;font-size:10px;color:var(--pk);">${esc(o)}</span>`).join('')}</div>`:''}
+        ${p.options&&p.options.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px;">${p.options.map(o=>{const nm=typeof o==='string'?o:o.name;const pr=typeof o==='object'&&o.price?` ${Number(o.price).toLocaleString()}원`:'';return `<span style="background:var(--pkp);border:1px solid var(--pkl);border-radius:10px;padding:1px 7px;font-size:10px;color:var(--pk);">${esc(nm)}${pr?`<span style="color:var(--muted);margin-left:3px;font-size:9px;">${pr}</span>`:''}</span>`;}).join('')}</div>`:''}
         <div class="price-row" style="margin-bottom:6px;">
           <span class="price-label" style="font-size:9px;color:var(--muted);width:28px;">도매</span>
           <span class="price-val wholesale">${w?w.toLocaleString()+'원':'<span class="empty-price">미입력</span>'}</span>
@@ -1513,11 +1530,33 @@ function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeOnOverlay(e,id){if(e.target===e.currentTarget)closeModal(id);}
 
 let _options = [];
-function getOptSlots(){ return Array.from(document.querySelectorAll('.opt-slot')); }
-function readOptions(){ return getOptSlots().map(i=>i.value.trim()).filter(Boolean); }
+function getOptRows(){ return Array.from(document.querySelectorAll('.opt-row')); }
+function readOptions(){
+  return getOptRows().map(row=>{
+    const name=(row.querySelector('.opt-name')?.value||'').trim();
+    const priceVal=(row.querySelector('.opt-price')?.value||'').trim();
+    if(!name) return null;
+    const obj={name};
+    if(priceVal) obj.price=Number(priceVal);
+    return obj;
+  }).filter(Boolean);
+}
 function writeOptions(arr){
-  const slots=getOptSlots();
-  slots.forEach((s,i)=>{ s.value=arr[i]||''; });
+  const rows=getOptRows();
+  rows.forEach((row,i)=>{
+    const nameEl=row.querySelector('.opt-name');
+    const priceEl=row.querySelector('.opt-price');
+    const item=arr[i];
+    if(!item){ nameEl.value=''; priceEl.value=''; return; }
+    // 하위호환: 문자열이면 이름만
+    if(typeof item==='string'){ nameEl.value=item; priceEl.value=''; }
+    else { nameEl.value=item.name||''; priceEl.value=item.price!=null?item.price:''; }
+  });
+}
+// 하위호환 헬퍼: 기존 string[] → {name}[]
+function normalizeOptions(arr){
+  if(!Array.isArray(arr)) return [];
+  return arr.map(o=> typeof o==='string'?{name:o}:o);
 }
 
 function resetForm(){
@@ -1568,7 +1607,7 @@ function openEditModal(id){
   document.getElementById('f-desc').value=p.desc||'';
   document.getElementById('f-brand').value=p.brand||'';
   document.getElementById('f-link').value=p.link||'';
-  const _optArr=Array.isArray(p.options)?[...p.options]:(p.options?p.options.split(',').map(s=>s.trim()).filter(Boolean):[]);
+  const _optArr=normalizeOptions(Array.isArray(p.options)?p.options:(p.options?p.options.split(',').map(s=>s.trim()).filter(Boolean):[]));
   writeOptions(_optArr);
   if(p.img){
     if(p.img.startsWith('data:')){
@@ -1636,11 +1675,13 @@ async function saveProduct(){
     // 이미 쇼핑몰에 올라간 상품이면 products 테이블도 동기화
     const shopId = publishedMap[editingId];
     if(shopId){
+      const optNames = data.options&&data.options.length ? data.options.map(o=>typeof o==='string'?o:o.name) : [];
       const syncData = {
         name: data.name,
         category: data.cat,
         pet_type: data.pet_type || currentPet,
-        color_options: data.options&&data.options.length ? JSON.stringify(data.options) : null,
+        color_options: optNames.length ? JSON.stringify(optNames) : null,
+        option_prices: data.options&&data.options.length ? data.options : null,
       };
       if(data.img && !data.img.startsWith('data:')) syncData.image_url = data.img;
       await _supabase.from('products').update(syncData).eq('id', shopId);
@@ -2348,7 +2389,8 @@ async function confirmPublish(){
       description: desc,
       image_url: p.img||null,
       option_images: optionImages,
-      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options) : null,
+      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options.map(o=>typeof o==='string'?o:o.name)) : null,
+      option_prices: (p.options&&p.options.length) ? p.options : null,
     };
     if(scrapedDetailHtml) updateData.detail_content = scrapedDetailHtml;
     ({error} = await _supabase.from('products').update(updateData).eq('id', shopId));
@@ -2372,7 +2414,8 @@ async function confirmPublish(){
       emoji: '🐾',
       detail_content: scrapedDetailHtml || null,
       option_images: optionImages,
-      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options) : null,
+      color_options: (p.options&&p.options.length) ? JSON.stringify(p.options.map(o=>typeof o==='string'?o:o.name)) : null,
+      option_prices: (p.options&&p.options.length) ? p.options : null,
     }).select().single());
     btn.disabled = false; btn.textContent = '쇼핑몰에 올리기';
     if(error){ alert('오류: '+error.message); return; }

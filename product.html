@@ -314,15 +314,23 @@ async function loadProduct(){
     }catch(e){}
   }
 
-  // 색상 옵션 렌더링
+  // 색상 옵션 렌더링 (옵션별 가격 지원)
   if(p.color_options){
     try{
       const colors=JSON.parse(p.color_options);
+      // option_prices에서 가격 매핑
+      const priceMap={};
+      if(p.option_prices){
+        const ops=Array.isArray(p.option_prices)?p.option_prices:JSON.parse(p.option_prices);
+        ops.forEach(o=>{ if(o&&o.name&&o.price) priceMap[o.name]=Number(o.price); });
+      }
       if(colors&&colors.length>0){
         document.getElementById('colorWrap').style.display='block';
-        document.getElementById('colorBtns').innerHTML=colors.map(c=>`
-          <button class="option-btn" onclick="selectOption('color','${c}',this)">${c}</button>
-        `).join('');
+        document.getElementById('colorBtns').innerHTML=colors.map(c=>{
+          const pr=priceMap[c];
+          const prLabel=pr?` (${pr.toLocaleString()}원)`:'';
+          return `<button class="option-btn" data-price="${pr||''}" onclick="selectOption('color','${c}',this,${pr||0})">${c}${prLabel}</button>`;
+        }).join('');
       }
     }catch(e){}
   }
@@ -341,10 +349,18 @@ async function loadProduct(){
   }
 }
 
-function selectOption(type, val, el){
+function selectOption(type, val, el, optPrice){
   if(type==='color'){
     selectedColor=val;
     document.querySelectorAll('#colorBtns .option-btn').forEach(b=>b.classList.remove('selected'));
+    // 옵션별 가격 적용
+    if(optPrice && optPrice>0 && currentProduct){
+      document.getElementById('productPrice').textContent=Number(optPrice).toLocaleString()+'원';
+      document.getElementById('donationAmt').textContent=Math.floor(optPrice*0.03).toLocaleString();
+    } else if(currentProduct){
+      document.getElementById('productPrice').textContent=Number(currentProduct.price).toLocaleString()+'원';
+      document.getElementById('donationAmt').textContent=Math.floor((currentProduct.price||0)*0.03).toLocaleString();
+    }
   } else {
     selectedSize=val;
     document.querySelectorAll('#sizeBtns .option-btn').forEach(b=>b.classList.remove('selected'));
@@ -384,9 +400,20 @@ function addToCart(){
   const qty=parseInt(document.getElementById('qty').value)||1;
   const cart=getCart();
   const key=`${currentProduct.id}_${selectedColor||''}_${selectedSize||''}`;
+  // 옵션별 가격 적용
+  let optPrice=null;
+  if(selectedColor && currentProduct.option_prices){
+    const ops=Array.isArray(currentProduct.option_prices)?currentProduct.option_prices:JSON.parse(currentProduct.option_prices||'[]');
+    const match=ops.find(o=>o.name===selectedColor);
+    if(match&&match.price) optPrice=Number(match.price);
+  }
   const existing=cart.find(i=>i._key===key);
   if(existing){existing.qty=(existing.qty||1)+qty;}
-  else{cart.push({...currentProduct,qty,selectedColor,selectedSize,_key:key});}
+  else{
+    const item={...currentProduct,qty,selectedColor,selectedSize,_key:key};
+    if(optPrice) item.price=optPrice;
+    cart.push(item);
+  }
   saveCart(cart);
   showToast('🛒 장바구니에 담았어요!');
 }
