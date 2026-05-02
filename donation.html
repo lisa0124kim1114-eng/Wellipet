@@ -108,6 +108,24 @@ function openModal(tab){document.getElementById('authModal').classList.add('open
 function closeModal(){document.getElementById('authModal').classList.remove('open');}
 function switchTab(tab){document.getElementById('formSignup').style.display=tab==='signup'?'block':'none';document.getElementById('formLogin').style.display=tab==='login'?'block':'none';document.getElementById('formDone').style.display='none';document.getElementById('tabSignup').className='mtab'+(tab==='signup'?' on':'');document.getElementById('tabLogin').className='mtab'+(tab==='login'?' on':'');document.getElementById('msgBox').style.display='none';}
 document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// 기부금 통계 로딩
+(async()=>{
+  const {data:orders}=await _supabase.from('orders').select('donation_amount,customer_email,status,created_at').not('status','in','("주문취소","취소")');
+  if(!orders) return;
+  const now=new Date();
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+  const monthDon=orders.filter(o=>o.created_at>=monthStart).reduce((s,r)=>s+(r.donation_amount||0),0);
+  const totalDon=orders.reduce((s,r)=>s+(r.donation_amount||0),0);
+  const uniqueDonors=new Set(orders.map(o=>o.customer_email)).size;
+  const cards=document.querySelectorAll('.stat-card .n');
+  if(cards[0]) cards[0].textContent=Number(monthDon).toLocaleString()+'원';
+  if(cards[1]) cards[1].textContent=uniqueDonors+'명';
+  if(cards[2]) cards[2].textContent=Number(totalDon).toLocaleString()+'원';
+  // 후원 보호소 수
+  const {count}=await _supabase.from('shelters').select('*',{count:'exact',head:true});
+  if(cards[3]) cards[3].textContent=(count||0)+'곳';
+})();
 </script>
 
 <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
