@@ -444,6 +444,14 @@ async function loadBestProducts(){
 
 loadBestProducts();
 
+// 누적 기부금 불러오기
+(async()=>{
+  const {data}=await _supabase.from('orders').select('donation_amount,status').not('status','in','("주문취소","취소")');
+  const total=(data||[]).reduce((s,r)=>s+(r.donation_amount||0),0);
+  const el=document.querySelector('.hst .n');
+  if(el) el.textContent=Number(total).toLocaleString()+'원';
+})();
+
 function showMsg(msg,isError){const box=document.getElementById('msgBox');box.style.display='block';box.style.background=isError?'#fff0f0':'#f0faf5';box.style.color=isError?'#e05050':'#2a7a5a';box.style.border=isError?'1px solid #ffd0d0':'1px solid #b8e8d0';box.textContent=msg;}
 function checkRateLimit(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.removeItem(key);return true;}if(d.c>=5){const left=Math.ceil((900000-(now-d.t))/60000);showMsg('로그인 시도가 너무 많아요. '+left+'분 후 다시 시도해주세요.',true);return false;}return true;}
 function recordFailedAttempt(email){const key='_rl_'+btoa(email);const d=JSON.parse(localStorage.getItem(key)||'{"c":0,"t":0}');const now=Date.now();if(now-d.t>900000){localStorage.setItem(key,JSON.stringify({c:1,t:now}));}else{localStorage.setItem(key,JSON.stringify({c:d.c+1,t:d.t}));}}
