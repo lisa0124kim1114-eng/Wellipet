@@ -79,7 +79,9 @@ async function init(){
   const userEmail = session?.user?.email || pending.email || '';
 
   // Supabase에 주문 저장
-  for(const item of pending.items){
+  const shippingFee = pending.shipping_fee || 0;
+  for(let i=0; i<pending.items.length; i++){
+    const item = pending.items[i];
     const {error: orderErr} = await _supabase.from('orders').insert({
       user_id: userId,
       customer_name: pending.name,
@@ -90,6 +92,7 @@ async function init(){
       address_detail: pending.addressDetail,
       product_name: item.name,
       amount: item.price*(item.qty||1),
+      shipping_fee: i===0 ? shippingFee : 0,
       donation_amount: Math.floor((item.price||0)*0.03)*(item.qty||1),
       status: '결제완료',
       payment_id: paymentId,
