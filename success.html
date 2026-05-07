@@ -78,6 +78,27 @@ async function init(){
   const userId = session?.user?.id || null;
   const userEmail = session?.user?.email || pending.email || '';
 
+  // PortOne 결제 검증
+  let verifyResult = null;
+  try {
+    const vRes = await fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/verify-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentId }),
+    });
+    verifyResult = await vRes.json();
+  } catch(e) { console.warn('결제 검증 오류:', e); }
+
+  if (verifyResult && !verifyResult.verified) {
+    document.querySelector('.icon').textContent = '⚠️';
+    document.querySelector('h1').textContent = '결제 확인 중 문제가 발생했어요';
+    document.querySelector('p').textContent = '결제가 정상 처리되지 않았을 수 있어요. 고객센터로 문의해주세요.';
+    console.error('결제 검증 실패:', verifyResult);
+    return;
+  }
+
+  const paymentMethod = verifyResult?.easyPayProvider || verifyResult?.method || pending.payment_method || '';
+
   // Supabase에 주문 저장
   const shippingFee = pending.shipping_fee || 0;
   for(let i=0; i<pending.items.length; i++){
@@ -95,7 +116,7 @@ async function init(){
       amount: item.price*(item.qty||1),
       shipping_fee: i===0 ? shippingFee : 0,
       donation_amount: Math.floor((item.price||0)*0.03)*(item.qty||1),
-      payment_method: pending.payment_method||'',
+      payment_method: paymentMethod,
       status: '결제완료',
       payment_id: paymentId,
     });
