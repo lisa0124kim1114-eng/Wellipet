@@ -91,9 +91,11 @@ async function init(){
       address: pending.address,
       address_detail: pending.addressDetail,
       product_name: item.name,
+      quantity: item.qty||1,
       amount: item.price*(item.qty||1),
       shipping_fee: i===0 ? shippingFee : 0,
       donation_amount: Math.floor((item.price||0)*0.03)*(item.qty||1),
+      payment_method: pending.payment_method||'',
       status: '결제완료',
       payment_id: paymentId,
     });

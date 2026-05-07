@@ -317,6 +317,7 @@ async function requestPayment(){
     items:cartItems,
     amount:finalPrice,
     shipping_fee:shipping,
+    payment_method:selectedMethod,
     discount_applied:discountApplied,
     discount_amount:discountAmount,
   }));

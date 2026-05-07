@@ -872,8 +872,8 @@ async function loadOrders(){
       <td><strong>${o.customer_name}</strong></td>
       <td>${o.customer_phone||'-'}</td>
       <td style="font-size:12px;">${o.address||''} ${o.address_detail||''}<br><span style="color:var(--muted);">(${o.zipcode||''})</span></td>
-      <td>${o.product_name||'-'}${linkBtn}</td>
-      <td>${Number(o.amount||0).toLocaleString()}원${o.shipping_fee?'<br><span style="font-size:10px;color:var(--muted);">+배송비 '+Number(o.shipping_fee).toLocaleString()+'원</span>':''}</td>
+      <td>${o.product_name||'-'}${o.quantity>1?'<span style="font-size:11px;color:var(--pk);font-weight:600;"> x'+o.quantity+'</span>':''}${linkBtn}</td>
+      <td>${Number(o.amount||0).toLocaleString()}원${o.shipping_fee?'<br><span style="font-size:10px;color:var(--muted);">+배송비 '+Number(o.shipping_fee).toLocaleString()+'원</span>':''}${o.payment_method?'<br><span style="font-size:10px;color:#7c3aed;">'+o.payment_method+'</span>':''}</td>
       <td>${trackingDisplay}</td>
       <td>
         <select class="status-select" onchange="handleStatusChange(${o.id},this.value,this)">
