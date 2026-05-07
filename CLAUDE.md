@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 프로젝트 개요
 
-웰리펫(Wellipet)은 친환경 반려용품 쇼핑몰 + AI 강아지 분석 서비스입니다. 순수 HTML/CSS/JS로 구성된 정적 사이트이며, 별도의 빌드 시스템 없이 브라우저에서 직접 열거나 정적 호스팅으로 배포합니다.
+웰리펫(Wellipet)은 반려동물 쇼핑몰 + AI 강아지 분석 서비스입니다. 구매금액의 3%가 유기견·유기묘 보호소에 자동 기부됩니다. 순수 HTML/CSS/JS로 구성된 정적 사이트이며, 별도의 빌드 시스템 없이 브라우저에서 직접 열거나 정적 호스팅으로 배포합니다.
 
 ## 실행 방법
 
@@ -49,6 +49,13 @@ npx serve .
 | `shelter.html` / `adoption.html` | 보호소/입양 |
 | `donation.html` | 기부 |
 | `admin.html` | 관리자 페이지 |
+| `sourcing-pro.html` | 소싱 관리 툴 (가격공식, 도매사이트) |
+| `contract-shelter.html` | 보호소 업무협약서 |
+| `guide-shelter.html` | 보호소 안내 가이드 |
+| `terms.html` / `privacy.html` / `refund.html` | 이용약관 / 개인정보처리방침 / 환불정책 |
+| `faq.html` / `contact.html` | FAQ / 문의 |
+| `shortform.html` / `card-news.html` | 숏폼 / 카드뉴스 콘텐츠 |
+| `schedule.html` / `sourcing.html` | 일정 / 소싱 (일반) |
 
 ### 상태 관리 패턴
 
@@ -79,6 +86,7 @@ CSS 변수 (`:root`)로 전체 컬러 통일:
 --tx: #2a1a22   /* 텍스트 */
 --muted: #a08090
 --bd: #f0d8e6   /* 보더 */
+--cr: #fdf8f5   /* 크림 배경 */
 ```
 
 폰트: 영문 제목 `Nunito` (800), 본문 `Noto Sans KR`
@@ -106,6 +114,6 @@ n8n 워크플로우 문제 시 체크 순서:
 
 ## 주의사항
 
-- 각 HTML 파일이 독립적으로 CSS와 JS를 포함 (공유 파일 없음). 공통 헤더/푸터 변경 시 **모든 파일을 개별 수정**해야 함.
+- `common.css`가 공유 스타일시트로 존재하며 모든 페이지에서 `<link rel="stylesheet" href="common.css"/>` 로 로드됨. 단, 각 HTML 파일이 추가 인라인 `<style>`과 JS를 독립적으로 포함. 공통 헤더/푸터 변경 시 **모든 파일을 개별 수정**해야 함.
 - PortOne V2 채널키(`CHANNEL_KEY`)와 스토어ID(`STORE_ID`)는 `checkout.html` 내 JS에 하드코딩됨.
-- PWA 캐시 버전은 `sw.js`의 `CACHE = 'wellipet-v1'` 상수로 관리.
+- PWA 캐시 버전은 `sw.js`의 `CACHE = 'wellipet-v3'` 상수로 관리. 정적 파일 변경 시 버전 숫자를 올려야 캐시가 갱신됨. `sourcing-pro.html`과 `admin.html`은 BYPASS 목록에 있어 캐시하지 않음.
