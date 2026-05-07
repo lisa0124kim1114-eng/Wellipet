@@ -95,6 +95,7 @@
       <div class="search-bar">
         <input class="search-input" placeholder="주문자명 또는 이메일로 검색" id="orderSearch"/>
         <button class="btn-secondary" onclick="loadOrders()">검색</button>
+        <button class="btn-secondary" onclick="checkDeliveryStatus()" style="margin-left:8px;background:#f0e8ff;color:#7c3aed;">📦 배송상태 일괄조회</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -955,6 +956,25 @@ async function updateOrderStatus(id, status) {
       })
     }).catch(()=>{});
   }
+}
+
+async function checkDeliveryStatus(){
+  const btn=event.target;
+  btn.disabled=true;btn.textContent='조회중...';
+  try{
+    const res=await fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/check-delivery',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:'{}'
+    });
+    const result=await res.json();
+    const delivered=(result.results||[]).filter(r=>r.delivered).length;
+    if(delivered>0){
+      alert(`${delivered}건 배송완료 처리됨!`);
+      loadOrders();
+    } else {
+      alert(`${result.checked||0}건 조회 완료. 배송완료된 건 없음.`);
+    }
+  }catch(e){alert('배송 조회 오류: '+e.message);}
+  btn.disabled=false;btn.textContent='📦 배송상태 일괄조회';
 }
 
 async function loadRefunds(){
