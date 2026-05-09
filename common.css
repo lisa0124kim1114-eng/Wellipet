@@ -120,7 +120,8 @@ footer{background:linear-gradient(180deg,#321626 0%,#201018 100%);padding:56px 4
   nav a,nav a:visited,nav a:link{font-size:12px;padding:6px 12px;flex-shrink:0;font-weight:600;color:var(--pk) !important;background:#fff;border-radius:20px;border:1px solid var(--bd);text-decoration:none;}
   nav a:hover,nav a:active{background:var(--pk);color:#fff;border-color:var(--pk);}
   nav a::after{display:none;}
-  .sbox{display:none;}
+  .sbox{display:flex;order:3;flex-basis:100%;padding:6px 16px;margin:2px 0;}
+  .sbox input{flex:1;}
   .ft{grid-template-columns:1fr 1fr;gap:24px;}
   .topbar{padding:8px 16px;}
   footer{padding:36px 20px;}
