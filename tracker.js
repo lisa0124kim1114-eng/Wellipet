@@ -15,6 +15,23 @@
 
   var page = location.pathname.split('/').pop() || 'index.html';
 
+  // 카카오 로그인 후 환영 카톡 발송
+  if(window.supabase && window._supabase){
+    window._supabase.auth.onAuthStateChange(function(event, session){
+      if(event==='SIGNED_IN' && session && session.provider_token){
+        // 이미 보낸 적 있으면 스킵
+        var sentKey='_wk_sent_'+session.user.id;
+        if(localStorage.getItem(sentKey)) return;
+        localStorage.setItem(sentKey,'1');
+        fetch(SUPABASE_URL+'/functions/v1/send-kakao-notification',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({type:'welcome_customer',provider_token:session.provider_token})
+        }).catch(function(){});
+      }
+    });
+  }
+
   fetch(SUPABASE_URL+'/rest/v1/page_views', {
     method:'POST',
     headers:{

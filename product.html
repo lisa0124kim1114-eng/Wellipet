@@ -683,7 +683,7 @@ async function signIn(){
 async function signInWithKakao(){
   const{error}=await _supabase.auth.signInWithOAuth({
     provider:'kakao',
-    options:{redirectTo:window.location.origin+window.location.pathname}
+    options:{redirectTo:window.location.origin+window.location.pathname,scopes:'talk_message'}
   });
   if(error)showMsg('카카오 로그인 오류: '+error.message,true);
 }
