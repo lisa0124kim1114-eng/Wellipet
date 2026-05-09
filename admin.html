@@ -164,43 +164,29 @@
     <!-- 방문자 통계 -->
     <div class="page" id="page-analytics">
       <div class="page-title">👁️ 방문자 통계</div>
-      <div style="display:flex;gap:8px;margin-bottom:20px;">
-        <button class="cat-tab on" id="anaTab7" onclick="loadAnalytics(7,this)">최근 7일</button>
-        <button class="cat-tab" id="anaTab14" onclick="loadAnalytics(14,this)">최근 14일</button>
-        <button class="cat-tab" id="anaTab30" onclick="loadAnalytics(30,this)">최근 30일</button>
+      <!-- 오늘 요약 -->
+      <div class="dash-grid" style="grid-template-columns:repeat(2,1fr);margin-bottom:28px;">
+        <div class="dash-card"><div class="icon">👤</div><div class="num" id="anaTodayCount">0</div><div class="label">오늘 방문자 (명)</div></div>
+        <div class="dash-card"><div class="icon">👁️</div><div class="num" id="anaTodayPV">0</div><div class="label">오늘 페이지뷰 (회)</div></div>
       </div>
-      <!-- 요약 카드 -->
-      <div class="dash-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px;">
-        <div class="dash-card"><div class="icon">👁️</div><div class="num" id="anaTotalViews">0</div><div class="label">총 페이지뷰</div></div>
-        <div class="dash-card"><div class="icon">👤</div><div class="num" id="anaUniqueVisitors">0</div><div class="label">순 방문자</div></div>
-        <div class="dash-card"><div class="icon">📊</div><div class="num" id="anaAvgDaily">0</div><div class="label">일 평균 방문자</div></div>
-        <div class="dash-card"><div class="icon">📈</div><div class="num" id="anaTodayViews">0</div><div class="label">오늘 페이지뷰</div></div>
-      </div>
-      <!-- 일별 차트 -->
+      <!-- 최근 14일 하루 방문자 표 -->
       <div style="background:#fff;border-radius:14px;border:1px solid var(--bd);padding:24px;margin-bottom:24px;">
-        <div style="font-size:14px;font-weight:600;margin-bottom:16px;">일별 방문자 추이</div>
-        <div id="anaChart" style="display:flex;align-items:flex-end;gap:4px;height:200px;"></div>
-        <div id="anaChartLabels" style="display:flex;gap:4px;margin-top:6px;"></div>
-      </div>
-      <!-- 인기 페이지 -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-        <div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:12px;">인기 페이지 TOP 10</div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>페이지</th><th>조회수</th><th>비율</th></tr></thead>
-              <tbody id="anaPageTable"><tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">로딩 중...</td></tr></tbody>
-            </table>
-          </div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:16px;">최근 14일 하루 방문자</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>날짜</th><th>방문자 (명)</th><th>페이지뷰 (회)</th></tr></thead>
+            <tbody id="anaDailyTable"><tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">로딩 중...</td></tr></tbody>
+          </table>
         </div>
-        <div>
-          <div style="font-size:14px;font-weight:600;margin-bottom:12px;">유입 경로 TOP 10</div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>경로</th><th>횟수</th></tr></thead>
-              <tbody id="anaRefTable"><tr><td colspan="2" style="text-align:center;color:#aaa;padding:20px;">로딩 중...</td></tr></tbody>
-            </table>
-          </div>
+      </div>
+      <!-- 유입 경로 -->
+      <div style="background:#fff;border-radius:14px;border:1px solid var(--bd);padding:24px;">
+        <div style="font-size:15px;font-weight:700;margin-bottom:16px;">유입 경로 (최근 14일)</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>어디서 왔나</th><th>횟수</th></tr></thead>
+            <tbody id="anaRefTable"><tr><td colspan="2" style="text-align:center;color:#aaa;padding:20px;">로딩 중...</td></tr></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -384,7 +370,7 @@ function showPage(name,el){
   if(name==='refunds')loadRefunds();
   if(name==='shelters')loadShelters();
   if(name==='dogs')loadAdminDogs();
-  if(name==='analytics')loadAnalytics(7,document.getElementById('anaTab7'));
+  if(name==='analytics')loadAnalytics();
 }
 
 let _sourcingAll = [];
@@ -514,81 +500,57 @@ async function loadDashboard(){
 }
 
 // ===== 방문자 통계 =====
-async function loadAnalytics(days, tabEl){
-  // 탭 활성화
-  document.querySelectorAll('#page-analytics .cat-tab').forEach(t=>t.classList.remove('on'));
-  if(tabEl) tabEl.classList.add('on');
-
+async function loadAnalytics(){
   const now=new Date();
   const from=new Date(now);
-  from.setDate(from.getDate()-days);
-  const fromISO=from.toISOString();
+  from.setDate(from.getDate()-14);
 
-  // 전체 데이터 가져오기 (최대 10000건)
-  const {data:views}=await _supabase.from('page_views').select('page,referrer,visitor_id,created_at').gte('created_at',fromISO).order('created_at',{ascending:false}).limit(10000);
+  const {data:views}=await _supabase.from('page_views').select('referrer,visitor_id,created_at').gte('created_at',from.toISOString()).order('created_at',{ascending:false}).limit(10000);
   const rows=views||[];
-
-  // 오늘 날짜
   const todayStr=now.toISOString().slice(0,10);
 
-  // 요약 통계
-  const uniqueVisitors=new Set(rows.map(r=>r.visitor_id)).size;
-  const todayRows=rows.filter(r=>r.created_at.slice(0,10)===todayStr);
-  document.getElementById('anaTotalViews').textContent=rows.length.toLocaleString();
-  document.getElementById('anaUniqueVisitors').textContent=uniqueVisitors.toLocaleString();
-  document.getElementById('anaAvgDaily').textContent=days>0?Math.round(rows.length/days):0;
-  document.getElementById('anaTodayViews').textContent=todayRows.length;
-
-  // 일별 집계
+  // 일별 집계 (날짜 → {방문자Set, 페이지뷰수})
   const dailyMap={};
-  for(let i=0;i<days;i++){
+  for(let i=0;i<14;i++){
     const d=new Date(now);d.setDate(d.getDate()-i);
-    dailyMap[d.toISOString().slice(0,10)]=0;
+    dailyMap[d.toISOString().slice(0,10)]={visitors:new Set(),pv:0};
   }
   rows.forEach(r=>{
     const d=r.created_at.slice(0,10);
-    if(d in dailyMap) dailyMap[d]++;
+    if(dailyMap[d]){dailyMap[d].visitors.add(r.visitor_id);dailyMap[d].pv++;}
   });
-  const dates=Object.keys(dailyMap).sort();
-  const counts=dates.map(d=>dailyMap[d]);
-  const maxCount=Math.max(...counts,1);
 
-  // 바 차트 그리기
-  const chart=document.getElementById('anaChart');
-  const labels=document.getElementById('anaChartLabels');
-  const barWidth=Math.max(Math.floor((chart.parentElement.clientWidth-48)/(days)-4),8);
-  chart.innerHTML=counts.map((c,i)=>{
-    const h=Math.max(Math.round((c/maxCount)*180),2);
-    const isToday=dates[i]===todayStr;
-    return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0;">
-      <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">${c}</div>
-      <div style="width:100%;max-width:${barWidth}px;height:${h}px;background:${isToday?'var(--pk)':'var(--pkl)'};border-radius:4px 4px 0 0;transition:height .3s;"></div>
-    </div>`;
+  // 오늘 요약
+  const today=dailyMap[todayStr]||{visitors:new Set(),pv:0};
+  document.getElementById('anaTodayCount').textContent=today.visitors.size;
+  document.getElementById('anaTodayPV').textContent=today.pv;
+
+  // 일별 테이블 (최신순)
+  const dates=Object.keys(dailyMap).sort().reverse();
+  const dayNames=['일','월','화','수','목','금','토'];
+  document.getElementById('anaDailyTable').innerHTML=dates.map(d=>{
+    const info=dailyMap[d];
+    const dt=new Date(d+'T00:00:00');
+    const dayName=dayNames[dt.getDay()];
+    const isToday=d===todayStr;
+    const label=isToday?'오늘':`${d.slice(5)} (${dayName})`;
+    return `<tr style="${isToday?'background:var(--pkbg);font-weight:600;':''}">
+      <td style="font-size:13px;">${label}</td>
+      <td style="font-size:13px;font-weight:600;color:var(--pk);">${info.visitors.size}명</td>
+      <td style="font-size:13px;color:var(--muted);">${info.pv}회</td>
+    </tr>`;
   }).join('');
-  labels.innerHTML=dates.map((d,i)=>{
-    const show=days<=14||(i%Math.ceil(days/10)===0)||i===dates.length-1;
-    return `<div style="flex:1;text-align:center;font-size:9px;color:var(--muted);min-width:0;overflow:hidden;">${show?d.slice(5):''}</div>`;
-  }).join('');
 
-  // 인기 페이지 TOP 10
-  const pageCounts={};
-  rows.forEach(r=>{pageCounts[r.page]=(pageCounts[r.page]||0)+1;});
-  const topPages=Object.entries(pageCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const total=rows.length||1;
-  document.getElementById('anaPageTable').innerHTML=topPages.length?topPages.map(([p,c])=>`
-    <tr><td style="font-size:12px;">${p}</td><td style="font-size:12px;font-weight:600;">${c}</td><td style="font-size:12px;color:var(--muted);">${(c/total*100).toFixed(1)}%</td></tr>
-  `).join(''):'<tr><td colspan="3" style="text-align:center;color:#aaa;padding:20px;">데이터 없음</td></tr>';
-
-  // 유입 경로 TOP 10
+  // 유입 경로
   const refCounts={};
   rows.forEach(r=>{
-    let ref=r.referrer||'(직접 방문)';
-    try{if(ref!=='(직접 방문)')ref=new URL(ref).hostname;}catch(e){}
+    let ref=r.referrer||'직접 방문';
+    if(ref!=='직접 방문'){try{ref=new URL(ref).hostname;}catch(e){}}
     refCounts[ref]=(refCounts[ref]||0)+1;
   });
   const topRefs=Object.entries(refCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
   document.getElementById('anaRefTable').innerHTML=topRefs.length?topRefs.map(([r,c])=>`
-    <tr><td style="font-size:12px;">${r}</td><td style="font-size:12px;font-weight:600;">${c}</td></tr>
+    <tr><td style="font-size:13px;">${r}</td><td style="font-size:13px;font-weight:600;color:var(--pk);">${c}회</td></tr>
   `).join(''):'<tr><td colspan="2" style="text-align:center;color:#aaa;padding:20px;">데이터 없음</td></tr>';
 }
 

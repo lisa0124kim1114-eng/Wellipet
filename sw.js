@@ -1,4 +1,4 @@
-const CACHE = 'wellipet-v4';
+const CACHE = 'wellipet-v5';
 const ASSETS = ['/', '/index.html', '/shop.html', '/ai.html', '/manifest.json', '/logo.png'];
 
 // 캐시하지 않을 URL 패턴
