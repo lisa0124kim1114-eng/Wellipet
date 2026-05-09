@@ -125,9 +125,10 @@ footer{background:linear-gradient(180deg, #321626 0%, #201018 100%);padding:56px
   .logo-img{height:32px;}
   .btn-join,.btn-login,.btn-logout{font-size:11px;padding:6px 14px;}
   .user-name{font-size:12px;}
-  nav{display:flex !important;order:2;flex-basis:100%;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-top:1px solid var(--bd);background:#fff;white-space:nowrap;padding:0 4px;}
+  nav{display:flex !important;order:2;flex-basis:100%;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;background:var(--pkbg);white-space:nowrap;padding:6px 10px;justify-content:center;}
   nav::-webkit-scrollbar{display:none;}
-  nav a{font-size:13px;padding:9px 12px;flex-shrink:0;font-weight:500;}
+  nav a{font-size:12px;padding:6px 12px;flex-shrink:0;font-weight:600;color:var(--pk);background:#fff;border-radius:20px;border:1px solid var(--bd);}
+  nav a:hover,nav a:active{background:var(--pk);color:#fff;border-color:var(--pk);}
   nav a::after{display:none;}
   .sbox{display:none;}
   .ft{grid-template-columns:1fr;}
