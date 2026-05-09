@@ -117,7 +117,8 @@ footer{background:linear-gradient(180deg, #321626 0%, #201018 100%);padding:56px
 @keyframes slideIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
 
 @media(max-width:768px){
-  .hamburger{display:none;}
+  .hamburger{display:none !important;}
+  .mobile-nav{display:none !important;}
   header{padding:0;height:auto;flex-wrap:wrap;}
   .header-left{display:contents;}
   .header-left>a,.header-left>.logo{order:0;margin-left:12px;}
