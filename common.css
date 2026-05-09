@@ -117,8 +117,18 @@ footer{background:linear-gradient(180deg, #321626 0%, #201018 100%);padding:56px
 @keyframes slideIn{from{transform:translateX(100%);}to{transform:translateX(0);}}
 
 @media(max-width:768px){
-  .hamburger{display:flex;}
-  nav{display:none;}
+  .hamburger{display:none;}
+  header{padding:0;height:auto;flex-wrap:wrap;}
+  .header-left{display:contents;}
+  .header-left>a,.header-left>.logo{order:0;margin-left:12px;}
+  .hicons{order:1;padding:0 12px;gap:10px;height:48px;}
+  .logo-img{height:32px;}
+  .btn-join,.btn-login,.btn-logout{font-size:11px;padding:6px 14px;}
+  .user-name{font-size:12px;}
+  nav{display:flex !important;order:2;flex-basis:100%;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;border-top:1px solid var(--bd);background:#fff;white-space:nowrap;padding:0 4px;}
+  nav::-webkit-scrollbar{display:none;}
+  nav a{font-size:13px;padding:9px 12px;flex-shrink:0;font-weight:500;}
+  nav a::after{display:none;}
   .sbox{display:none;}
   .ft{grid-template-columns:1fr;}
   body{overflow-x:hidden;}
