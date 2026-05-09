@@ -252,12 +252,12 @@ async function shelterLogout(){
   location.reload();
 }
 
-// 강아지 목록 (admin은 전체, shelter는 본인 것만)
+// 강아지 목록 (admin은 전체, shelter는 같은 보호소 전체)
 async function loadDogs(){
   const role = _shelterProfile?.role||'';
   let query = _supabase.from('dogs').select('*');
   if(role !== 'admin'){
-    query = query.eq('shelter_user_id',_currentUserId);
+    query = query.eq('shelter_name',_shelterProfile?.shelter_name||'');
   }
   const {data, error}=await query.order('created_at',{ascending:false});
   const tbody=document.getElementById('dogTable');
