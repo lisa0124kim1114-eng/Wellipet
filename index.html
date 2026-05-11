@@ -395,10 +395,10 @@ function updateHeader(user){
       btnJoin.style.display='none';
       if(btnLogin)btnLogin.style.display='none';
       userNameDisplay.style.display='inline';
-      userNameDisplay.textContent=name+'님 <span class="pwi">🐾</span>';
+      userNameDisplay.textContent=name+'님 🐾';
       btnLogout.style.display='inline-block';
     }
-    if(mobileUserInfo){mobileUserInfo.style.display='block';mobileUserName.textContent=name+'님 <span class="pwi">🐾</span>';}
+    if(mobileUserInfo){mobileUserInfo.style.display='block';mobileUserName.textContent=name+'님 🐾';}
     const mobileAuthBtns=document.getElementById('mobileAuthBtns');
     const mobileLogoutBtn=document.getElementById('mobileLogoutBtn');
     if(mobileAuthBtns)mobileAuthBtns.style.display='none';
@@ -499,7 +499,7 @@ async function signIn(){
   if(error){recordFailedAttempt(email);showMsg('이메일 또는 비밀번호가 틀렸어요.',true);return;}
   const name=data.user?.user_metadata?.name||'고객';
   showSection('formDone');
-  document.getElementById('doneTitle').textContent=name+'님, 환영해요! <span class="pwi">🐾</span>';
+  document.getElementById('doneTitle').textContent=name+'님, 환영해요! 🐾';
   document.getElementById('doneDesc').textContent='로그인 성공!';
   setTimeout(closeModal,2000);
 }
