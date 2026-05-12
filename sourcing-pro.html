@@ -1016,7 +1016,7 @@ const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
 let _supabase = null;
 try { _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { storageKey: 'sb-sourcing-auth', autoRefreshToken: false, detectSessionInUrl: false }
+  auth: { storageKey: 'sb-sourcing-auth', autoRefreshToken: true, detectSessionInUrl: false }
 }); } catch(e) { console.warn("Supabase 초기화 실패:", e); }
 
 // 발행된 상품 추적: { sourcingId → supabaseProductId }
@@ -1821,6 +1821,13 @@ async function dzDrop(e){
 
 async function uploadToStorage(file){
   const dz=document.getElementById('dropZone');
+  // 로그인 체크
+  const {data:{session}}=await _supabase.auth.getSession();
+  if(!session){
+    document.getElementById('authBanner').style.display='flex';
+    showToast('이미지 업로드는 로그인이 필요해요','warn');
+    return;
+  }
   dz.innerHTML='<div class="dz-text">⏳ 업로드 중...</div>';
   const ext=file.name.split('.').pop()||'jpg';
   const fileName='sourcing/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
@@ -2126,6 +2133,8 @@ function qpImgZoneClick(){
 
 async function qpHandleFile(e){
   const file = e.target.files[0]; if(!file) return;
+  const {data:{session}}=await _supabase.auth.getSession();
+  if(!session){ document.getElementById('authBanner').style.display='flex'; showToast('이미지 업로드는 로그인이 필요해요','warn'); return; }
   const ext=file.name.split('.').pop()||'jpg';
   const fileName='sourcing/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
   const {error}=await _supabase.storage.from('products').upload(fileName,file,{upsert:true});
@@ -2513,8 +2522,8 @@ setTimeout(()=>loadProducts(), 0);
 
 <!-- 로그인 배너 -->
 <div id="authBanner" style="display:none;position:fixed;bottom:24px;right:24px;z-index:9998;background:#fff;border:2px solid var(--pk);border-radius:16px;padding:18px 20px;box-shadow:0 4px 24px rgba(196,92,138,.2);flex-direction:column;gap:10px;width:280px;">
-  <div style="font-size:13px;font-weight:700;color:var(--pk);">🔐 쇼핑몰 올리기 로그인 필요</div>
-  <div style="font-size:11px;color:var(--muted);">웰리펫 계정으로 로그인하면 상품을 바로 올릴 수 있어요.</div>
+  <div style="font-size:13px;font-weight:700;color:var(--pk);">🔐 로그인 필요</div>
+  <div style="font-size:11px;color:var(--muted);">이미지 업로드, 쇼핑몰 올리기 등은 웰리펫 로그인이 필요해요.</div>
   <input id="authEmail" type="email" placeholder="이메일" style="padding:7px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;width:100%;"/>
   <input id="authPw" type="password" placeholder="비밀번호" style="padding:7px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;width:100%;"/>
   <button onclick="loginForPublish()" style="background:var(--pk);color:#fff;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;">로그인</button>
