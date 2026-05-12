@@ -2447,9 +2447,28 @@ async function confirmPublish(){
   const p = products.find(x=>x.id===publishingId);
   if(!p) return;
 
-  // 업로드된 상세 이미지가 있는데 아직 적용 안 됐으면 자동 적용
-  if(!scrapedDetailHtml && detailUploadedUrls.length){
-    scrapedDetailHtml = detailUploadedUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+  // 상세 이미지: 변수가 비어있으면 DOM에서 직접 수집 (캐시 문제 방지)
+  if(!scrapedDetailHtml){
+    // 1) detailUploadedUrls 변수 체크
+    if(detailUploadedUrls && detailUploadedUrls.length){
+      scrapedDetailHtml = detailUploadedUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+    }
+    // 2) DOM에서 업로드된 이미지 src 직접 수집
+    if(!scrapedDetailHtml){
+      const uploadedImgs = document.querySelectorAll('#detailUploadList img[src*="supabase"]');
+      if(uploadedImgs.length){
+        const urls = Array.from(uploadedImgs).map(img=>img.src);
+        scrapedDetailHtml = urls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+      }
+    }
+    // 3) 미리보기 패널에서 수집
+    if(!scrapedDetailHtml){
+      const previewImgs = document.querySelectorAll('#pubDetailPreviewContent img[src*="supabase"]');
+      if(previewImgs.length){
+        const urls = Array.from(previewImgs).map(img=>img.src);
+        scrapedDetailHtml = urls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+      }
+    }
   }
 
   const price = Number(document.getElementById('pubPrice').value);
