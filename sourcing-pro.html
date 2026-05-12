@@ -2419,7 +2419,9 @@ async function uploadDetailFiles(files){
     statusEl.style.color='#1a9e4a';
   }
   actions.style.display='flex';
-  showToast(`${files.length}개 이미지 업로드 완료!`,'success');
+  // 업로드 즉시 자동 적용
+  scrapedDetailHtml = detailUploadedUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+  showToast(`${files.length}개 이미지 업로드 완료! (자동 적용됨)`,'success');
 }
 
 function applyUploadedDetailImgs(){
@@ -2444,6 +2446,11 @@ async function confirmPublish(){
   if(!publishingId) return;
   const p = products.find(x=>x.id===publishingId);
   if(!p) return;
+
+  // 업로드된 상세 이미지가 있는데 아직 적용 안 됐으면 자동 적용
+  if(!scrapedDetailHtml && detailUploadedUrls.length){
+    scrapedDetailHtml = detailUploadedUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+  }
 
   const price = Number(document.getElementById('pubPrice').value);
   if(!price){ alert('판매가를 입력해주세요.'); return; }
