@@ -2243,6 +2243,7 @@ async function openPublishModal(id, updateMode = false){
   document.getElementById('pubImgPreview').style.display='none';
   document.getElementById('pubImgPreview').innerHTML='';
   initManualImgSlots();
+  clearDetailUploads();
   // 스크래핑 결과 초기화
   const scrapeBtn = document.getElementById('pubScrapeBtn');
   if(scrapeBtn){ scrapeBtn.textContent='상세페이지 가져오기'; scrapeBtn.disabled=false; }
@@ -2317,8 +2318,9 @@ async function scrapeProductDetail(){
 }
 
 function switchDetailTab(tab){
-  ['scrape','manual','preview'].forEach(t=>{
-    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab ? '' : 'none';
+  ['scrape','manual','upload','preview'].forEach(t=>{
+    const panel = document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(panel) panel.style.display = t===tab ? '' : 'none';
     const btn = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
     if(btn){ btn.style.background = t===tab ? 'var(--pk)' : '#f5f5f5'; btn.style.color = t===tab ? '#fff' : '#888'; }
   });
@@ -2366,6 +2368,71 @@ function applyManualImgs(){
   scrapedDetailHtml = allUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
   showToast(`이미지 ${allUrls.length}개를 적용했어요!`,'success');
   switchDetailTab('preview');
+}
+
+// ── 상세 이미지 파일 업로드 ──
+let detailUploadedUrls = [];
+
+async function detailHandleFiles(e){
+  const files = Array.from(e.target.files);
+  if(!files.length) return;
+  await uploadDetailFiles(files);
+}
+
+async function detailDzDrop(e){
+  e.preventDefault();
+  e.currentTarget.style.borderColor='';
+  const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  if(!files.length) return;
+  await uploadDetailFiles(files);
+}
+
+async function uploadDetailFiles(files){
+  const {data:{session}}=await _supabase.auth.getSession();
+  if(!session){
+    document.getElementById('authBanner').style.display='flex';
+    showToast('이미지 업로드는 로그인이 필요해요','warn');
+    return;
+  }
+  const list = document.getElementById('detailUploadList');
+  const actions = document.getElementById('detailUploadActions');
+  for(const file of files){
+    const itemId = 'dup_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    list.insertAdjacentHTML('beforeend',`<div id="${itemId}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--pkbg);border-radius:8px;">
+      <div style="width:40px;height:40px;background:#eee;border-radius:6px;overflow:hidden;flex-shrink:0;"><img src="" style="width:100%;height:100%;object-fit:cover;" id="${itemId}_img"/></div>
+      <div style="flex:1;font-size:11px;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${file.name}</div>
+      <div style="font-size:10px;color:var(--pk);font-weight:700;" id="${itemId}_status">⏳</div>
+    </div>`);
+    const ext=file.name.split('.').pop()||'jpg';
+    const fileName='sourcing/detail/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.'+ext;
+    const {error}=await _supabase.storage.from('products').upload(fileName,file,{upsert:true});
+    const statusEl = document.getElementById(itemId+'_status');
+    if(error){
+      statusEl.textContent='❌';
+      statusEl.style.color='#e05050';
+      continue;
+    }
+    const {data:{publicUrl}}=_supabase.storage.from('products').getPublicUrl(fileName);
+    detailUploadedUrls.push(publicUrl);
+    document.getElementById(itemId+'_img').src=publicUrl;
+    statusEl.textContent='✓';
+    statusEl.style.color='#1a9e4a';
+  }
+  actions.style.display='flex';
+  showToast(`${files.length}개 이미지 업로드 완료!`,'success');
+}
+
+function applyUploadedDetailImgs(){
+  if(!detailUploadedUrls.length){ showToast('업로드된 이미지가 없어요','warn'); return; }
+  scrapedDetailHtml = detailUploadedUrls.map(u=>`<img src="${u}" style="width:100%;display:block;margin-bottom:2px;"/>`).join('');
+  showToast(`상세 이미지 ${detailUploadedUrls.length}개 적용!`,'success');
+  switchDetailTab('preview');
+}
+
+function clearDetailUploads(){
+  detailUploadedUrls = [];
+  document.getElementById('detailUploadList').innerHTML='';
+  document.getElementById('detailUploadActions').style.display='none';
 }
 
 function closePublishModal(){
@@ -2593,8 +2660,9 @@ setTimeout(()=>loadProducts(), 0);
         <label>상세 이미지</label>
         <!-- 탭 전환 -->
         <div style="display:flex;gap:0;margin-bottom:8px;border:1px solid var(--bd);border-radius:8px;overflow:hidden;">
-          <button id="tabScrape" onclick="switchDetailTab('scrape')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:var(--pk);color:#fff;">🔗 URL로 가져오기</button>
-          <button id="tabManual" onclick="switchDetailTab('manual')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#f5f5f5;color:#888;">✏️ 직접 붙여넣기</button>
+          <button id="tabScrape" onclick="switchDetailTab('scrape')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:var(--pk);color:#fff;">🔗 URL</button>
+          <button id="tabManual" onclick="switchDetailTab('manual')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#f5f5f5;color:#888;">✏️ 붙여넣기</button>
+          <button id="tabUpload" onclick="switchDetailTab('upload')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#f5f5f5;color:#888;">📁 파일 업로드</button>
           <button id="tabPreview" onclick="switchDetailTab('preview')" style="flex:1;padding:6px 0;font-size:11px;font-weight:700;border:none;cursor:pointer;background:#f5f5f5;color:#888;">👁 미리보기</button>
         </div>
         <!-- URL 스크래핑 -->
@@ -2612,6 +2680,20 @@ setTimeout(()=>loadProducts(), 0);
           <button onclick="addManualImgSlot()" style="margin-top:6px;padding:5px 12px;border:1px dashed var(--pkl);border-radius:7px;background:#fff;color:var(--pk);font-size:11px;font-weight:700;cursor:pointer;width:100%;">+ 세트 추가</button>
           <div style="font-size:10px;color:var(--muted);margin-top:6px;">상세 이미지 우클릭 → <b>이미지 주소 복사</b> → 붙여넣기</div>
           <button onclick="applyManualImgs()" style="margin-top:6px;padding:6px 12px;border:1px solid var(--pk);border-radius:7px;background:var(--pkp);color:var(--pk);font-size:11px;font-weight:700;cursor:pointer;">이미지 적용</button>
+        </div>
+        <!-- 파일 업로드 -->
+        <div id="panelUpload" style="display:none;">
+          <div id="detailDropZone" onclick="document.getElementById('detailFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='var(--pk)'" ondragleave="this.style.borderColor=''" ondrop="detailDzDrop(event)"
+            style="border:2px dashed var(--bd);border-radius:12px;padding:24px;text-align:center;cursor:pointer;background:var(--pkbg);transition:border-color .2s;">
+            <div style="font-size:28px;margin-bottom:6px;">🖼</div>
+            <div style="font-size:12px;color:var(--muted);">클릭 또는 드래그&드롭 (여러 장 선택 가능)</div>
+          </div>
+          <input type="file" id="detailFileInput" accept="image/*" multiple style="display:none;" onchange="detailHandleFiles(event)"/>
+          <div id="detailUploadList" style="margin-top:10px;display:flex;flex-direction:column;gap:6px;"></div>
+          <div id="detailUploadActions" style="display:none;margin-top:10px;display:flex;gap:8px;">
+            <button onclick="applyUploadedDetailImgs()" style="flex:2;padding:7px 12px;border:1px solid var(--pk);border-radius:8px;background:var(--pkp);color:var(--pk);font-size:12px;font-weight:700;cursor:pointer;">상세 이미지 적용</button>
+            <button onclick="clearDetailUploads()" style="flex:1;padding:7px 12px;border:1px solid var(--bd);border-radius:8px;background:#fff;color:var(--muted);font-size:12px;cursor:pointer;">초기화</button>
+          </div>
         </div>
         <!-- 미리보기 -->
         <div id="panelPreview" style="display:none;">
