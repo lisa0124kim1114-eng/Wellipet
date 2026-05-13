@@ -458,12 +458,15 @@ async function setShelterRole(userId, role){
 }
 
 async function loadDashboard(){
-  const {count:pc}=await _supabase.from('products').select('*',{count:'exact',head:true});
-  const {count:oc}=await _supabase.from('orders').select('*',{count:'exact',head:true});
-  const {count:mc}=await _supabase.from('profiles').select('*',{count:'exact',head:true});
-  document.getElementById('totalProducts').textContent=pc||0;
-  document.getElementById('totalOrders').textContent=oc||0;
-  document.getElementById('totalMembers').textContent=mc||0;
+  const r1=await _supabase.from('products').select('*',{count:'exact',head:true});
+  const r2=await _supabase.from('orders').select('*',{count:'exact',head:true});
+  const r3=await _supabase.from('profiles').select('*',{count:'exact',head:true});
+  if(r1.error) console.error('products count error:', r1.error);
+  if(r2.error) console.error('orders count error:', r2.error);
+  if(r3.error) console.error('profiles count error:', r3.error);
+  document.getElementById('totalProducts').textContent=r1.count??0;
+  document.getElementById('totalOrders').textContent=r2.count??0;
+  document.getElementById('totalMembers').textContent=r3.count??0;
   // 이번 달 기부금 집계
   const now=new Date();
   const monthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
