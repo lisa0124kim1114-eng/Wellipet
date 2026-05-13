@@ -460,12 +460,23 @@ async function setShelterRole(userId, role){
 async function loadDashboard(){
   const {data:counts,error:cntErr}=await _supabase.rpc('admin_dashboard_counts');
   if(cntErr) console.error('dashboard counts error:', cntErr);
-  if(counts?.error) console.warn('admin check failed:', counts);
-  document.getElementById('totalProducts').textContent=counts?.products??0;
-  document.getElementById('totalOrders').textContent=counts?.orders??0;
-  document.getElementById('totalMembers').textContent=counts?.members??0;
-  document.getElementById('totalDonation').textContent=Number(counts?.month_donation??0).toLocaleString()+'원';
-  document.getElementById('totalDonationAll').textContent=Number(counts?.total_donation??0).toLocaleString()+'원';
+  if(counts?.error){
+    console.warn('admin check failed:', JSON.stringify(counts));
+    // fallback: 개별 쿼리로 시도
+    const {count:pc}=await _supabase.from('products').select('*',{count:'exact',head:true});
+    const {data:allOrders}=await _supabase.from('orders').select('id');
+    document.getElementById('totalProducts').textContent=pc??0;
+    document.getElementById('totalOrders').textContent=allOrders?.length??0;
+    document.getElementById('totalMembers').textContent='-';
+    document.getElementById('totalDonation').textContent='-';
+    document.getElementById('totalDonationAll').textContent='-';
+  } else {
+    document.getElementById('totalProducts').textContent=counts?.products??0;
+    document.getElementById('totalOrders').textContent=counts?.orders??0;
+    document.getElementById('totalMembers').textContent=counts?.members??0;
+    document.getElementById('totalDonation').textContent=Number(counts?.month_donation??0).toLocaleString()+'원';
+    document.getElementById('totalDonationAll').textContent=Number(counts?.total_donation??0).toLocaleString()+'원';
+  }
   // 미처리 취소/환불 요청
   const {data:refunds}=await _supabase.from('refund_requests').select('*').in('status',['접수','처리중']).order('created_at',{ascending:false});
   // 오늘 방문자 수
