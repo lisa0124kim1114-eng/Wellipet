@@ -66,6 +66,7 @@
     <div class="section" id="sectionGift" style="display:none;">
       <div class="section-title">🎁 선물 정보</div>
       <div class="form-group"><label>보내는 분 이름</label><input type="text" id="giftSenderName" placeholder="보내는 분 이름"/></div>
+      <div class="form-group"><label>연락처</label><input type="tel" id="giftSenderPhone" placeholder="010-0000-0000"/></div>
       <div class="form-group"><label>이메일 (주문 확인용)</label><input type="email" id="giftSenderEmail" placeholder="이메일"/></div>
       <div class="form-group">
         <label>선물 메시지 💌</label>
@@ -219,6 +220,8 @@ function loadCartItems(){
       if(isGiftMode){
         document.getElementById('giftSenderName').value=user.user_metadata?.name||'';
         document.getElementById('giftSenderEmail').value=user.email||'';
+        const{data:gp}=await _supabase.from('profiles').select('phone').eq('user_id',user.id).single();
+        if(gp?.phone)document.getElementById('giftSenderPhone').value=gp.phone;
       } else {
         document.getElementById('customerName').value=user.user_metadata?.name||'';
         document.getElementById('customerEmail').value=user.email||'';
@@ -346,7 +349,8 @@ async function requestPayment(){
   if(isGiftMode){
     name=document.getElementById('giftSenderName').value;
     email=document.getElementById('giftSenderEmail').value;
-    if(!name){alert('보내는 분 이름을 입력해주세요.');return;}
+    phone=document.getElementById('giftSenderPhone').value;
+    if(!name||!phone){alert('보내는 분 이름과 연락처를 입력해주세요.');return;}
   } else {
     name=document.getElementById('customerName').value;
     email=document.getElementById('customerEmail').value;
