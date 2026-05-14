@@ -216,46 +216,29 @@ async function acceptGift(){
   btn.disabled=true;
   btn.textContent='처리 중...';
 
-  // gifts 테이블 업데이트
-  const{error:giftErr}=await _supabase
-    .from('gifts')
-    .update({
-      status:'accepted',
-      recipient_name:name,
-      recipient_phone:phone,
-      recipient_zipcode:zipcode,
-      recipient_address:address,
-      recipient_address_detail:detail,
-      accepted_at:new Date().toISOString(),
-    })
-    .eq('gift_code',currentGift.gift_code)
-    .eq('status','pending');
+  // RPC로 선물 수령 처리 (gifts + orders 동시 업데이트)
+  const{data:result,error:rpcErr}=await _supabase.rpc('accept_gift',{
+    p_gift_code:currentGift.gift_code,
+    p_name:name,
+    p_phone:phone,
+    p_zipcode:zipcode,
+    p_address:address,
+    p_address_detail:detail,
+  });
 
-  if(giftErr){
-    console.error('gifts 업데이트 오류:',giftErr);
-    alert('선물 수령 오류 (gifts): '+giftErr.message+'\nCode: '+giftErr.code);
+  if(rpcErr){
+    console.error('RPC 오류:',rpcErr);
+    alert('처리 중 오류가 발생했어요. 다시 시도해주세요.\n'+rpcErr.message);
     btn.disabled=false;
     btn.textContent='🎁 선물 받기';
     return;
   }
 
-  // orders 테이블에서 해당 선물 주문의 배송지 업데이트
-  const{error:orderErr}=await _supabase
-    .from('orders')
-    .update({
-      customer_name:name,
-      customer_phone:phone,
-      zipcode:zipcode,
-      address:address,
-      address_detail:detail,
-      status:'결제완료',
-    })
-    .eq('payment_id',currentGift.order_payment_id)
-    .eq('status','선물대기');
-
-  if(orderErr){
-    console.error('orders 업데이트 오류:',orderErr);
-    // orders 실패해도 gifts는 이미 accepted이므로 계속 진행
+  if(result&&!result.ok){
+    alert(result.error);
+    btn.disabled=false;
+    btn.textContent='🎁 선물 받기';
+    return;
   }
 
   // 관리자에게 이메일 알림
