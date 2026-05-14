@@ -232,15 +232,15 @@ async function acceptGift(){
     .eq('status','pending');
 
   if(giftErr){
-    console.error('선물 수령 오류:',giftErr);
-    alert('처리 중 오류가 발생했어요. 다시 시도해주세요.');
+    console.error('gifts 업데이트 오류:',giftErr);
+    alert('선물 수령 오류 (gifts): '+giftErr.message+'\nCode: '+giftErr.code);
     btn.disabled=false;
     btn.textContent='🎁 선물 받기';
     return;
   }
 
   // orders 테이블에서 해당 선물 주문의 배송지 업데이트
-  await _supabase
+  const{error:orderErr}=await _supabase
     .from('orders')
     .update({
       customer_name:name,
@@ -252,6 +252,11 @@ async function acceptGift(){
     })
     .eq('payment_id',currentGift.order_payment_id)
     .eq('status','선물대기');
+
+  if(orderErr){
+    console.error('orders 업데이트 오류:',orderErr);
+    // orders 실패해도 gifts는 이미 accepted이므로 계속 진행
+  }
 
   // 관리자에게 이메일 알림
   fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email',{
