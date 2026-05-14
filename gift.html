@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>선물이 도착했어요! 🎁 · Wellypet</title>
+<meta name="description" content="웰리펫에서 선물이 도착했어요! 배송지를 입력하고 선물을 받아보세요."/>
+<meta property="og:title" content="🎁 웰리펫에서 선물이 도착했어요!"/>
+<meta property="og:description" content="배송지를 입력하고 선물을 받아보세요 🐾"/>
+<meta property="og:image" content="https://wellypet.co.kr/logo.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="common.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--pk:#c45c8a;--pkm:#e07aaa;--pkl:#f2aecb;--pkp:#fce8f2;--pkbg:#fff5f9;--bd:#f0d8e6;--tx:#2a1a22;--muted:#a08090;}
+body{font-family:'Noto Sans KR',sans-serif;background:#f8f8f8;color:var(--tx);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.wrap{background:#fff;border-radius:24px;padding:40px 32px;max-width:480px;width:100%;border:1px solid var(--bd);}
+.gift-header{text-align:center;margin-bottom:28px;}
+.gift-icon{font-size:56px;margin-bottom:12px;animation:bounce 1s ease infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.gift-title{font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#2a1220;margin-bottom:6px;}
+.gift-subtitle{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;}
+.gift-card{background:linear-gradient(135deg,var(--pkp),#fff0f5);border:1.5px solid var(--pkl);border-radius:16px;padding:24px;margin-bottom:24px;}
+.gift-product{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.gift-product-img{width:80px;height:80px;border-radius:14px;border:1px solid var(--bd);object-fit:contain;background:#fff;padding:6px;}
+.gift-product-img-placeholder{width:80px;height:80px;border-radius:14px;background:var(--pkbg);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.gift-product-name{font-size:15px;font-weight:600;color:var(--tx);margin-bottom:4px;}
+.gift-product-option{font-size:12px;color:var(--muted);}
+.gift-message-box{background:#fff;border-radius:12px;padding:16px;border:1px solid var(--bd);}
+.gift-message-label{font-size:11px;color:var(--pk);font-weight:600;margin-bottom:6px;}
+.gift-message-text{font-size:14px;color:var(--tx);line-height:1.7;font-weight:300;white-space:pre-wrap;}
+.gift-sender{font-size:12px;color:var(--muted);text-align:right;margin-top:8px;}
+.section-title{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bd);}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500;}
+.form-group input{width:100%;padding:11px 14px;border:1px solid var(--bd);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border-color .2s;color:var(--tx);}
+.form-group input:focus{border-color:var(--pk);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-accept{width:100%;background:var(--pk);color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;}
+.btn-accept:disabled{opacity:.5;cursor:not-allowed;}
+.status-box{text-align:center;padding:32px;font-size:14px;color:var(--muted);line-height:1.8;}
+.expired-icon{font-size:48px;margin-bottom:12px;}
+.done-wrap{text-align:center;}
+.done-icon{font-size:56px;margin-bottom:16px;}
+.done-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:#2a1220;margin-bottom:8px;}
+.done-desc{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;}
+.btn-home{background:var(--pk);color:#fff;border:none;padding:13px 32px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.btn-shop{background:#fff;color:var(--pk);border:1.5px solid var(--pk);padding:13px 32px;border-radius:12px;font-size:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-left:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- 로딩 상태 -->
+  <div id="loadingState" style="text-align:center;padding:40px;">
+    <div style="font-size:48px;margin-bottom:16px;">🎁</div>
+    <div style="font-size:14px;color:var(--muted);">선물 정보를 불러오고 있어요...</div>
+  </div>
+
+  <!-- 에러/만료 상태 -->
+  <div id="errorState" style="display:none;">
+    <div class="status-box">
+      <div class="expired-icon">😢</div>
+      <div id="errorMsg">선물을 찾을 수 없어요.</div>
+    </div>
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn-home" onclick="location.href='/'">웰리펫 홈으로</button>
+    </div>
+  </div>
+
+  <!-- 선물 수령 폼 -->
+  <div id="giftForm" style="display:none;">
+    <div class="gift-header">
+      <div class="gift-icon">🎁</div>
+      <div class="gift-title">선물이 도착했어요!</div>
+      <div class="gift-subtitle">배송지를 입력하면 선물이 배송됩니다 🐾</div>
+    </div>
+
+    <div class="gift-card">
+      <div class="gift-product">
+        <div id="giftProductImg"></div>
+        <div>
+          <div class="gift-product-name" id="giftProductName">-</div>
+          <div class="gift-product-option" id="giftProductOption"></div>
+        </div>
+      </div>
+      <div class="gift-message-box" id="giftMessageBox" style="display:none;">
+        <div class="gift-message-label">💌 선물 메시지</div>
+        <div class="gift-message-text" id="giftMessageText"></div>
+        <div class="gift-sender" id="giftSender"></div>
+      </div>
+    </div>
+
+    <div class="section-title">📦 배송지 입력</div>
+    <div class="form-group"><label>받는 분</label><input type="text" id="recipientName" placeholder="이름"/></div>
+    <div class="form-group"><label>연락처</label><input type="tel" id="recipientPhone" placeholder="010-0000-0000"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>우편번호</label><input type="text" id="recipientZipcode" placeholder="12345"/></div>
+      <div class="form-group"><label>&nbsp;</label><button onclick="searchAddress()" style="width:100%;padding:11px;background:var(--pkbg);color:var(--pk);border:1px solid var(--bd);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">주소 검색</button></div>
+    </div>
+    <div class="form-group"><label>주소</label><input type="text" id="recipientAddress" placeholder="기본 주소"/></div>
+    <div class="form-group"><label>상세 주소</label><input type="text" id="recipientAddressDetail" placeholder="상세 주소 (동/호수)"/></div>
+
+    <button class="btn-accept" id="btnAccept" onclick="acceptGift()">🎁 선물 받기</button>
+  </div>
+
+  <!-- 수령 완료 -->
+  <div id="doneState" style="display:none;">
+    <div class="done-wrap">
+      <div class="done-icon">🎉</div>
+      <div class="done-title">선물을 받았어요!</div>
+      <div class="done-desc">배송지가 등록됐어요.<br>빠르게 준비해서 보내드릴게요 🐾</div>
+      <button class="btn-home" onclick="location.href='/'">웰리펫 둘러보기</button>
+      <button class="btn-shop" onclick="location.href='shop.html'">쇼핑하러 가기</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
+const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentGift=null;
+
+function searchAddress(){
+  new daum.Postcode({
+    oncomplete:function(data){
+      document.getElementById('recipientZipcode').value=data.zonecode;
+      document.getElementById('recipientAddress').value=data.roadAddress||data.jibunAddress;
+      document.getElementById('recipientAddressDetail').focus();
+    }
+  }).open();
+}
+
+async function loadGift(){
+  const params=new URLSearchParams(window.location.search);
+  const code=params.get('code');
+
+  if(!code){
+    showError('선물 코드가 없어요.');
+    return;
+  }
+
+  const{data:gift,error}=await _supabase
+    .from('gifts')
+    .select('*')
+    .eq('gift_code',code)
+    .single();
+
+  if(error||!gift){
+    showError('선물을 찾을 수 없어요.<br>코드를 다시 확인해주세요.');
+    return;
+  }
+
+  if(gift.status==='accepted'||gift.status==='shipped'||gift.status==='delivered'){
+    showError('이미 수령된 선물이에요! 🎉');
+    return;
+  }
+
+  if(gift.status==='expired'||new Date(gift.expires_at)<new Date()){
+    showError('수령 기한이 지난 선물이에요. 😢<br>보내신 분에게 연락해보세요.');
+    return;
+  }
+
+  currentGift=gift;
+
+  // 상품 이미지
+  const imgEl=document.getElementById('giftProductImg');
+  if(gift.product_image){
+    imgEl.innerHTML=`<img class="gift-product-img" src="${gift.product_image}" alt="상품"/>`;
+  } else {
+    imgEl.innerHTML='<div class="gift-product-img-placeholder">🐾</div>';
+  }
+
+  document.getElementById('giftProductName').textContent=gift.product_name;
+
+  const options=[];
+  if(gift.selected_color)options.push(gift.selected_color);
+  if(gift.selected_size)options.push(gift.selected_size);
+  if(gift.quantity>1)options.push(gift.quantity+'개');
+  document.getElementById('giftProductOption').textContent=options.join(' · ');
+
+  if(gift.sender_message){
+    document.getElementById('giftMessageBox').style.display='block';
+    document.getElementById('giftMessageText').textContent=gift.sender_message;
+    document.getElementById('giftSender').textContent='- '+gift.sender_name+' 님이 보낸 선물';
+  }
+
+  document.getElementById('loadingState').style.display='none';
+  document.getElementById('giftForm').style.display='block';
+}
+
+function showError(msg){
+  document.getElementById('loadingState').style.display='none';
+  document.getElementById('errorMsg').innerHTML=msg;
+  document.getElementById('errorState').style.display='block';
+}
+
+async function acceptGift(){
+  if(!currentGift)return;
+
+  const name=document.getElementById('recipientName').value.trim();
+  const phone=document.getElementById('recipientPhone').value.trim();
+  const zipcode=document.getElementById('recipientZipcode').value.trim();
+  const address=document.getElementById('recipientAddress').value.trim();
+  const detail=document.getElementById('recipientAddressDetail').value.trim();
+
+  if(!name||!phone||!address){
+    alert('받는 분 이름, 연락처, 주소를 모두 입력해주세요.');
+    return;
+  }
+
+  const btn=document.getElementById('btnAccept');
+  btn.disabled=true;
+  btn.textContent='처리 중...';
+
+  // gifts 테이블 업데이트
+  const{error:giftErr}=await _supabase
+    .from('gifts')
+    .update({
+      status:'accepted',
+      recipient_name:name,
+      recipient_phone:phone,
+      recipient_zipcode:zipcode,
+      recipient_address:address,
+      recipient_address_detail:detail,
+      accepted_at:new Date().toISOString(),
+    })
+    .eq('gift_code',currentGift.gift_code)
+    .eq('status','pending');
+
+  if(giftErr){
+    console.error('선물 수령 오류:',giftErr);
+    alert('처리 중 오류가 발생했어요. 다시 시도해주세요.');
+    btn.disabled=false;
+    btn.textContent='🎁 선물 받기';
+    return;
+  }
+
+  // orders 테이블에서 해당 선물 주문의 배송지 업데이트
+  await _supabase
+    .from('orders')
+    .update({
+      customer_name:name,
+      customer_phone:phone,
+      zipcode:zipcode,
+      address:address,
+      address_detail:detail,
+      status:'결제완료',
+    })
+    .eq('payment_id',currentGift.order_payment_id)
+    .eq('status','선물대기');
+
+  // 관리자에게 이메일 알림
+  fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      customerName:name,
+      customerEmail:'',
+      productName:'🎁 선물 수령: '+currentGift.product_name,
+      amount:currentGift.amount,
+      address:address+' '+detail,
+      paymentId:currentGift.order_payment_id,
+    })
+  }).catch(e=>console.warn('이메일 오류:',e));
+
+  // 완료 UI
+  document.getElementById('giftForm').style.display='none';
+  document.getElementById('doneState').style.display='block';
+}
+
+loadGift();
+</script>
+<script src="tracker.js" defer></script>
+</body>
+</html>

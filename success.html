@@ -11,58 +11,135 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="icon">🎉</div>
-  <h1>결제가 완료됐어요!</h1>
-  <p>주문해주셔서 감사해요 🐾<br>빠르게 준비해서 보내드릴게요!</p>
+  <div class="icon" id="mainIcon">🎉</div>
+  <h1 id="mainTitle">결제가 완료됐어요!</h1>
+  <p id="mainDesc">주문해주셔서 감사해요 🐾<br>빠르게 준비해서 보내드릴게요!</p>
   <div class="order-info" id="orderInfo">
     <div class="order-row"><span class="k">주문번호</span><span class="v" id="orderId">-</span></div>
     <div class="order-row"><span class="k">상품명</span><span class="v" id="orderName">-</span></div>
     <div class="order-row"><span class="k">결제금액</span><span class="v" id="orderAmount">-</span></div>
-    <div class="order-row"><span class="k">배송지</span><span class="v" id="orderAddress">-</span></div>
+    <div class="order-row" id="addressRow"><span class="k">배송지</span><span class="v" id="orderAddress">-</span></div>
+    <div class="order-row" id="giftMsgRow" style="display:none;"><span class="k">선물 메시지</span><span class="v" id="orderGiftMsg">-</span></div>
   </div>
   <div class="donation-box">
     🏠 이번 주문으로 <strong id="donationAmt">0원</strong>이<br>유기견 보호소에 기부됐어요!
+  </div>
+  <!-- 선물: 카카오톡 공유 버튼 -->
+  <div id="giftShareSection" style="display:none;margin-bottom:20px;">
+    <div style="background:linear-gradient(135deg,var(--pkp),#fff0f5);border:1.5px solid var(--pkl);border-radius:16px;padding:24px;margin-bottom:16px;">
+      <div style="font-size:14px;color:var(--pk);font-weight:600;margin-bottom:12px;">📱 카카오톡으로 선물을 보내세요!</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px;">아래 버튼을 눌러 받는 분에게 선물 링크를 전달해주세요.<br>받는 분이 링크에서 배송지를 입력하면 배송이 시작됩니다.</div>
+      <button id="btnKakaoShare" onclick="shareGiftKakao()" style="width:100%;background:#FEE500;color:#3A1D1D;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+        💬 카카오톡으로 선물 보내기
+      </button>
+      <button onclick="copyGiftLink()" style="width:100%;background:#fff;color:var(--muted);border:1px solid var(--bd);padding:12px;border-radius:12px;font-size:13px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;">
+        🔗 선물 링크 복사하기
+      </button>
+    </div>
   </div>
   <button class="btn-home" onclick="location.href='/'">홈으로</button>
   <button class="btn-shop" onclick="location.href='shop.html'">계속 쇼핑하기</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js" crossorigin="anonymous"></script>
 <script>
 const SUPABASE_URL='https://pzzunxgbzkhdqemmgavd.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6enVueGdiemtoZHFlbW1nYXZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0OTU5NTAsImV4cCI6MjA4OTA3MTk1MH0.Rswsnz9WU5L7hzLD82iupeuizj-GnE4OJl42-QUv030';
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+// 카카오 SDK 초기화 (JavaScript 앱 키 - 카카오 개발자 콘솔에서 확인)
+// https://developers.kakao.com → 내 애플리케이션 → 앱 키 → JavaScript 키
+try{
+  if(typeof Kakao!=='undefined'&&!Kakao.isInitialized()){
+    Kakao.init('c1394caee94c46eb8e0cdfdf5e81e8fc');
+  }
+}catch(e){console.warn('카카오 SDK 초기화 실패:',e);}
+
+let giftUrl='';
+let giftData=null;
+
+function generateGiftCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='';
+  for(let i=0;i<12;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  return code.match(/.{4}/g).join('-');
+}
+
+function shareGiftKakao(){
+  if(!giftUrl||!giftData)return;
+  if(typeof Kakao!=='undefined'&&Kakao.isInitialized()){
+    Kakao.Share.sendDefault({
+      objectType:'feed',
+      content:{
+        title:'🎁 웰리펫에서 선물이 도착했어요!',
+        description:giftData.gift_message||giftData.product_name,
+        imageUrl:giftData.product_image||'https://wellypet.co.kr/logo.png',
+        link:{webUrl:giftUrl,mobileWebUrl:giftUrl},
+      },
+      buttons:[{
+        title:'선물 받기 🐾',
+        link:{webUrl:giftUrl,mobileWebUrl:giftUrl},
+      }],
+    });
+  } else {
+    // 카카오 SDK 미초기화 시 링크 복사로 대체
+    copyGiftLink();
+    alert('카카오톡 공유 기능이 준비 중이에요.\n선물 링크가 복사됐으니 카톡에 직접 붙여넣기 해주세요!');
+  }
+}
+
+function copyGiftLink(){
+  if(!giftUrl)return;
+  navigator.clipboard.writeText(giftUrl).then(()=>{
+    alert('선물 링크가 복사됐어요! 📋');
+  }).catch(()=>{
+    prompt('아래 링크를 복사하세요:',giftUrl);
+  });
+}
 
 async function init(){
   const params=new URLSearchParams(window.location.search);
   const paymentId=params.get('paymentId')||params.get('orderId')||'';
   document.getElementById('orderId').textContent=paymentId;
 
-  // localStorage에서 주문 정보 가져오기
   const pending=JSON.parse(localStorage.getItem('pendingOrder')||'{}');
 
   if(!pending.items || pending.items.length===0){
-    // pendingOrder가 없으면 이미 처리됐거나 잘못된 접근
     return;
   }
 
+  const isGift=pending.is_gift||false;
+
   // UI 표시
-  document.getElementById('orderName').textContent=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;
-  document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
+  const productName=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;
+  document.getElementById('orderName').textContent=isGift?'🎁 '+productName:productName;
   document.getElementById('orderAmount').textContent=Number(pending.amount||0).toLocaleString()+'원';
   const totalDon=pending.items.reduce((sum,item)=>(sum+Math.floor((item.price||0)*0.03)*(item.qty||1)),0);
   document.getElementById('donationAmt').textContent=Number(totalDon).toLocaleString()+'원';
 
-  // 장바구니 & 임시 주문 먼저 삭제 (중복 저장 방지)
+  if(isGift){
+    document.getElementById('mainIcon').textContent='🎁';
+    document.getElementById('mainTitle').textContent='선물 결제가 완료됐어요!';
+    document.getElementById('mainDesc').innerHTML='카카오톡으로 선물 링크를 보내주세요 🐾<br>받는 분이 배송지를 입력하면 배송이 시작됩니다!';
+    document.getElementById('addressRow').style.display='none';
+    if(pending.gift_message){
+      document.getElementById('giftMsgRow').style.display='flex';
+      document.getElementById('orderGiftMsg').textContent=pending.gift_message;
+    }
+    document.getElementById('giftShareSection').style.display='block';
+  } else {
+    document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
+  }
+
   localStorage.removeItem('cart');
   localStorage.removeItem('pendingOrder');
 
-  // 세션 확인 (최대 3초 대기)
+  // 세션 확인
   let session = null;
   try{
     const res = await _supabase.auth.getSession();
     session = res.data?.session;
-    // 세션 없으면 onAuthStateChange 잠깐 기다림
     if(!session){
       session = await new Promise(resolve=>{
         const timeout=setTimeout(()=>resolve(null),3000);
@@ -91,61 +168,130 @@ async function init(){
 
   const verified = verifyResult?.verified || false;
   if (verifyResult && !verified) {
-    console.warn('결제 검증 미확인 (Secret 미설정 가능):', verifyResult);
+    console.warn('결제 검증 미확인:', verifyResult);
   }
 
   const paymentMethod = verifyResult?.easyPayProvider || verifyResult?.method || pending.payment_method || '';
 
-  // Supabase에 주문 저장
-  const shippingFee = pending.shipping_fee || 0;
-  for(let i=0; i<pending.items.length; i++){
-    const item = pending.items[i];
-    const {error: orderErr} = await _supabase.from('orders').insert({
-      user_id: userId,
-      customer_name: pending.name,
-      customer_email: userEmail,
-      customer_phone: pending.phone,
-      zipcode: pending.zipcode,
-      address: pending.address,
-      address_detail: pending.addressDetail,
-      product_name: item.name,
-      selected_color: item.selectedColor||'',
-      selected_size: item.selectedSize||'',
-      quantity: item.qty||1,
-      amount: item.price*(item.qty||1),
-      shipping_fee: i===0 ? shippingFee : 0,
-      donation_amount: Math.floor((item.price||0)*0.03)*(item.qty||1),
-      payment_method: paymentMethod,
-      status: '결제완료',
-      payment_id: paymentId,
-    });
-    if(orderErr) console.error('주문 저장 오류:', orderErr);
+  if(isGift){
+    // === 선물 모드: gifts 테이블에 저장 ===
+    const giftCode=generateGiftCode();
+    const firstItem=pending.items[0];
 
-    // 주문 확인 이메일 발송 (고객 + 관리자)
-    fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        customerName: pending.name,
-        customerEmail: userEmail,
-        productName: item.name,
-        amount: item.price*(item.qty||1),
-        address: (pending.address||'') + ' ' + (pending.addressDetail||''),
-        paymentId: paymentId,
+    giftData={
+      gift_code:giftCode,
+      order_payment_id:paymentId,
+      sender_user_id:userId,
+      sender_name:pending.gift_sender_name||pending.name,
+      sender_message:pending.gift_message||'',
+      product_name:productName,
+      product_image:firstItem.image_url||'',
+      selected_color:firstItem.selectedColor||'',
+      selected_size:firstItem.selectedSize||'',
+      quantity:firstItem.qty||1,
+      amount:pending.amount,
+      status:'pending',
+    };
+
+    const{error:giftErr}=await _supabase.from('gifts').insert(giftData);
+    if(giftErr) console.error('선물 저장 오류:',giftErr);
+
+    giftUrl='https://wellypet.co.kr/gift.html?code='+giftCode;
+
+    // orders에도 선물 주문으로 기록
+    for(let i=0;i<pending.items.length;i++){
+      const item=pending.items[i];
+      await _supabase.from('orders').insert({
+        user_id:userId,
+        customer_name:'🎁 '+pending.gift_sender_name,
+        customer_email:userEmail,
+        customer_phone:'',
+        zipcode:'',address:'선물하기 (수령 대기중)',address_detail:'gift:'+giftCode,
+        product_name:item.name,
+        selected_color:item.selectedColor||'',
+        selected_size:item.selectedSize||'',
+        quantity:item.qty||1,
+        amount:item.price*(item.qty||1),
+        shipping_fee:0,
+        donation_amount:Math.floor((item.price||0)*0.03)*(item.qty||1),
+        payment_method:paymentMethod,
+        status:'선물대기',
+        payment_id:paymentId,
+      });
+    }
+
+    // 이메일 발송
+    fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        customerName:pending.gift_sender_name,
+        customerEmail:userEmail,
+        productName:'🎁 선물: '+productName,
+        amount:pending.amount,
+        address:'선물하기 (수령자가 배송지 입력 예정)',
+        paymentId,
       })
-    }).catch(e=>console.warn('이메일 발송 오류:', e));
+    }).catch(e=>console.warn('이메일 발송 오류:',e));
+
+  } else {
+    // === 일반 주문 ===
+    const shippingFee = pending.shipping_fee || 0;
+    for(let i=0; i<pending.items.length; i++){
+      const item = pending.items[i];
+      const {error: orderErr} = await _supabase.from('orders').insert({
+        user_id: userId,
+        customer_name: pending.name,
+        customer_email: userEmail,
+        customer_phone: pending.phone,
+        zipcode: pending.zipcode,
+        address: pending.address,
+        address_detail: pending.addressDetail,
+        product_name: item.name,
+        selected_color: item.selectedColor||'',
+        selected_size: item.selectedSize||'',
+        quantity: item.qty||1,
+        amount: item.price*(item.qty||1),
+        shipping_fee: i===0 ? shippingFee : 0,
+        donation_amount: Math.floor((item.price||0)*0.03)*(item.qty||1),
+        payment_method: paymentMethod,
+        status: '결제완료',
+        payment_id: paymentId,
+      });
+      if(orderErr) console.error('주문 저장 오류:', orderErr);
+
+      fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerName: pending.name,
+          customerEmail: userEmail,
+          productName: item.name,
+          amount: item.price*(item.qty||1),
+          address: (pending.address||'') + ' ' + (pending.addressDetail||''),
+          paymentId: paymentId,
+        })
+      }).catch(e=>console.warn('이메일 발송 오류:', e));
+    }
+
+    // 배송 주소를 profiles에도 저장
+    if(userId){
+      await _supabase.from('profiles').upsert({
+        user_id: userId,
+        name: pending.name,
+        phone: pending.phone,
+        zipcode: pending.zipcode,
+        address: pending.address,
+        address_detail: pending.addressDetail,
+        ...(pending.discount_applied ? {first_order_used: true} : {}),
+      },{onConflict:'user_id'});
+    }
   }
 
-  // 배송 주소를 profiles에도 저장
-  if(userId){
+  // 첫 주문 할인 사용 처리 (선물도 포함)
+  if(isGift && userId && pending.discount_applied){
     await _supabase.from('profiles').upsert({
-      user_id: userId,
-      name: pending.name,
-      phone: pending.phone,
-      zipcode: pending.zipcode,
-      address: pending.address,
-      address_detail: pending.addressDetail,
-      ...(pending.discount_applied ? {first_order_used: true} : {}),
+      user_id:userId,
+      first_order_used:true,
     },{onConflict:'user_id'});
   }
 }

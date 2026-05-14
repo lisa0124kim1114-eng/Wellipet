@@ -1,4 +1,4 @@
-const CACHE = 'wellipet-v10';
+const CACHE = 'wellipet-v11';
 const ASSETS = ['/', '/index.html', '/shop.html', '/ai.html', '/manifest.json', '/logo.png'];
 
 // 캐시하지 않을 URL 패턴
@@ -8,6 +8,7 @@ const BYPASS = [
   'functions/v1',      // Edge Functions
   'sourcing-pro.html', // 소싱 페이지 (동적 데이터)
   'admin.html',
+  'gift.html',         // 선물 수령 페이지 (동적 데이터)
 ];
 
 self.addEventListener('install', e => {

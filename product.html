@@ -84,6 +84,7 @@
       <div class="ship-info">🚚 배송비 3,000원 &nbsp;·&nbsp; <span>10만원 이상 무료배송</span></div>
       <div class="ship-info" style="margin-top:6px;color:#c45c8a;font-weight:600;">📦 배송기간 2-5일 (영업일 기준)</div>
       <button class="btn-buy" onclick="buyNow()">바로 구매하기</button>
+      <button class="btn-buy" onclick="buyGift()" style="background:#fff;color:var(--pk);border:1.5px solid var(--pk);margin-bottom:0;">🎁 선물하기</button>
       <button class="btn-cart" onclick="addToCart()">🛒 장바구니 담기</button>
       <button id="shareBtn" onclick="shareProduct()" style="width:100%;margin-top:10px;background:#fff;color:var(--muted);border:1.5px solid var(--bd);padding:13px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -469,6 +470,16 @@ async function buyNow(){
   } else {
     document.getElementById('checkoutAuthModal').style.display='flex';
   }
+}
+
+async function buyGift(){
+  if(!currentProduct)return;
+  const colorOptions=currentProduct.color_options?JSON.parse(currentProduct.color_options||'[]'):[];
+  const sizeOptions=currentProduct.size_options?JSON.parse(currentProduct.size_options||'[]'):[];
+  if(colorOptions.length>0&&!selectedColor){showToast('색상을 선택해줘요!');return;}
+  if(sizeOptions.length>0&&!selectedSize){showToast('사이즈를 선택해줘요!');return;}
+  addToCart();
+  location.href='checkout.html?gift=1';
 }
 
 function showToast(msg){
