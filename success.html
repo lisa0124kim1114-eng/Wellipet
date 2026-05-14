@@ -106,10 +106,29 @@ async function init(){
   const pending=JSON.parse(localStorage.getItem('pendingOrder')||'{}');
 
   if(!pending.items || pending.items.length===0){
+    // pendingOrder가 없지만 선물 모드면 gifts 테이블에서 복구 시도
+    if(params.get('gift')==='1'&&paymentId){
+      const{data:existingGift}=await _supabase.from('gifts').select('*').eq('order_payment_id',paymentId).single();
+      if(existingGift){
+        document.getElementById('mainIcon').textContent='🎁';
+        document.getElementById('mainTitle').textContent='선물 결제가 완료됐어요!';
+        document.getElementById('mainDesc').innerHTML='카카오톡으로 선물 링크를 보내주세요 🐾<br>받는 분이 배송지를 입력하면 배송이 시작됩니다!';
+        document.getElementById('orderName').textContent='🎁 '+existingGift.product_name;
+        document.getElementById('orderAmount').textContent=Number(existingGift.amount||0).toLocaleString()+'원';
+        document.getElementById('addressRow').style.display='none';
+        if(existingGift.sender_message){
+          document.getElementById('giftMsgRow').style.display='flex';
+          document.getElementById('orderGiftMsg').textContent=existingGift.sender_message;
+        }
+        giftData=existingGift;
+        giftUrl='https://wellypet.co.kr/gift.html?code='+existingGift.gift_code;
+        document.getElementById('giftShareSection').style.display='block';
+      }
+    }
     return;
   }
 
-  const isGift=pending.is_gift||false;
+  const isGift=pending.is_gift||params.get('gift')==='1'||false;
 
   // UI 표시
   const productName=pending.items.length===1?pending.items[0].name:`${pending.items[0].name} 외 ${pending.items.length-1}건`;

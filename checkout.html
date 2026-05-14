@@ -399,7 +399,7 @@ async function requestPayment(){
     totalAmount: finalPrice,
     currency: 'KRW',
     customer,
-    redirectUrl: 'https://wellypet.co.kr/success.html',
+    redirectUrl: isGiftMode?'https://wellypet.co.kr/success.html?gift=1':'https://wellypet.co.kr/success.html',
   };
 
   paymentRequest.payMethod = selectedMethod === '카드' ? 'CARD' : 'EASY_PAY';
@@ -411,7 +411,7 @@ async function requestPayment(){
         alert('결제 오류: '+response.message);
       }
     } else {
-      location.href = '/success.html?paymentId=' + paymentId;
+      location.href = '/success.html?paymentId=' + paymentId + (isGiftMode?'&gift=1':'');
     }
   } catch(error){
     alert('결제 오류: '+error.message);
