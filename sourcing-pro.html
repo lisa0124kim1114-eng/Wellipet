@@ -646,6 +646,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
               <div class="pcc-breakdown">
                 <div class="pcc-row"><span>카드수수료</span><span id="pcc-w-card">-</span></div>
                 <div class="pcc-row"><span>유기견기부</span><span id="pcc-w-donate">-</span></div>
+                <div class="pcc-row"><span>판매수수료</span><span id="pcc-w-commission">-</span></div>
                 <div class="pcc-row"><span>마진 25%</span><span id="pcc-w-margin">-</span></div>
               </div>
               <div class="pcc-divider"></div>
@@ -659,6 +660,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
                 <div class="pcc-row"><span>플랫폼수수료</span><span id="pcc-c-fee">-</span></div>
                 <div class="pcc-row"><span>마진 20%</span><span id="pcc-c-margin">-</span></div>
                 <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
+                <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
               </div>
               <div class="pcc-divider"></div>
               <div class="pcc-price" id="pcc-c-price">-</div>
@@ -670,6 +672,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
               <div class="pcc-breakdown">
                 <div class="pcc-row"><span>플랫폼수수료</span><span id="pcc-s-fee">-</span></div>
                 <div class="pcc-row"><span>마진 20%</span><span id="pcc-s-margin">-</span></div>
+                <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
                 <div class="pcc-row" style="color:transparent;"><span>-</span><span>-</span></div>
               </div>
               <div class="pcc-divider"></div>
@@ -773,7 +776,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
               <th>상품명 · 브랜드 · 사이트</th>
               <th>카테고리</th>
               <th>도매가</th>
-              <th style="color:#27ae60;">🐾 웰리펫<br><span style="font-weight:400;font-size:9px;">카드4%+기부3%+마진25%</span></th>
+              <th style="color:#27ae60;">🐾 웰리펫<br><span style="font-weight:400;font-size:9px;">카드4%+기부3%+판매수수료10%+마진25%</span></th>
               <th style="color:#e67e22;">📦 쿠팡<br><span style="font-weight:400;font-size:9px;">수수료25%+마진20%</span></th>
               <th style="color:#2980b9;">🏪 스마트스토어<br><span style="font-weight:400;font-size:9px;">수수료20%+마진20%</span></th>
               <th>웰리펫 마진율</th>
@@ -844,7 +847,7 @@ header{background:#fff;border-bottom:1px solid var(--bd);padding:0 32px;height:6
       <!-- 3채널 자동 계산 결과 -->
       <div class="qp-channels" id="qpChannels" style="display:none;">
         <div class="qp-ch wellipet">
-          <div><div class="qp-ch-name">🐾 웰리펫</div><div class="qp-ch-margin">카드4%+기부3%+마진25%</div></div>
+          <div><div class="qp-ch-name">🐾 웰리펫</div><div class="qp-ch-margin">카드4%+기부3%+판매수수료10%+마진25%</div></div>
           <div class="qp-ch-price" id="qpPriceW">-</div>
         </div>
         <div class="qp-ch coupang">
@@ -1717,7 +1720,7 @@ async function delProduct(id){
 }
 
 // ── 가격 자동 계산 공식 ──
-// 웰리펫: 카드수수료4% + 유기견기부3% + 마진25% = 32% → 판매가 = 도매가÷0.68 + 택배비
+// 웰리펫: 카드수수료4% + 유기견기부3% + 판매수수료10% + 마진25% = 42% → 판매가 = 도매가÷0.58 + 택배비
 // 쿠팡:   플랫폼수수료25% + 마진20% = 45% → 판매가 = 도매가÷0.55 + 택배비
 // 스마트: 플랫폼수수료20% + 마진20% = 40% → 판매가 = 도매가÷0.60 + 택배비
 function calcPrices(wholesale, shippingFee){
@@ -1725,7 +1728,7 @@ function calcPrices(wholesale, shippingFee){
   if(!w) return null;
   const sf = Number(shippingFee)||0;
   const round100 = v => Math.ceil(v/100)*100; // 100원 단위 올림
-  const wellipet = round100(w/0.68) + sf;
+  const wellipet = round100(w/0.58) + sf;
   const coupang  = round100(w/0.55) + sf;
   const smart    = round100(w/0.60) + sf;
   const cost = w + sf; // 실제 원가 (마진 계산용)
@@ -1754,9 +1757,10 @@ function calcAllPrices(){
 
   // 웰리펫
   const wProfit = cp.wellipet-cp.cost;
-  document.getElementById('pcc-w-card').textContent    = Math.round(cp.wellipet*0.04).toLocaleString()+'원';
-  document.getElementById('pcc-w-donate').textContent  = Math.round(cp.wellipet*0.03).toLocaleString()+'원';
-  document.getElementById('pcc-w-margin').textContent  = Math.round(cp.wellipet*0.25).toLocaleString()+'원';
+  document.getElementById('pcc-w-card').textContent       = Math.round(cp.wellipet*0.04).toLocaleString()+'원';
+  document.getElementById('pcc-w-donate').textContent     = Math.round(cp.wellipet*0.03).toLocaleString()+'원';
+  document.getElementById('pcc-w-commission').textContent = Math.round(cp.wellipet*0.10).toLocaleString()+'원';
+  document.getElementById('pcc-w-margin').textContent     = Math.round(cp.wellipet*0.25).toLocaleString()+'원';
   document.getElementById('pcc-w-price').textContent   = cp.wellipet.toLocaleString()+'원';
   document.getElementById('pcc-w-profit').textContent  = `마진 +${wProfit.toLocaleString()}원 (${Math.round(wProfit/cp.wellipet*100)}%)`;
 
@@ -1849,7 +1853,7 @@ async function uploadToStorage(file){
 async function recalcAllPrices(){
   const targets = products.filter(p=>Number(p.wholesale)>0);
   if(!targets.length){ alert('도매가가 입력된 상품이 없습니다.'); return; }
-  if(!confirm(`도매가가 있는 상품 ${targets.length}개의 판매가를 새 공식(카드4%+기부3%+마진25%)으로 재계산할까요?`)) return;
+  if(!confirm(`도매가가 있는 상품 ${targets.length}개의 판매가를 새 공식(카드4%+기부3%+판매수수료10%+마진25%)으로 재계산할까요?`)) return;
   products = products.map(p=>{
     const w = Number(p.wholesale);
     if(!w) return p;
@@ -1888,7 +1892,7 @@ function openMarginModal(){
     <div style="background:#e8f8f0;border-radius:10px;padding:10px 16px;text-align:center;min-width:110px;">
       <div style="font-size:10px;color:var(--muted);">🐾 웰리펫 평균마진</div>
       <div style="font-family:Nunito;font-size:22px;font-weight:800;color:#27ae60;">${avgWM}%</div>
-      <div style="font-size:9px;color:var(--muted);">카드4%+기부3%+마진25%</div>
+      <div style="font-size:9px;color:var(--muted);">카드4%+기부3%+판매수수료10%+마진25%</div>
     </div>
     <div style="background:#fef3e8;border-radius:10px;padding:10px 16px;text-align:center;min-width:110px;">
       <div style="font-size:10px;color:var(--muted);">📦 쿠팡 평균마진</div>
