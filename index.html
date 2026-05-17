@@ -620,15 +620,18 @@ if('serviceWorker' in navigator){
 </style>
 <script>
 (function(){
-  const key='popup_launch_pad_hide';
+  const key='popup_pad_v2';
   const today=new Date().toISOString().slice(0,10);
   if(localStorage.getItem(key)===today) return;
-  setTimeout(()=>{document.getElementById('launchPopup').style.display='flex';},800);
+  setTimeout(()=>{
+    const el=document.getElementById('launchPopup');
+    if(el) el.style.display='flex';
+  },800);
 })();
 function closePopup(){
   document.getElementById('launchPopup').style.display='none';
   if(document.getElementById('popupNoShow').checked){
-    localStorage.setItem('popup_launch_pad_hide',new Date().toISOString().slice(0,10));
+    localStorage.setItem('popup_pad_v2',new Date().toISOString().slice(0,10));
   }
 }
 </script>
