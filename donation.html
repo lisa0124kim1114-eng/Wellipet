@@ -111,8 +111,8 @@ document.getElementById('authModal').addEventListener('click',function(e){if(e.t
 
 // 기부금 통계 로딩
 (async()=>{
-  const {data:orders}=await _supabase.from('orders').select('donation_amount,customer_email,status,created_at').not('status','in','("주문취소","취소")');
-  if(!orders) return;
+  const {data:orders,error}=await _supabase.from('orders').select('donation_amount,customer_email,status,created_at').neq('status','주문취소').neq('status','취소');
+  if(error||!orders) return;
   const now=new Date();
   const monthStart=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
   const monthDon=orders.filter(o=>o.created_at>=monthStart).reduce((s,r)=>s+(r.donation_amount||0),0);
