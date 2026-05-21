@@ -1677,7 +1677,12 @@ async function saveProduct(){
     if(error){ showToast('저장 실패: '+error.message,'warn'); return; }
 
     // 이미 쇼핑몰에 올라간 상품이면 products 테이블도 동기화
-    const shopId = publishedMap[editingId];
+    let shopId = publishedMap[editingId];
+    if(!shopId){
+      // publishedMap 미스 시 이름으로 폴백 조회
+      const {data:matched} = await _supabase.from('products').select('id').ilike('name', data.name.trim()).limit(1).maybeSingle();
+      if(matched){ shopId = matched.id; publishedMap[editingId]=shopId; savePublished(); }
+    }
     if(shopId){
       const optNames = data.options&&data.options.length ? data.options.map(o=>typeof o==='string'?o:o.name) : [];
       const sf = Number(data.shipping_fee)||0;
@@ -1686,6 +1691,7 @@ async function saveProduct(){
         if(obj.price){ const ocp=calcPrices(Number(obj.price),sf); if(ocp) obj.retail=ocp.wellipet; }
         return obj;
       }) : null;
+      const syncPrice = Number(data.price_wellipet)||Number(data.retail)||0;
       const syncData = {
         name: data.name,
         category: data.cat,
@@ -1693,8 +1699,10 @@ async function saveProduct(){
         color_options: optNames.length ? JSON.stringify(optNames) : null,
         option_prices: optWithRetail,
       };
+      if(syncPrice > 0) syncData.price = syncPrice;
       if(data.img && !data.img.startsWith('data:')) syncData.image_url = data.img;
       await _supabase.from('products').update(syncData).eq('id', shopId);
+      localStorage.removeItem('wellipet_products_cache');
     }
 
     showToast('수정되었습니다','success');
@@ -2614,7 +2622,13 @@ async function loginForPublish(){
   showToast('로그인됐어요! 이제 쇼핑몰에 올릴 수 있어요.','success');
 }
 // ── 초기 렌더 (Supabase에서 데이터 로드) ──
-setTimeout(()=>loadProducts(), 0);
+(async()=>{
+  const {data:{session}} = await _supabase.auth.getSession();
+  if(!session){
+    document.getElementById('authBanner').style.display='flex';
+  }
+  setTimeout(()=>loadProducts(), 0);
+})();
 </script>
 
 <!-- 로그인 배너 -->
