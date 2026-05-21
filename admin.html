@@ -1103,7 +1103,9 @@ async function loadOrders(){
       <td><strong>${o.customer_name}</strong></td>
       <td>${o.customer_phone||'-'}</td>
       <td style="font-size:12px;">${o.address||''} ${o.address_detail||''}<br><span style="color:var(--muted);">(${o.zipcode||''})</span></td>
-      <td>${o.product_name||'-'}${o.selected_color||o.selected_size?'<br><span style="font-size:11px;color:#7c3aed;">'+(o.selected_color||'')+(o.selected_color&&o.selected_size?' / ':'')+(o.selected_size||'')+'</span>':''}${o.quantity>1?'<span style="font-size:11px;color:var(--pk);font-weight:600;"> x'+o.quantity+'</span>':''}${linkBtn}</td>
+      <td>${o.product_name||'-'}${linkBtn}
+        ${o.selected_color||o.selected_size?'<br><span style="font-size:11px;color:#7c3aed;background:#f3f0ff;padding:1px 7px;border-radius:8px;">'+[o.selected_color,o.selected_size].filter(Boolean).join(' / ')+'</span>':''}
+        <br><span style="font-size:12px;color:var(--pk);font-weight:700;background:#fff0f6;padding:1px 8px;border-radius:8px;">${o.quantity||1}개</span></td>
       <td>${Number(o.amount||0).toLocaleString()}원${o.shipping_fee?'<br><span style="font-size:10px;color:var(--muted);">+배송비 '+Number(o.shipping_fee).toLocaleString()+'원</span>':''}${o.payment_method?'<br><span style="font-size:10px;color:#7c3aed;">'+o.payment_method+'</span>':''}</td>
       <td>${trackingDisplay}</td>
       <td>
