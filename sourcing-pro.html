@@ -1090,6 +1090,22 @@ async function loadProducts(){
   }
   renderProgress(); renderSlots(); renderSideStats();
 
+  // publishedMap 자동 복원: 소싱↔쇼핑몰 ID 매핑을 이름으로 재구성
+  (async()=>{
+    const {data:shopItems} = await _supabase.from('products').select('id,name');
+    if(!shopItems) return;
+    const shopByName = {};
+    shopItems.forEach(p=>{ shopByName[p.name.trim().toLowerCase()] = p.id; });
+    let updated = false;
+    products.forEach(p=>{
+      if(!publishedMap[p.id]){
+        const sid = shopByName[p.name.trim().toLowerCase()];
+        if(sid){ publishedMap[p.id]=sid; updated=true; }
+      }
+    });
+    if(updated) savePublished();
+  })();
+
   // localStorage 마이그레이션은 백그라운드에서 처리
   const localRaw = localStorage.getItem('welliSourcingPro_v3') || localStorage.getItem('welliSourcingPro_v2') || localStorage.getItem('welliSourcingPro');
   if(localRaw){
