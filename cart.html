@@ -146,6 +146,11 @@ function getCart(){return JSON.parse(localStorage.getItem('cart')||'[]');}
 async function goToCheckout(){
   const cart=getCart();
   if(cart.length===0){alert('장바구니가 비어있어요.');return;}
+  // 체크된 상품만 결제로 넘김
+  const checks=document.querySelectorAll('.item-check');
+  const selectedItems=cart.filter((_,i)=>checks[i]&&checks[i].checked);
+  if(selectedItems.length===0){alert('결제할 상품을 선택해주세요.');return;}
+  localStorage.setItem('checkoutItems',JSON.stringify(selectedItems));
   const{data:{session}}=await _supabase.auth.getSession();
   if(session){
     location.href='checkout.html';

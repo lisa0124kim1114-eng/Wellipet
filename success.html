@@ -151,9 +151,6 @@ async function init(){
     document.getElementById('orderAddress').textContent=(pending.address||'')+' '+(pending.addressDetail||'');
   }
 
-  localStorage.removeItem('cart');
-  localStorage.removeItem('pendingOrder');
-
   // 세션 확인
   let session = null;
   try{
@@ -254,9 +251,40 @@ async function init(){
 
   } else {
     // === 일반 주문 ===
+
+    // 중복 주문 방지: 같은 paymentId가 이미 저장되어 있으면 스킵
+    const {data: existingOrder} = await _supabase.from('orders').select('id').eq('payment_id', paymentId).limit(1).maybeSingle();
+    if(existingOrder){
+      console.warn('이미 처리된 주문입니다:', paymentId);
+      localStorage.removeItem('cart');
+      localStorage.removeItem('pendingOrder');
+      return;
+    }
+
+    // 서버 가격 검증: localStorage 가격이 실제 DB 가격보다 현저히 낮으면 경고 로그
+    try {
+      const productIds = pending.items.map(it=>it.id).filter(Boolean);
+      if(productIds.length > 0){
+        const {data: dbProducts} = await _supabase.from('products').select('id,price').in('id', productIds);
+        if(dbProducts){
+          const dbPriceMap = {};
+          dbProducts.forEach(p=>{ dbPriceMap[p.id]=p.price; });
+          for(const item of pending.items){
+            const dbPrice = dbPriceMap[item.id];
+            if(dbPrice && item.price < dbPrice * 0.5){
+              console.warn(`가격 이상 감지: ${item.name} (클라이언트: ${item.price}, DB: ${dbPrice})`);
+            }
+          }
+        }
+      }
+    } catch(e){ console.warn('가격 검증 오류:', e); }
+
     const shippingFee = pending.shipping_fee || 0;
+    let allOrdersOk = true;
+    const allProductNames = [];
     for(let i=0; i<pending.items.length; i++){
       const item = pending.items[i];
+      allProductNames.push(item.name + (item.qty > 1 ? ` x${item.qty}` : ''));
       const {error: orderErr} = await _supabase.from('orders').insert({
         user_id: userId,
         customer_name: pending.name,
@@ -276,21 +304,28 @@ async function init(){
         status: '결제완료',
         payment_id: paymentId,
       });
-      if(orderErr) console.error('주문 저장 오류:', orderErr);
-
-      fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: pending.name,
-          customerEmail: userEmail,
-          productName: item.name,
-          amount: item.price*(item.qty||1),
-          address: (pending.address||'') + ' ' + (pending.addressDetail||''),
-          paymentId: paymentId,
-        })
-      }).catch(e=>console.warn('이메일 발송 오류:', e));
+      if(orderErr){ console.error('주문 저장 오류:', orderErr); allOrdersOk = false; }
     }
+
+    // 모든 DB 저장 완료 후 localStorage 정리
+    if(allOrdersOk){
+      localStorage.removeItem('cart');
+      localStorage.removeItem('pendingOrder');
+    }
+
+    // 이메일은 주문 전체에 대해 1번만 발송
+    fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName: pending.name,
+        customerEmail: userEmail,
+        productName: allProductNames.join(', '),
+        amount: pending.amount,
+        address: (pending.address||'') + ' ' + (pending.addressDetail||''),
+        paymentId: paymentId,
+      })
+    }).catch(e=>console.warn('이메일 발송 오류:', e));
 
     // 배송 주소를 profiles에도 저장
     if(userId){

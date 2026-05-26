@@ -160,7 +160,11 @@ if(isGiftMode){
 
 // 장바구니에서 상품 불러오기
 function loadCartItems(){
-  cartItems=JSON.parse(localStorage.getItem('cart')||'[]');
+  // 장바구니 체크박스로 선택된 상품 우선, 없으면 전체 장바구니
+  const checkoutItems=JSON.parse(localStorage.getItem('checkoutItems')||'null');
+  cartItems=checkoutItems||JSON.parse(localStorage.getItem('cart')||'[]');
+  // 한 번 읽은 후 삭제 (중복 방지)
+  localStorage.removeItem('checkoutItems');
 
   // URL 파라미터에서 단일 상품 구매인지 확인
   const params=new URLSearchParams(window.location.search);
@@ -351,12 +355,14 @@ async function requestPayment(){
     email=document.getElementById('giftSenderEmail').value;
     phone=document.getElementById('giftSenderPhone').value;
     if(!name||!phone){alert('보내는 분 이름과 연락처를 입력해주세요.');return;}
+    if(!email){alert('주문 확인 이메일 주소를 입력해주세요.');return;}
   } else {
     name=document.getElementById('customerName').value;
     email=document.getElementById('customerEmail').value;
     phone=document.getElementById('customerPhone').value;
     const address=document.getElementById('address').value;
     if(!name||!phone||!address){alert('배송 정보를 모두 입력해주세요.');return;}
+    if(!email){alert('주문 확인 이메일 주소를 입력해주세요.');return;}
   }
 
   const paymentId='order'+Date.now();
