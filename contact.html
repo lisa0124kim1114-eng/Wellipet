@@ -119,28 +119,52 @@ const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const _supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 async function submitContact(){
-  const name=document.getElementById('cName').value;
-  const email=document.getElementById('cEmail').value;
+  const name=document.getElementById('cName').value.trim();
+  const email=document.getElementById('cEmail').value.trim();
   const type=document.getElementById('cType').value;
-  const content=document.getElementById('cContent').value;
+  const orderId=document.getElementById('cOrderId').value.trim();
+  const content=document.getElementById('cContent').value.trim();
   if(!name||!email||!type||!content){alert('모든 항목을 입력해주세요.');return;}
 
-  // 이메일로 문의 발송 (Supabase Edge Function 활용)
   const btn=document.querySelector('.btn-submit');
   btn.textContent='전송 중...';
   btn.disabled=true;
 
-  // 간단히 성공 메시지 표시 (실제로는 이메일 발송 연동 가능)
-  setTimeout(()=>{
+  try {
+    // 1. Supabase에 저장
+    const {error} = await _supabase.from('contact_inquiries').insert({
+      name, email, type, order_id: orderId||null, content
+    });
+    if(error) throw error;
+
+    // 2. 이메일 알림 발송
+    await fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        customerName: '웰리펫 고객센터',
+        customerEmail: 'lisa0124kim1114@gmail.com',
+        productName: `[${type}] ${name}님 문의`,
+        amount: 0,
+        address: `회신 이메일: ${email}${orderId?' | 주문번호: '+orderId:''}`,
+        paymentId: '',
+        extraBody: content,
+      })
+    }).catch(()=>{});
+
     document.getElementById('successMsg').style.display='block';
-    btn.textContent='문의 보내기';
-    btn.disabled=false;
     document.getElementById('cName').value='';
     document.getElementById('cEmail').value='';
     document.getElementById('cType').value='';
     document.getElementById('cOrderId').value='';
     document.getElementById('cContent').value='';
-  },1000);
+  } catch(e) {
+    alert('전송 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+    console.error(e);
+  } finally {
+    btn.textContent='문의 보내기';
+    btn.disabled=false;
+  }
 }
 </script>
 

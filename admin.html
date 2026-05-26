@@ -27,6 +27,7 @@
     <div class="nav-item" onclick="showPage('dogs',this)"><span class="nav-icon">🐕</span> 유기견 관리</div>
     <div class="nav-item" onclick="showPage('donation',this)"><span class="nav-icon">🤝</span> 기부금 내역</div>
     <div class="nav-item" onclick="showPage('analytics',this)"><span class="nav-icon">👁️</span> 방문자 통계</div>
+    <div class="nav-item" onclick="showPage('inquiries',this)"><span class="nav-icon">💬</span> 고객 문의</div>
     <div class="nav-divider"></div>
     <div class="nav-item" onclick="showPage('sourcing',this)"><span class="nav-icon">🔍</span> 소싱 목록</div>
     <a href="/sourcing-pro.html" class="nav-item" style="text-decoration:none;color:inherit;display:flex;align-items:center;font-size:12px;color:#aaa;padding-left:40px;"><span class="nav-icon" style="font-size:12px;">↗</span> 소싱 툴 열기</a>
@@ -232,6 +233,16 @@
         </div>
       </div>
     </div>
+    <!-- 고객 문의 -->
+    <div class="page" id="page-inquiries">
+      <div class="page-title">💬 고객 문의</div>
+      <div style="background:#fff;border-radius:14px;border:1px solid var(--bd);padding:24px;">
+        <table class="data-table">
+          <thead><tr><th>접수일</th><th>이름</th><th>이메일</th><th>유형</th><th>주문번호</th><th>내용</th><th>상태</th><th>처리</th></tr></thead>
+          <tbody id="inquiryTable"><tr><td colspan="8"><div class="empty-state"><div class="icon">💬</div><p>문의 내역이 없어요</p></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
     <!-- 소싱 목록 -->
     <div class="page" id="page-sourcing">
       <div class="page-title">🔍 소싱 목록</div>
@@ -414,6 +425,7 @@ function showPage(name,el){
   if(name==='dogs')loadAdminDogs();
   if(name==='analytics')loadAnalytics();
   if(name==='donation')loadDonation();
+  if(name==='inquiries')loadInquiries();
 }
 
 let _sourcingAll = [];
@@ -976,6 +988,39 @@ async function deleteProduct(id){
 
 function closeProductModal(){document.getElementById('productModal').classList.remove('open');}
 document.getElementById('productModal').addEventListener('click',function(e){if(e.target===this)closeProductModal();});
+
+async function loadInquiries(){
+  const {data,error}=await _supabase.from('contact_inquiries').select('*').order('created_at',{ascending:false});
+  const tbody=document.getElementById('inquiryTable');
+  if(error||!data||data.length===0){
+    tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="icon">💬</div><p>문의 내역이 없어요</p></div></td></tr>';
+    return;
+  }
+  const fmt=d=>{const t=new Date(d);return t.toLocaleDateString('ko-KR')+' '+t.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});};
+  const statusColor={'미확인':'#fff0f6','확인중':'#fff8e8','답변완료':'#e8f8ee'};
+  const statusText={'미확인':'#c45c8a','확인중':'#e6a800','답변완료':'#1a9e4a'};
+  tbody.innerHTML=data.map(q=>`<tr>
+    <td style="font-size:12px;white-space:nowrap;">${fmt(q.created_at)}</td>
+    <td><strong>${q.name}</strong></td>
+    <td style="font-size:12px;">${q.email}</td>
+    <td><span style="background:var(--pkp);color:var(--pk);padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${q.type}</span></td>
+    <td style="font-size:12px;">${q.order_id||'-'}</td>
+    <td style="font-size:12px;max-width:300px;word-break:break-all;">${q.content}</td>
+    <td><span style="background:${statusColor[q.status]||'#f8f9fa'};color:${statusText[q.status]||'#333'};padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;">${q.status}</span></td>
+    <td>
+      <select style="font-size:11px;border:1px solid var(--bd);border-radius:8px;padding:3px 6px;" onchange="updateInquiryStatus(${q.id},this.value)">
+        <option ${q.status==='미확인'?'selected':''}>미확인</option>
+        <option ${q.status==='확인중'?'selected':''}>확인중</option>
+        <option ${q.status==='답변완료'?'selected':''}>답변완료</option>
+      </select>
+    </td>
+  </tr>`).join('');
+}
+
+async function updateInquiryStatus(id,status){
+  await _supabase.from('contact_inquiries').update({status}).eq('id',id);
+  loadInquiries();
+}
 
 async function loadDonation(){
   const {data,error}=await _supabase.from('orders').select('created_at,customer_name,product_name,amount,quantity,status').order('created_at',{ascending:false});
