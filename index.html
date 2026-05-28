@@ -584,8 +584,8 @@ if('serviceWorker' in navigator){
 <script src="tracker.js" defer></script>
 
 <!-- 배변패드 론칭 팝업 -->
-<div id="launchPopup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(42,26,34,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;" onclick="if(event.target===this)closePopup()">
-  <div style="background:#fff;border-radius:24px;max-width:400px;width:92%;overflow:hidden;box-shadow:0 24px 80px rgba(196,92,138,.3);animation:popIn .35s ease;">
+<div id="launchPopup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(42,26,34,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px;box-sizing:border-box;" onclick="if(event.target===this)closePopup()">
+  <div style="background:#fff;border-radius:24px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 80px rgba(196,92,138,.3);animation:popIn .35s ease;">
     <div style="background:linear-gradient(135deg,var(--pkbg) 0%,#fff 100%);padding:22px 24px 16px;text-align:center;position:relative;">
       <button onclick="closePopup()" style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,.07);border:none;width:30px;height:30px;border-radius:50%;font-size:17px;cursor:pointer;color:#888;line-height:1;">×</button>
       <div style="font-size:11px;color:var(--pk);font-weight:800;letter-spacing:1.5px;margin-bottom:6px;">✨ NEW LAUNCH</div>
@@ -621,18 +621,22 @@ if('serviceWorker' in navigator){
 <script>
 (function(){
   const key='popup_pad_v2';
-  const today=new Date().toISOString().slice(0,10);
-  if(localStorage.getItem(key)===today) return;
+  try{
+    const today=new Date().toISOString().slice(0,10);
+    if(localStorage.getItem(key)===today) return;
+  }catch(e){}
   setTimeout(()=>{
     const el=document.getElementById('launchPopup');
-    if(el) el.style.display='flex';
+    if(el){ el.style.display='flex'; el.style.alignItems='center'; el.style.justifyContent='center'; }
   },800);
 })();
 function closePopup(){
   document.getElementById('launchPopup').style.display='none';
-  if(document.getElementById('popupNoShow').checked){
-    localStorage.setItem('popup_pad_v2',new Date().toISOString().slice(0,10));
-  }
+  try{
+    if(document.getElementById('popupNoShow').checked){
+      localStorage.setItem('popup_pad_v2',new Date().toISOString().slice(0,10));
+    }
+  }catch(e){}
 }
 </script>
 </body>
