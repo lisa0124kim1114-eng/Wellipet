@@ -137,18 +137,17 @@ async function submitContact(){
     });
     if(error) throw error;
 
-    // 2. 이메일 알림 발송
+    // 2. 이메일 알림 발송 (관리자 wellypet1209@gmail.com 수신)
     await fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        customerName: '웰리펫 고객센터',
-        customerEmail: 'lisa0124kim1114@gmail.com',
-        productName: `[${type}] ${name}님 문의`,
-        amount: 0,
-        address: `회신 이메일: ${email}${orderId?' | 주문번호: '+orderId:''}`,
-        paymentId: '',
-        extraBody: content,
+        isInquiry: true,
+        customerName: name,
+        customerEmail: email,
+        productName: type,
+        address: orderId||'',
+        inquiryContent: content,
       })
     }).catch(()=>{});
 
