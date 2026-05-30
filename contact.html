@@ -140,7 +140,7 @@ async function submitContact(){
     // 2. 이메일 알림 발송 (관리자 wellypet1209@gmail.com 수신)
     await fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_KEY},
       body: JSON.stringify({
         isInquiry: true,
         customerName: name,

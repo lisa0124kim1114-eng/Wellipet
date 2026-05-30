@@ -238,7 +238,7 @@ async function init(){
 
     // 이메일 발송
     fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email',{
-      method:'POST',headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPABASE_KEY},
       body:JSON.stringify({
         customerName:pending.gift_sender_name,
         customerEmail:userEmail,
@@ -316,7 +316,7 @@ async function init(){
     // 이메일은 주문 전체에 대해 1번만 발송
     fetch('https://pzzunxgbzkhdqemmgavd.supabase.co/functions/v1/send-order-email', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_KEY },
       body: JSON.stringify({
         customerName: pending.name,
         customerEmail: userEmail,
