@@ -180,7 +180,7 @@ function loadCartItems(){
   const itemsHtml=cartItems.map(item=>{
     const itemTotal=item.price*(item.qty||1);
     totalPrice+=itemTotal;
-    totalDonation+=Math.floor((item.price||0)*0.03)*(item.qty||1);
+    totalDonation+=Math.floor((item.price||0)*0.05)*(item.qty||1);
     return `
       <div class="product-item">
         <div class="product-img">${item.image_url?`<img loading="lazy" src="${item.image_url}"/>`:'🐾'}</div>
@@ -311,7 +311,7 @@ async function saveOrder(paymentKey, orderId){
 
   // 각 상품별로 주문 저장
   for(const item of cartItems){
-    const itemDonation = Math.floor((item.price||0)*0.03)*(item.qty||1);
+    const itemDonation = Math.floor((item.price||0)*0.05)*(item.qty||1);
     await _supabase.from('orders').insert({
       customer_name: name,
       customer_email: email,

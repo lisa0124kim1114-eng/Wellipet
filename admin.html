@@ -206,7 +206,7 @@
         <div style="font-size:15px;font-weight:700;margin-bottom:16px;">📦 상품별 기부금 합계</div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>상품명</th><th>판매 건수</th><th>총 판매금액</th><th>기부금 (3%)</th><th>기부금 비율</th></tr></thead>
+            <thead><tr><th>상품명</th><th>판매 건수</th><th>총 판매금액</th><th>기부금 (5%)</th><th>기부금 비율</th></tr></thead>
             <tbody id="donProductTable"><tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px;">불러오는 중...</td></tr></tbody>
           </table>
         </div>
@@ -216,7 +216,7 @@
         <div style="font-size:15px;font-weight:700;margin-bottom:16px;">📅 월별 기부금 추이</div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>월</th><th>주문 건수</th><th>총 결제금액</th><th>기부금 (3%)</th></tr></thead>
+            <thead><tr><th>월</th><th>주문 건수</th><th>총 결제금액</th><th>기부금 (5%)</th></tr></thead>
             <tbody id="donMonthTable"><tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px;">불러오는 중...</td></tr></tbody>
           </table>
         </div>
@@ -227,7 +227,7 @@
         <div style="font-size:12px;color:var(--muted);margin-bottom:16px;">취소된 주문은 제외됩니다</div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>주문일</th><th>주문자</th><th>상품명</th><th>결제금액</th><th>기부금 (3%)</th><th>상태</th></tr></thead>
+            <thead><tr><th>주문일</th><th>주문자</th><th>상품명</th><th>결제금액</th><th>기부금 (5%)</th><th>상태</th></tr></thead>
             <tbody id="donDetailTable"><tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px;">불러오는 중...</td></tr></tbody>
           </table>
         </div>
@@ -645,7 +645,7 @@ function renderDetailPreviews(){
 
 function removeExistingDetail(i){currentDetailImages.splice(i,1);renderDetailPreviews();}
 function removeNewDetail(i){newDetailFiles.splice(i,1);renderDetailPreviews();}
-function calcDonation(input){document.getElementById('pDonation').value=Math.round((parseInt(input.value)||0)*0.03);}
+function calcDonation(input){document.getElementById('pDonation').value=Math.round((parseInt(input.value)||0)*0.05);}
 
 function previewOptionImage(input,idx){
   const file=input.files[0];if(!file)return;
@@ -786,7 +786,7 @@ function renderProductTable(){
       </td>
       <td>${p.category}<br><span style="font-size:10px;color:#a08090;">${p.pet_type==='dog'?'🐶 강아지':p.pet_type==='cat'?'🐱 고양이':'🐾 공통'}</span></td>
       <td>${Number(p.price).toLocaleString()}원 ${p.original_price?`<s style="color:#ccc;font-size:11px;">${Number(p.original_price).toLocaleString()}원</s>`:''}</td>
-      <td>${Math.floor((p.price||0)*0.03).toLocaleString()}원</td>
+      <td>${Math.floor((p.price||0)*0.05).toLocaleString()}원</td>
       <td style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
         <button class="btn-edit" onclick="editProduct(${p.id})">수정</button>
         <button class="btn-edit" data-qimg="${p.id}" onclick="quickReplaceImage(${p.id})" title="이미지만 빠르게 교체">📷</button>
@@ -875,7 +875,7 @@ async function editProduct(id){
   document.getElementById('pCategory').value=data.category||'배변패드';
   document.getElementById('pPetType').value=data.pet_type||'dog';
   document.getElementById('pBadge').value=data.badge||'';
-  document.getElementById('pDonation').value=Math.floor((data.price||0)*0.03);
+  document.getElementById('pDonation').value=Math.floor((data.price||0)*0.05);
   document.getElementById('pDescription').value=data.description||'';
   document.getElementById('pImageFile').value='';
   document.getElementById('pDetailFiles').value='';
@@ -1038,8 +1038,8 @@ async function loadDonation(){
   // 요약 카드
   const totalAll=valid.reduce((s,o)=>s+(o.amount||0),0);
   const totalMonth=valid.filter(o=>(o.created_at||'').slice(0,7)===thisMonth).reduce((s,o)=>s+(o.amount||0),0);
-  document.getElementById('donSumAll').textContent=Math.round(totalAll*0.03).toLocaleString()+'원';
-  document.getElementById('donSumMonth').textContent=Math.round(totalMonth*0.03).toLocaleString()+'원';
+  document.getElementById('donSumAll').textContent=Math.round(totalAll*0.05).toLocaleString()+'원';
+  document.getElementById('donSumMonth').textContent=Math.round(totalMonth*0.05).toLocaleString()+'원';
   document.getElementById('donOrderCount').textContent=valid.length.toLocaleString()+'건';
 
   // 상품별 집계
@@ -1054,7 +1054,7 @@ async function loadDonation(){
   const grandAmt=prodList.reduce((s,[,v])=>s+v.amount,0);
   document.getElementById('donProductTable').innerHTML=prodList.length
     ? prodList.map(([name,v])=>{
-        const don=Math.round(v.amount*0.03);
+        const don=Math.round(v.amount*0.05);
         const pct=grandAmt?((v.amount/grandAmt)*100).toFixed(1):'0';
         return `<tr>
           <td style="font-weight:500;">${name}</td>
@@ -1085,7 +1085,7 @@ async function loadDonation(){
   const monthList=Object.entries(monthMap).sort((a,b)=>b[0].localeCompare(a[0]));
   document.getElementById('donMonthTable').innerHTML=monthList.length
     ? monthList.map(([m,v])=>{
-        const don=Math.round(v.amount*0.03);
+        const don=Math.round(v.amount*0.05);
         const isThis=m===thisMonth;
         return `<tr style="${isThis?'background:var(--pkbg);font-weight:600;':''}">
           <td>${m}${isThis?' <span style="font-size:11px;color:var(--pk);">이번 달</span>':''}</td>
@@ -1100,7 +1100,7 @@ async function loadDonation(){
   const statusColor={결제완료:'#fff3cd',발주확인:'#cce5ff',배송준비:'#d4edda',배송중:'#c3e6cb',배송완료:'#d1ecf1'};
   const statusText={결제완료:'#856404',발주확인:'#004085',배송준비:'#155724',배송중:'#155724',배송완료:'#0c5460'};
   document.getElementById('donDetailTable').innerHTML=valid.slice(0,100).map(o=>{
-    const don=Math.round((o.amount||0)*0.03);
+    const don=Math.round((o.amount||0)*0.05);
     const dateStr=o.created_at?new Date(o.created_at).toLocaleDateString('ko-KR'):'-';
     const sc=statusColor[o.status]||'#f8f9fa';
     const st=statusText[o.status]||'#333';
